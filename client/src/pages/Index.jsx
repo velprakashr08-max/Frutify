@@ -12,16 +12,16 @@ import ProductCard from '../components/ProductCard';
 import ProductDetailModal from '../components/ProductDetailModal';
 import Footer from '../components/Footer'; 
 import heroVideo from '../assets/hero-farm.mp4';
-export default function Index(){ 
+export default function Index(){
     const {products} = useProducts();
     const [quickView,setQuickView]= useState(null);
     const [testimonialIdx,setTestimonialIdx]=useState(0);
-    const [scrollY,setScrollY]=useState(0);
+    const [scrollY,setScrollY]=useState(0);   
     const heroRef=useRef(null);
-    useEffect(()=>{
+    useEffect(()=>{ 
         const handleScroll=()=>{
             setScrollY(window.scrollY); 
-        }
+        }     
         window.addEventListener('scroll',handleScroll,{passive:true});
         return()=>{
             window.removeEventListener('scroll',handleScroll);
@@ -134,36 +134,35 @@ export default function Index(){
                     {featured.map(p=>(
                         <ProductCard key={p.id} product={p} onQuickView={setQuickView} />
                     ))}
-                </div>
+                </div> 
                 </div>
                 </section>
-
+     
                 <section className='py-20'>
                     <div className='container space-y-12'>
                         <div className='text-center space-y-2'>
                             <h2 className='font-heading text-3xl font-bold'>How It Works</h2>
                             <p className='text-muted-foreground max-w-md mx-auto'>Get Fresh vegetables in 4 simple steps</p>
-                        </div>
+                        </div> 
                         <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 '>
                             {steps.map((s,i)=>(
                                 <div key={s.step} className='relative text-center space-y-4 group'>
                                     <div className='mx-auto w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center relative'>
-                                        <s.icon className="h-7 w-7 text-primary" />
+                                      <s.icon className="h-7 w-7 text-primary" />
                                         <span className='absolute -top-1 -right-1 w-6 h-6 rounded-full bg-primary text-primary-foreground text-xs font-bold flex items-center justify-center'>
-                                            {s.step}
+                                            {s.step} 
                                         </span>
                                     </div>
                                     <h3 className='font-heading font-semibold'>{s.title}</h3>
                                     <p className='text-sm text-muted-foreground'>{s.desc}</p>
                                     {s.step <4 &&(
                                         <ArrowRight className="hidden lg:block absolute top-8 -right-4 h-5 w-5 text-muted-foreground/40" />
-                                    )}
-                                </div>
+                                  )}
+                                </div> 
                             ))}
-                        </div>
-                    </div>
+                        </div>    
+                    </div> 
                 </section> 
-
                 <section className='py-16 bg-muted/30'>
                 <div className='container space-y-8'>
                     <div className='text-center space-y-2'>
