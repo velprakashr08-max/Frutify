@@ -15,7 +15,7 @@ import { Badge } from '../components/ui/Badge';
 import {
   Package, IndianRupee, AlertTriangle, Plus, Pencil, Trash2, Upload, ImagePlus,
   BarChart3, TrendingUp, ShoppingCart, Users, Leaf, CheckCircle, XCircle,
-  ArrowUpRight, ArrowDownRight, Box, Star, Tag, X,
+  ArrowUpRight, ArrowDownRight, Box, Star, Tag, X, Apple,
 } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from 'recharts';
 import { categories } from '../data/vegetables';
@@ -23,8 +23,11 @@ import CategoryIcon from '../components/CategoryIcon';
 import { formatPrice } from '../lib/utils';
 import { toast } from 'sonner';
 
+const productCategories = categories.filter(c => c.type !== 'all');
+
 const emptyProduct = {
-  name: '', slug: '', category: 'Root Vegetables', price: 0, originalPrice: 0, stock: 0,
+  name: '', slug: '', category: 'Root Vegetables', type: 'vegetable',
+  price: 0, originalPrice: 0, stock: 0,
   image: '', gallery: [], description: '',
   nutrition: { calories: 0, carbs: '0g', protein: '0g', fat: '0g', fiber: '0g' },
   organic: false, rating: 4.0, reviews: 0, discount: 0, tags: [], dateAdded: new Date().toISOString().slice(0, 10),
@@ -117,7 +120,8 @@ export default function Admin() {
     { icon: AlertTriangle, label: 'Low Stock', value: lowStock, color: 'text-accent', bg: 'bg-accent/10' },
     { icon: Box, label: 'Total Stock', value: totalStock, color: 'text-primary', bg: 'bg-primary/10' },
     { icon: Star, label: 'Avg Rating', value: avgRating, color: 'text-secondary', bg: 'bg-secondary/10' },
-    { icon: Leaf, label: 'Organic Products', value: organicCount, color: 'text-primary', bg: 'bg-primary/10' },
+    { icon: Leaf, label: 'Organic', value: organicCount, color: 'text-primary', bg: 'bg-primary/10' },
+    { icon: Apple, label: 'Fruits', value: products.filter(p => p.type === 'fruit').length, color: 'text-orange-600', bg: 'bg-orange-50' },
   ];
 
   return (
@@ -145,7 +149,7 @@ export default function Admin() {
           {/* ─── Dashboard Tab ─── */}
           <TabsContent value="dashboard" className="space-y-6">
             {/* Stats Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4">
               {stats.map((s, i) => (
                 <Card key={i} className="border-none shadow-sm hover:shadow-lg transition-all duration-300 hover:-translate-y-0.5">
                   <CardContent className="flex flex-col items-center gap-2.5 pt-6 pb-5 text-center">
@@ -386,10 +390,13 @@ export default function Admin() {
               {/* Category */}
               <div className="space-y-2">
                 <Label className="text-sm font-semibold">Category</Label>
-                <Select value={editProduct.category} onValueChange={v => setEditProduct({ ...editProduct, category: v })}>
+                <Select value={editProduct.category} onValueChange={v => {
+                  const cat = productCategories.find(c => c.name === v);
+                  setEditProduct({ ...editProduct, category: v, type: cat?.type || 'vegetable' });
+                }}>
                   <SelectTrigger><SelectValue /></SelectTrigger>
                   <SelectContent>
-                    {categories.filter(c => c.name !== 'All Vegetables').map(c => (
+                    {productCategories.map(c => (
                       <SelectItem key={c.id} value={c.name}>
                         <span className="flex items-center gap-2">
                           <CategoryIcon name={c.icon} className="h-4 w-4" /> {c.name}

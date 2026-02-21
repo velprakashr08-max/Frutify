@@ -20,7 +20,7 @@ export default function LoginModal({ open, onOpenChange }) {
       <DialogContent className="sm:max-w-md glass-strong">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 font-heading text-xl">
-            <Leaf className="h-6 w-6 text-primary" /> Welcome to FreshVeg
+            <Leaf className="h-6 w-6 text-primary" /> Welcome to Frutify
           </DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 pt-2">

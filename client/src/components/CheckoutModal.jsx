@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import { QRCodeCanvas } from 'qrcode.react';
 import { useCart } from '@/contexts/CartContext';
-import { saveOrder } from '@/pages/OrderHistory';
+import { saveOrder } from '@/lib/storage';
 import { formatPrice } from '@/lib/utils';
 
 /* ── Coupon codes ── */
@@ -124,7 +124,7 @@ export default function CheckoutModal({ open, onOpenChange, cartProducts, subtot
   /* ── UPI QR string (auto-generated) ── */
   const upiString = useMemo(() => {
     const inrAmount = (finalAmount * 83).toFixed(2);
-    return `upi://pay?pa=freshveg@upi&pn=FreshVeg&am=${inrAmount}&cu=INR&tn=Order-${txnId}`;
+    return `upi://pay?pa=frutify@upi&pn=Frutify&am=${inrAmount}&cu=INR&tn=Order-${txnId}`;
   }, [finalAmount, txnId]);
 
   /* ── Formatters ── */
@@ -208,7 +208,7 @@ export default function CheckoutModal({ open, onOpenChange, cartProducts, subtot
   const receiptText = () => {
     const lines = [
       '════════════════════════════════',
-      '        🥬 FreshVeg Receipt        ',
+      '        🍎 Frutify Receipt        ',
       '════════════════════════════════',
       '',
       `Transaction : ${txnId}`,
@@ -228,7 +228,7 @@ export default function CheckoutModal({ open, onOpenChange, cartProducts, subtot
       `──────────────────────────────`,
       `TOTAL       : ${formatPrice(finalAmount)}`,
       '',
-      'Thank you for shopping with FreshVeg! 🌿',
+      'Thank you for shopping with Frutify! 🍎🥦',
       '════════════════════════════════',
     ];
     return lines.join('\n');
@@ -251,7 +251,7 @@ export default function CheckoutModal({ open, onOpenChange, cartProducts, subtot
   };
 
   const emailReceipt = () => {
-    const subject = encodeURIComponent(`FreshVeg Receipt - ${txnId}`);
+    const subject = encodeURIComponent(`Frutify Receipt - ${txnId}`);
     const body = encodeURIComponent(receiptText());
     window.open(`mailto:${email}?subject=${subject}&body=${body}`);
   };

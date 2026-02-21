@@ -10,7 +10,7 @@ export default function Footer() {
           <div className="space-y-4">
             <div className="flex items-center gap-2">
               <Leaf className="h-6 w-6 text-primary" />
-              <span className="font-heading text-xl font-bold">FreshVeg</span>
+              <span className="font-heading text-xl font-bold">Frutify</span>
             </div>
             <p className="text-sm text-background/60">
               Farm-fresh organic vegetables delivered right to your doorstep. Quality you can taste.
@@ -30,7 +30,7 @@ export default function Footer() {
             <h4 className="font-heading font-semibold">Contact Us</h4>
             <ul className="space-y-2 text-sm text-background/60">
               <li className="flex items-center gap-2"><Phone className="h-4 w-4 text-primary" /> +1 (555) 123-4567</li>
-              <li className="flex items-center gap-2"><Mail className="h-4 w-4 text-primary" /> hello@freshveg.com</li>
+              <li className="flex items-center gap-2"><Mail className="h-4 w-4 text-primary" /> hello@frutify.com</li>
               <li className="flex items-center gap-2"><MapPin className="h-4 w-4 text-primary" /> 123 Farm Lane, Green City</li>
             </ul>
           </div>
@@ -45,7 +45,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="border-t border-background/10 mt-10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-background/40">
-          <p>© {new Date().getFullYear()} FreshVeg. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Frutify. All rights reserved.</p>
           <div className="flex gap-4">
             <span className="hover:text-primary transition-colors cursor-pointer">Privacy Policy</span>
             <span className="hover:text-primary transition-colors cursor-pointer">Terms of Service</span>

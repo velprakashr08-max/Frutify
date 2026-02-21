@@ -11,11 +11,15 @@ export function AuthProvider({ children }) {
   const login = useCallback((name) => {
     const trimmed = name.trim();
     if (!trimmed) return;
-    const isAdmin = trimmed.toLowerCase() === 'admin';
+    const lower = trimmed.toLowerCase();
+    const isAdmin    = lower === 'admin';
+    const role       = ['admin', 'manager', 'delivery', 'warehouse'].includes(lower) ? lower : 'customer';
+    const bgColor    = isAdmin ? '27ae60' : lower === 'manager' ? '8b5cf6' : lower === 'delivery' ? 'f59e0b' : lower === 'warehouse' ? 'f97316' : '27ae60';
     const u = {
       name: trimmed,
       isAdmin,
-      avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(trimmed)}&background=27ae60&color=fff&bold=true`,
+      role,
+      avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(trimmed)}&background=${bgColor}&color=fff&bold=true`,
     };
     saveUser(u);
     setUser(u);

@@ -6,7 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useProducts } from '@/contexts/ProductContext';
 
 const greetings = [
-  "Hi there! I'm FreshVeg Assistant. How can I help you today?",
+  "Hi there! I'm Frutify Assistant. How can I help you today?",
   "You can ask me about products, orders, categories, or anything else!",
 ];
 
@@ -101,7 +101,7 @@ export default function Chatbot() {
           <div className="bg-primary text-primary-foreground px-4 py-3 flex items-center gap-3">
             <Bot className="h-6 w-6" />
             <div>
-              <p className="font-heading font-semibold text-sm">FreshVeg Assistant</p>
+              <p className="font-heading font-semibold text-sm">Frutify Assistant</p>
               <p className="text-xs opacity-80">{user?.isAdmin ? 'Admin Mode' : 'Online'}</p>
             </div>
           </div>

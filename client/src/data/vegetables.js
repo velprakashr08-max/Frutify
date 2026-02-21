@@ -1,15 +1,22 @@
 export const categories = [
-  { id: 1, name: 'All Vegetables', icon: 'leaf' },
-  { id: 2, name: 'Root Vegetables', icon: 'carrot' },
-  { id: 3, name: 'Leafy Greens', icon: 'leaf' },
-  { id: 4, name: 'Cruciferous', icon: 'tree' },
-  { id: 5, name: 'Fruiting Vegetables', icon: 'apple' },
-  { id: 6, name: 'Mushrooms', icon: 'bean' },
+  { id: 1,  name: 'All',                icon: 'leaf',   type: 'all'       },
+  // ── Vegetables ──────────────────────────────────────────────────────────
+  { id: 2,  name: 'Root Vegetables',    icon: 'carrot', type: 'vegetable' },
+  { id: 3,  name: 'Leafy Greens',       icon: 'leaf',   type: 'vegetable' },
+  { id: 4,  name: 'Cruciferous',        icon: 'tree',   type: 'vegetable' },
+  { id: 5,  name: 'Fruiting Vegetables',icon: 'apple',  type: 'vegetable' },
+  { id: 6,  name: 'Mushrooms',          icon: 'bean',   type: 'vegetable' },
+  // ── Fruits ──────────────────────────────────────────────────────────────
+  { id: 7,  name: 'Citrus Fruits',      icon: 'citrus', type: 'fruit'     },
+  { id: 8,  name: 'Tropical Fruits',    icon: 'apple',  type: 'fruit'     },
+  { id: 9,  name: 'Stone Fruits',       icon: 'cherry', type: 'fruit'     },
+  { id: 10, name: 'Berries',            icon: 'grape',  type: 'fruit'     },
+  { id: 11, name: 'Melons & Gourds',    icon: 'leaf',   type: 'fruit'     },
 ];
 
 export const defaultVegetables = [
   {
-    id: 1, name: 'Organic Carrots', slug: 'organic-carrots', category: 'Root Vegetables',
+    id: 1, name: 'Organic Carrots', slug: 'organic-carrots', category: 'Root Vegetables', type: 'vegetable',
     price: 2.99, originalPrice: 3.99, stock: 15,
     image: 'https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=500',
     gallery: ['https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=500', 'https://images.unsplash.com/photo-1447175008436-054170c2e979?w=500'],
@@ -19,7 +26,7 @@ export const defaultVegetables = [
     dateAdded: '2024-01-01',
   },
   {
-    id: 2, name: 'Fresh Broccoli', slug: 'fresh-broccoli', category: 'Cruciferous',
+    id: 2, name: 'Fresh Broccoli', slug: 'fresh-broccoli', category: 'Cruciferous', type: 'vegetable',
     price: 3.49, originalPrice: 4.29, stock: 22,
     image: 'https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?w=500',
     gallery: ['https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?w=500', 'https://images.unsplash.com/photo-1628773822503-930a7eaecf80?w=500'],
@@ -29,7 +36,7 @@ export const defaultVegetables = [
     dateAdded: '2024-01-05',
   },
   {
-    id: 3, name: 'Roma Tomatoes', slug: 'roma-tomatoes', category: 'Fruiting Vegetables',
+    id: 3, name: 'Roma Tomatoes', slug: 'roma-tomatoes', category: 'Fruiting Vegetables', type: 'vegetable',
     price: 4.29, originalPrice: 4.99, stock: 30,
     image: 'https://images.unsplash.com/photo-1546470427-0d4db154ceb8?w=500',
     gallery: ['https://images.unsplash.com/photo-1546470427-0d4db154ceb8?w=500', 'https://images.unsplash.com/photo-1592924357228-91a4daadce55?w=500'],
@@ -39,7 +46,7 @@ export const defaultVegetables = [
     dateAdded: '2024-01-08',
   },
   {
-    id: 4, name: 'Baby Spinach', slug: 'baby-spinach', category: 'Leafy Greens',
+    id: 4, name: 'Baby Spinach', slug: 'baby-spinach', category: 'Leafy Greens', type: 'vegetable',
     price: 3.99, originalPrice: 4.99, stock: 18,
     image: 'https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=500',
     gallery: ['https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=500', 'https://images.unsplash.com/photo-1574316071802-0d684efa7bf5?w=500'],
@@ -49,7 +56,7 @@ export const defaultVegetables = [
     dateAdded: '2024-01-10',
   },
   {
-    id: 5, name: 'Shiitake Mushrooms', slug: 'shiitake-mushrooms', category: 'Mushrooms',
+    id: 5, name: 'Shiitake Mushrooms', slug: 'shiitake-mushrooms', category: 'Mushrooms', type: 'vegetable',
     price: 5.99, originalPrice: 7.49, stock: 8,
     image: 'https://images.unsplash.com/photo-1504545102780-26774c1bb073?w=500',
     gallery: ['https://images.unsplash.com/photo-1504545102780-26774c1bb073?w=500', 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=500'],
@@ -59,7 +66,7 @@ export const defaultVegetables = [
     dateAdded: '2024-01-12',
   },
   {
-    id: 6, name: 'Red Bell Peppers', slug: 'red-bell-peppers', category: 'Fruiting Vegetables',
+    id: 6, name: 'Red Bell Peppers', slug: 'red-bell-peppers', category: 'Fruiting Vegetables', type: 'vegetable',
     price: 3.79, originalPrice: 4.49, stock: 25,
     image: 'https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?w=500',
     gallery: ['https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?w=500', 'https://images.unsplash.com/photo-1592838064575-70ed626d3a0e?w=500'],
@@ -69,7 +76,7 @@ export const defaultVegetables = [
     dateAdded: '2024-01-15',     
   },     
   {    
-    id: 7, name: 'Organic Kale', slug: 'organic-kale', category: 'Leafy Greens',
+    id: 7, name: 'Organic Kale', slug: 'organic-kale', category: 'Leafy Greens', type: 'vegetable',
     price: 3.29, originalPrice: 3.99, stock: 20,
     image: 'https://images.unsplash.com/photo-1524179091875-bf99a9a6af57?w=500',
     gallery: ['https://images.unsplash.com/photo-1524179091875-bf99a9a6af57?w=500'],
@@ -79,7 +86,7 @@ export const defaultVegetables = [
     dateAdded: '2024-01-18',
   },
   {
-    id: 8, name: 'Sweet Potatoes', slug: 'sweet-potatoes', category: 'Root Vegetables',
+    id: 8, name: 'Sweet Potatoes', slug: 'sweet-potatoes', category: 'Root Vegetables', type: 'vegetable',
     price: 2.49, originalPrice: 2.99, stock: 35,
     image: 'https://images.unsplash.com/photo-1590165482129-1b8b27698780?w=500',
     gallery: ['https://images.unsplash.com/photo-1590165482129-1b8b27698780?w=500'],
@@ -89,7 +96,7 @@ export const defaultVegetables = [
     dateAdded: '2024-01-20',        
   },        
   {                 
-    id: 9, name: 'Cauliflower Head', slug: 'cauliflower-head', category: 'Cruciferous',
+    id: 9, name: 'Cauliflower Head', slug: 'cauliflower-head', category: 'Cruciferous', type: 'vegetable',
     price: 3.99, originalPrice: 4.79, stock: 12,
     image: 'https://images.unsplash.com/photo-1613743983303-b3e89f8a2b80?w=500',
     gallery: ['https://images.unsplash.com/photo-1613743983303-b3e89f8a2b80?w=500'],
@@ -99,7 +106,7 @@ export const defaultVegetables = [
     dateAdded: '2024-01-22',
   },
   {
-    id: 10, name: 'Portobello Mushrooms', slug: 'portobello-mushrooms', category: 'Mushrooms',
+    id: 10, name: 'Portobello Mushrooms', slug: 'portobello-mushrooms', category: 'Mushrooms', type: 'vegetable',
     price: 4.99, originalPrice: 5.99, stock: 10,
     image: 'https://images.unsplash.com/photo-1552825897-bb05e1366c84?w=500',
     gallery: ['https://images.unsplash.com/photo-1552825897-bb05e1366c84?w=500'],
@@ -109,20 +116,126 @@ export const defaultVegetables = [
     dateAdded: '2024-01-25',
   },  
 ];
-   
+
+export const defaultFruits = [
+  {
+    id: 101, name: 'Navel Oranges', slug: 'navel-oranges', category: 'Citrus Fruits', type: 'fruit',
+    price: 3.49, originalPrice: 4.29, stock: 40,
+    image: 'https://images.unsplash.com/photo-1611080626919-7cf5a9dbab12?w=500',
+    gallery: ['https://images.unsplash.com/photo-1611080626919-7cf5a9dbab12?w=500'],
+    description: 'Juicy and sweet navel oranges packed with vitamin C. Perfect for juicing or eating fresh.',
+    nutrition: { calories: 62, carbs: '15g', protein: '1.2g', fat: '0.2g', fiber: '3.1g' },
+    organic: true, rating: 4.8, reviews: 210, discount: 19, tags: ['vitamin-c', 'organic', 'juicy'],
+    dateAdded: '2024-02-01',
+  },
+  {
+    id: 102, name: 'Alphonso Mangoes', slug: 'alphonso-mangoes', category: 'Tropical Fruits', type: 'fruit',
+    price: 6.99, originalPrice: 8.49, stock: 20,
+    image: 'https://images.unsplash.com/photo-1553279768-865429fa0078?w=500',
+    gallery: ['https://images.unsplash.com/photo-1553279768-865429fa0078?w=500'],
+    description: 'The king of mangoes — creamy, saffron-hued Alphonso mangoes with a rich tropical aroma.',
+    nutrition: { calories: 70, carbs: '17g', protein: '0.8g', fat: '0.4g', fiber: '1.8g' },
+    organic: false, rating: 4.9, reviews: 178, discount: 18, tags: ['premium', 'tropical', 'seasonal'],
+    dateAdded: '2024-02-03',
+  },
+  {
+    id: 103, name: 'Fresh Strawberries', slug: 'fresh-strawberries', category: 'Berries', type: 'fruit',
+    price: 4.49, originalPrice: 5.49, stock: 25,
+    image: 'https://images.unsplash.com/photo-1464965911861-746a04b4bca6?w=500',
+    gallery: ['https://images.unsplash.com/photo-1464965911861-746a04b4bca6?w=500'],
+    description: 'Plump, ripe strawberries bursting with natural sweetness. Great for smoothies, desserts or snacking.',
+    nutrition: { calories: 33, carbs: '8g', protein: '0.7g', fat: '0.3g', fiber: '2.0g' },
+    organic: true, rating: 4.7, reviews: 145, discount: 18, tags: ['organic', 'berries', 'antioxidant'],
+    dateAdded: '2024-02-05',
+  },
+  {
+    id: 104, name: 'Seedless Watermelon', slug: 'seedless-watermelon', category: 'Melons & Gourds', type: 'fruit',
+    price: 5.99, originalPrice: 6.99, stock: 15,
+    image: 'https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=500',
+    gallery: ['https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=500'],
+    description: 'Refreshing seedless watermelon — hydrating, sweet and perfect for summer snacking.',
+    nutrition: { calories: 30, carbs: '7.6g', protein: '0.6g', fat: '0.2g', fiber: '0.4g' },
+    organic: false, rating: 4.6, reviews: 88, discount: 14, tags: ['hydrating', 'summer', 'seedless'],
+    dateAdded: '2024-02-07',
+  },
+  {
+    id: 105, name: 'Cavendish Bananas', slug: 'cavendish-bananas', category: 'Tropical Fruits', type: 'fruit',
+    price: 1.99, originalPrice: 2.49, stock: 60,
+    image: 'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=500',
+    gallery: ['https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=500'],
+    description: 'Classic Cavendish bananas — naturally sweet, energy-boosting, and great in smoothies or as-is.',
+    nutrition: { calories: 89, carbs: '23g', protein: '1.1g', fat: '0.3g', fiber: '2.6g' },
+    organic: false, rating: 4.5, reviews: 320, discount: 20, tags: ['energy', 'potassium', 'everyday'],
+    dateAdded: '2024-02-08',
+  },
+  {
+    id: 106, name: 'Golden Pineapple', slug: 'golden-pineapple', category: 'Tropical Fruits', type: 'fruit',
+    price: 4.99, originalPrice: 5.99, stock: 18,
+    image: 'https://images.unsplash.com/photo-1540460116624-6e85c571f6e0?w=500',
+    gallery: ['https://images.unsplash.com/photo-1540460116624-6e85c571f6e0?w=500'],
+    description: 'Sweet golden pineapple with low acidity and a honey-like flavour. Great fresh or in dishes.',
+    nutrition: { calories: 50, carbs: '13g', protein: '0.5g', fat: '0.1g', fiber: '1.4g' },
+    organic: true, rating: 4.7, reviews: 102, discount: 17, tags: ['organic', 'tropical', 'enzyme-rich'],
+    dateAdded: '2024-02-10',
+  },
+  {
+    id: 107, name: 'Red Seedless Grapes', slug: 'red-seedless-grapes', category: 'Berries', type: 'fruit',
+    price: 5.49, originalPrice: 6.49, stock: 22,
+    image: 'https://images.unsplash.com/photo-1537640538966-79f369143f8f?w=500',
+    gallery: ['https://images.unsplash.com/photo-1537640538966-79f369143f8f?w=500'],
+    description: 'Crisp, sweet red seedless grapes. A great snack for all ages — full of antioxidants.',
+    nutrition: { calories: 69, carbs: '18g', protein: '0.7g', fat: '0.2g', fiber: '0.9g' },
+    organic: false, rating: 4.6, reviews: 134, discount: 15, tags: ['seedless', 'snack', 'antioxidant'],
+    dateAdded: '2024-02-12',
+  },
+  {
+    id: 108, name: 'Yellow Peaches', slug: 'yellow-peaches', category: 'Stone Fruits', type: 'fruit',
+    price: 3.99, originalPrice: 4.79, stock: 12,
+    image: 'https://images.unsplash.com/photo-1595743825637-513f02522b7a?w=500',
+    gallery: ['https://images.unsplash.com/photo-1595743825637-513f02522b7a?w=500'],
+    description: 'Sun-kissed yellow peaches with a juicy, aromatic flesh. Perfect for desserts and preserves.',
+    nutrition: { calories: 39, carbs: '10g', protein: '0.9g', fat: '0.3g', fiber: '1.5g' },
+    organic: true, rating: 4.8, reviews: 76, discount: 17, tags: ['organic', 'stone-fruit', 'aromatic'],
+    dateAdded: '2024-02-14',
+  },
+  {
+    id: 109, name: 'Wild Blueberries', slug: 'wild-blueberries', category: 'Berries', type: 'fruit',
+    price: 5.99, originalPrice: 7.29, stock: 16,
+    image: 'https://images.unsplash.com/photo-1498557850523-fd3d118b962e?w=500',
+    gallery: ['https://images.unsplash.com/photo-1498557850523-fd3d118b962e?w=500'],
+    description: 'Tiny but mighty wild blueberries — intense flavour and packed with brain-boosting antioxidants.',
+    nutrition: { calories: 57, carbs: '14g', protein: '0.7g', fat: '0.3g', fiber: '2.4g' },
+    organic: true, rating: 4.9, reviews: 193, discount: 18, tags: ['organic', 'superfood', 'brain-health'],
+    dateAdded: '2024-02-16',
+  },
+  {
+    id: 110, name: 'Green Kiwi', slug: 'green-kiwi', category: 'Tropical Fruits', type: 'fruit',
+    price: 3.29, originalPrice: 3.99, stock: 30,
+    image: 'https://images.unsplash.com/photo-1618897996318-5a901fa6ca71?w=500',
+    gallery: ['https://images.unsplash.com/photo-1618897996318-5a901fa6ca71?w=500'],
+    description: 'Tangy-sweet green kiwis loaded with vitamin C and folate. Eat the skin too for extra fibre!',
+    nutrition: { calories: 61, carbs: '15g', protein: '1.1g', fat: '0.5g', fiber: '3.0g' },
+    organic: false, rating: 4.5, reviews: 87, discount: 18, tags: ['vitamin-c', 'tangy', 'folate'],
+    dateAdded: '2024-02-18',
+  },
+];
+
 export const defaultReviews = [
   { id: 1, productId: 1, userName: 'Sarah Johnson', userAvatar: 'https://i.pravatar.cc/150?img=1', rating: 5, date: '2024-01-15', title: 'Best carrots ever!', comment: 'These organic carrots are incredibly fresh and sweet. My kids love them!', helpful: 24 },
   { id: 2, productId: 1, userName: 'Mike Chen', userAvatar: 'https://i.pravatar.cc/150?img=3', rating: 4, date: '2024-02-01', title: 'Great quality', comment: 'Very fresh and crunchy. Slightly smaller than expected but taste is amazing.', helpful: 12 },
   { id: 3, productId: 2, userName: 'Emily Davis', userAvatar: 'https://i.pravatar.cc/150?img=5', rating: 5, date: '2024-01-20', title: 'Perfect broccoli', comment: "The freshest broccoli I've found. Green and firm, no yellowing at all.", helpful: 18 },
   { id: 4, productId: 3, userName: 'James Wilson', userAvatar: 'https://i.pravatar.cc/150?img=7', rating: 4, date: '2024-02-05', title: 'Great for sauce', comment: 'Made an amazing marinara with these Roma tomatoes. Very flavorful.', helpful: 9 },
   { id: 5, productId: 4, userName: 'Lisa Park', userAvatar: 'https://i.pravatar.cc/150?img=9', rating: 5, date: '2024-01-25', title: 'So convenient', comment: 'Pre-washed and ready to eat. I use it in my morning smoothies every day.', helpful: 31 },
-  { id: 6, productId: 5, userName: 'Tom Baker', userAvatar: 'https://i.pravatar.cc/150?img=11', rating: 5, date: '2024-02-10', title: 'Restaurant quality', comment: 'These shiitake mushrooms are top-notch. Incredible flavor in my ramen.', helpful: 15 },
-  { id: 7, productId: 6, userName: 'Anna Lee', userAvatar: 'https://i.pravatar.cc/150?img=13', rating: 4, date: '2024-01-30', title: 'Crunchy and sweet', comment: 'Great color and taste. Perfect for snacking and salads.', helpful: 7 },
-  { id: 8, productId: 8, userName: 'David Kim', userAvatar: 'https://i.pravatar.cc/150?img=15', rating: 5, date: '2024-02-08', title: 'Best sweet potatoes', comment: 'Made the best sweet potato fries with these. So naturally sweet!', helpful: 22 },
+  { id: 6, productId: 102, userName: 'Priya Sharma', userAvatar: 'https://i.pravatar.cc/150?img=11', rating: 5, date: '2024-02-12', title: 'King of mangoes!', comment: 'Absolutely divine Alphonso mangoes. Sweet, creamy and so aromatic. Worth every rupee!', helpful: 45 },
+  { id: 7, productId: 103, userName: 'Anna Lee', userAvatar: 'https://i.pravatar.cc/150?img=13', rating: 4, date: '2024-01-30', title: 'Super fresh berries', comment: 'Perfect strawberries — plump, sweet and not a single mushy one in the pack.', helpful: 27 },
+  { id: 8, productId: 109, userName: 'David Kim', userAvatar: 'https://i.pravatar.cc/150?img=15', rating: 5, date: '2024-02-08', title: 'Best blueberries', comment: 'Wild blueberries with incredible depth of flavour. My morning oats have never tasted better!', helpful: 38 },
 ];
 
 export const testimonials = [
-  { name: 'Maria Garcia', avatar: 'https://i.pravatar.cc/150?img=20', text: 'FreshVeg has completely changed how I shop for vegetables. Everything is so fresh!', role: 'Home Chef' },
+  { name: 'Maria Garcia', avatar: 'https://i.pravatar.cc/150?img=20', text: 'Frutify has completely changed how I shop. Fresh fruits and veggies delivered right to my door!', role: 'Home Chef' },
   { name: 'Robert Smith', avatar: 'https://i.pravatar.cc/150?img=22', text: 'The organic selection is amazing. I love knowing exactly where my food comes from.', role: 'Health Enthusiast' },
-  { name: 'Jennifer Lee', avatar: 'https://i.pravatar.cc/150?img=24', text: 'Fast delivery and the quality is always top-notch. My go-to for weekly veggies!', role: 'Busy Mom' },
-];               
+  { name: 'Jennifer Lee', avatar: 'https://i.pravatar.cc/150?img=24', text: 'Fast delivery and the quality is always top-notch. My go-to for weekly fruits and veggies!', role: 'Busy Mom' },
+];
+
+// Combined default products for initial seeding
+export const defaultProducts = [...defaultVegetables, ...defaultFruits];

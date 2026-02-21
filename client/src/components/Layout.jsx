@@ -45,7 +45,7 @@ export default function Layout({ children }) {
       }`}>
         <div className="container flex h-16 items-center justify-between">
           <Link to="/" className="flex items-center gap-2 font-heading text-xl font-bold text-primary transition-transform duration-300 hover:scale-105">
-            <Leaf className="h-7 w-7" /> FreshVeg
+            <Leaf className="h-7 w-7" /> Frutify
           </Link>
 
           {/* Desktop nav */}

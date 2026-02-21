@@ -1,4 +1,4 @@
-import { defaultVegetables, defaultReviews } from '@/data/vegetables';
+import { defaultProducts, defaultReviews } from '@/data/vegetables';
 
 const KEYS = {
   PRODUCTS: 'freshveg_products',
@@ -33,9 +33,22 @@ export function addLoyaltyPoints(amount) {
 
 export function getProducts() {  
   const stored = localStorage.getItem(KEYS.PRODUCTS);   
-  if (stored) return JSON.parse(stored);   
-  localStorage.setItem(KEYS.PRODUCTS, JSON.stringify(defaultVegetables));   
-  return defaultVegetables;   
+  if (stored) {
+    const parsed = JSON.parse(stored);
+    // Migration: if existing data has no fruits (id >= 101), merge them in
+    const hasFruits = parsed.some(p => p.id >= 101);
+    if (!hasFruits) {
+      const merged = [
+        ...parsed,
+        ...defaultProducts.filter(p => p.id >= 101),
+      ];
+      localStorage.setItem(KEYS.PRODUCTS, JSON.stringify(merged));
+      return merged;
+    }
+    return parsed;
+  }
+  localStorage.setItem(KEYS.PRODUCTS, JSON.stringify(defaultProducts));   
+  return defaultProducts;   
 }
    
 export function saveProducts(products) {
@@ -66,4 +79,15 @@ export function getUser() {
 export function saveUser(user) {       
   if (user) localStorage.setItem(KEYS.USER, JSON.stringify(user));      
   else localStorage.removeItem(KEYS.USER);       
+}
+
+export function getOrders() {
+  const stored = localStorage.getItem(KEYS.ORDERS);
+  return stored ? JSON.parse(stored) : [];
+}
+
+export function saveOrder(order) {
+  const orders = getOrders();
+  orders.unshift(order);
+  localStorage.setItem(KEYS.ORDERS, JSON.stringify(orders));
 }                                       

@@ -33,7 +33,7 @@ export default function Index() {
   const newArrivals = [...products].sort((a, b) => new Date(b.dateAdded).getTime() - new Date(a.dateAdded).getTime()).slice(0, 4);
 
   const features = [
-    { icon: Leaf, title: '100% Organic', desc: 'Certified organic vegetables from trusted farms' },
+    { icon: Leaf, title: '100% Organic', desc: 'Certified organic fruits &amp; vegetables from trusted farms' },
     { icon: Truck, title: 'Free Delivery', desc: 'Free shipping on all orders, no minimum' },
     { icon: Shield, title: 'Quality Guarantee', desc: 'Not satisfied? Full refund, no questions asked' },
     { icon: Award, title: 'Premium Quality', desc: 'Hand-picked for freshness every single day' },
@@ -47,7 +47,7 @@ export default function Index() {
   ];
 
   const steps = [
-    { step: 1, title: 'Browse Products', desc: 'Explore our wide range of fresh organic vegetables', icon: Sprout },
+    { step: 1, title: 'Browse Products', desc: 'Explore our wide range of fresh organic fruits and vegetables', icon: Sprout },
     { step: 2, title: 'Add to Cart', desc: 'Select your favorites and add them to your cart', icon: ShoppingBag },
     { step: 3, title: 'Quick Checkout', desc: 'Pay securely with card or online payment', icon: CheckCircle },
     { step: 4, title: 'Fast Delivery', desc: 'Get your order delivered fresh to your door', icon: Package },
@@ -94,10 +94,10 @@ export default function Index() {
               Farm Fresh &amp; Organic
             </div>
             <h1 className="font-heading text-4xl md:text-6xl lg:text-7xl font-extrabold leading-[1.1] text-white">
-              Farm Fresh <span className="text-primary">Vegetables</span> Delivered to You
+              Fresh <span className="text-primary">Fruits &amp; Veggies</span> Delivered to You
             </h1>
             <p className="text-lg text-white/70 max-w-lg leading-relaxed">
-              Discover the finest organic vegetables sourced directly from local farms.
+              Discover the finest organic fruits and vegetables sourced directly from local farms.
               Fresh, healthy, and delivered right to your doorstep.
             </p>
             <div className="flex flex-wrap gap-3">
@@ -152,7 +152,7 @@ export default function Index() {
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div className="space-y-1">
               <h2 className="font-heading text-3xl font-bold">Featured Products</h2>
-              <p className="text-muted-foreground">Our top-rated farm-fresh vegetables</p>
+              <p className="text-muted-foreground">Our top-rated farm-fresh fruits &amp; vegetables</p>
             </div>
             <Button asChild variant="outline" className="rounded-full">
               <Link to="/products">View All <ArrowRight className="h-4 w-4 ml-1" /></Link>
@@ -171,7 +171,7 @@ export default function Index() {
         <div className="container space-y-12">
           <div className="text-center space-y-2">
             <h2 className="font-heading text-3xl font-bold">How It Works</h2>
-            <p className="text-muted-foreground max-w-md mx-auto">Get fresh vegetables in 4 simple steps</p>
+              <p className="text-muted-foreground max-w-md mx-auto">Get fresh fruits &amp; vegetables in 4 simple steps</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {steps.map((s) => (
@@ -198,11 +198,11 @@ export default function Index() {
         <div className="container space-y-8">
           <div className="text-center space-y-2">
             <h2 className="font-heading text-3xl font-bold">Browse by Category</h2>
-            <p className="text-muted-foreground">Find exactly what you're looking for</p>
+            <p className="text-muted-foreground">Browse fruits, veggies &amp; more by category</p>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-            {categories.map(c => (
-              <Link key={c.id} to={`/products${c.name !== 'All Vegetables' ? `?category=${encodeURIComponent(c.name)}` : ''}`}
+            {categories.filter(c => c.type !== 'all').map(c => (
+              <Link key={c.id} to={`/products?category=${encodeURIComponent(c.name)}`}
                 className="flex flex-col items-center gap-3 p-6 rounded-2xl border bg-card hover:shadow-lg hover:border-primary/30 hover:-translate-y-1 transition-all duration-300 group">
                 <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center group-hover:bg-primary transition-colors duration-300">
                   <CategoryIcon name={c.icon} className="h-6 w-6 text-primary group-hover:text-primary-foreground transition-colors duration-300" />
@@ -298,7 +298,7 @@ export default function Index() {
         <div className="container text-center space-y-6">
           <h2 className="font-heading text-3xl md:text-4xl font-bold">Ready to Eat Fresh?</h2>
           <p className="text-primary-foreground/80 max-w-md mx-auto">
-            Join thousands of happy customers enjoying farm-fresh vegetables delivered daily.
+            Join thousands of happy customers enjoying farm-fresh fruits &amp; vegetables delivered daily.
           </p>
           <Button asChild size="lg" variant="secondary" className="rounded-full px-8 shadow-lg">
             <Link to="/products">Start Shopping <ArrowRight className="h-4 w-4 ml-1" /></Link>

@@ -5,17 +5,9 @@ import { Badge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
 import { Link } from 'react-router-dom';
 import { formatPrice } from '../lib/utils';
+import { getOrders, saveOrder } from '../lib/storage';
 
-function getOrders() {
-  const stored = localStorage.getItem('freshveg_orders');
-  return stored ? JSON.parse(stored) : [];
-}
-
-export function saveOrder(order) {
-  const orders = getOrders();
-  orders.unshift(order);
-  localStorage.setItem('freshveg_orders', JSON.stringify(orders));
-}
+export { saveOrder };
 
 export default function OrderHistory() {
   const [orders, setOrders] = useState([]);
