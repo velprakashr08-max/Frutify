@@ -11,7 +11,7 @@ import CheckoutModal from '@/components/CheckoutModal';
 export default function CartSidebar() {
   const { items, removeItem, updateQty, clearCart, showCart, setShowCart } = useCart();
   const { products } = useProducts();
-  const [showCheckout, setShowCheckout] = useState(false);
+  const [showCheckout, setShowCheckout] = useState(false);   
 
   const cartProducts = items.map(ci => {
     const product = products.find(p => p.id === ci.productId);

@@ -11,7 +11,6 @@ export default function Wishlist() {
   const { wishlist } = useWishlist();
   const { products } = useProducts();
   const [quickView, setQuickView] = useState(null);
-
   const wishlistProducts = products.filter(p => wishlist.includes(p.id));
 
   if (wishlistProducts.length === 0) {
@@ -30,15 +29,24 @@ export default function Wishlist() {
   }
 
   return (
-    <div className="py-8">
+    <div className="min-h-screen bg-gray-50 py-8">
       <div className="container space-y-6">
-        <div>
-          <h1 className="font-heading text-3xl font-bold">My Wishlist</h1>
-          <p className="text-muted-foreground">{wishlistProducts.length} saved items</p>
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="font-heading text-2xl font-bold text-gray-900">My Wishlist</h1>
+            <p className="text-sm text-gray-500 mt-0.5">{wishlistProducts.length} saved item{wishlistProducts.length !== 1 ? 's' : ''}</p>
+          </div>
+          <span className="inline-flex items-center gap-1.5 bg-red-50 text-red-500 border border-red-100 text-xs font-semibold px-3 py-1.5 rounded-full">
+            <Heart className="h-3.5 w-3.5 fill-red-400 text-red-400" />
+            {wishlistProducts.length}
+          </span>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+
+        {/* Grid */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
           {wishlistProducts.map(p => (
-            <ProductCard key={p.id} product={p} onQuickView={setQuickView} />
+            <ProductCard key={p.id} product={p} onQuickView={setQuickView} compact />
           ))}
         </div>
       </div>

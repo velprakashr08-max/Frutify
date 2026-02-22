@@ -8,10 +8,9 @@ import { formatPrice } from '../lib/utils';
 import { getOrders, saveOrder } from '../lib/storage';
 
 export { saveOrder };
-
-export default function OrderHistory() {
+    
+export default function OrderHistory() {     
   const [orders, setOrders] = useState([]);
-
   useEffect(() => {
     setOrders(getOrders());
   }, []);
@@ -29,7 +28,7 @@ export default function OrderHistory() {
         </div>
       </div>
     );
-  }
+  }   
 
   return (
     <div className="py-8">

@@ -1,35 +1,41 @@
-﻿import { useMemo } from "react";
-import { Navigate } from "react-router-dom";
+﻿import { useState, useMemo } from "react";
+import { Navigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useProducts } from "@/contexts/ProductContext";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Badge } from "@/components/ui/Badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/Tabs";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/Table";
 import {
-  Store, Package, Tag, AlertTriangle, CheckCircle, Leaf, Star,
-  BarChart3, TrendingUp, IndianRupee, Apple, ShoppingBag,
+  AlertTriangle, CheckCircle, Leaf, Star,
+  Apple, TrendingUp, Search, ShoppingBag,
+  Tag, IndianRupee, ArrowUpRight,
 } from "lucide-react";
 import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, Legend,
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
+  ResponsiveContainer, Cell,
 } from "recharts";
-import CategoryIcon from "@/components/CategoryIcon";
-import { categories } from "@/data/vegetables";
 import { formatPrice } from "@/lib/utils";
 
-const COLORS = [
-  "hsl(145,63%,42%)", "hsl(204,70%,53%)", "hsl(280,60%,55%)",
-  "hsl(45,90%,50%)",  "hsl(0,79%,58%)",   "hsl(170,50%,45%)",
-  "hsl(25,90%,55%)",  "hsl(320,60%,55%)",  "hsl(160,60%,45%)",
-  "hsl(240,60%,55%)",
+const BAR_COLORS = [
+  "#16a34a","#15803d","#166534","#4ade80","#22c55e",
+  "#86efac","#bbf7d0","#dcfce7","#d1fae5","#a7f3d0",
 ];
 
-export default function ManagerDashboard() {
-  const { user }      = useAuth();
-  const { products }  = useProducts();
+const CustomTooltip = ({ active, payload, label }) => {
+  if (!active || !payload?.length) return null;
+  return (
+    <div className="bg-white border border-gray-100 shadow-lg rounded-xl px-4 py-3 text-xs">
+      <p className="font-semibold text-gray-700 mb-1">{label}</p>
+      <p className="text-green-600 font-bold">{formatPrice(payload[0].value)}</p>
+    </div>
+  );
+};
 
-  const fruits = useMemo(() => products.filter(p => p.type === "fruit"),     [products]);
+export default function ManagerDashboard() {
+  const { user }     = useAuth();
+  const { products } = useProducts();
+  const [searchParams] = useSearchParams();
+  const activeTab      = searchParams.get("tab") || "overview";
+  const [search, setSearch] = useState("");
+
+  const fruits  = useMemo(() => products.filter(p => p.type === "fruit"),     [products]);
   const veggies = useMemo(() => products.filter(p => p.type === "vegetable"), [products]);
 
   const categoryData = useMemo(() => {
@@ -39,229 +45,290 @@ export default function ManagerDashboard() {
       map[p.category].count++;
       map[p.category].value += p.price * p.stock;
     });
-    return Object.entries(map).map(([name, d]) => ({ name, count: d.count, value: Math.round(d.value) }));
+    return Object.entries(map)
+      .map(([name, d]) => ({
+        name: name.length > 12 ? name.slice(0, 12) + "..." : name,
+        fullName: name,
+        count: d.count,
+        value: Math.round(d.value),
+      }))
+      .sort((a, b) => b.value - a.value);
   }, [products]);
-
-  const typeBreakdown = useMemo(() => [
-    { name: "Fruits",     value: fruits.length,  fill: "hsl(25,90%,55%)"  },
-    { name: "Vegetables", value: veggies.length, fill: "hsl(145,63%,42%)" },
-  ], [fruits, veggies]);
 
   if (user?.role !== "manager") return <Navigate to="/" replace />;
 
-  const totalValue  = products.reduce((s, p) => s + p.price * p.stock, 0);
-  const lowStock    = products.filter(p => p.stock <= 5).length;
-  const organic     = products.filter(p => p.organic).length;
-  const discounted  = products.filter(p => p.discount > 0).length;
-  const avgRating   = products.length
+  const totalValue = products.reduce((s, p) => s + p.price * p.stock, 0);
+  const lowStock   = products.filter(p => p.stock <= 5).length;
+  const outOfStock = products.filter(p => p.stock === 0).length;
+  const organic    = products.filter(p => p.organic).length;
+  const discounted = products.filter(p => p.discount > 0).length;
+  const avgRating  = products.length
     ? (products.reduce((s, p) => s + p.rating, 0) / products.length).toFixed(1)
     : "0";
+  const maxCatValue = categoryData[0]?.value || 1;
 
-  const stats = [
-    { icon: ShoppingBag,  label: "Total Products",   value: products.length,      color: "text-primary",    bg: "bg-primary/10 border-primary/20"     },
-    { icon: IndianRupee,  label: "Inventory Value",  value: formatPrice(totalValue), color: "text-secondary", bg: "bg-secondary/10 border-secondary/20" },
-    { icon: AlertTriangle,label: "Low Stock",        value: lowStock,             color: "text-accent",     bg: "bg-accent/10 border-accent/20"       },
-    { icon: Tag,          label: "On Discount",      value: discounted,           color: "text-purple-600", bg: "bg-purple-50 border-purple-200"      },
-    { icon: Apple,        label: "Fruit SKUs",       value: fruits.length,        color: "text-orange-600", bg: "bg-orange-50 border-orange-200"      },
-    { icon: Leaf,         label: "Vegetable SKUs",   value: veggies.length,       color: "text-emerald-600",bg: "bg-emerald-50 border-emerald-200"    },
+  const kpis = [
+    { label: "Total Products",   value: products.length,         sub: `${fruits.length} fruits - ${veggies.length} veggies`, icon: ShoppingBag,   color: "text-blue-600",   bg: "bg-blue-50",   border: "border-blue-100"   },
+    { label: "Inventory Value",  value: formatPrice(totalValue), sub: `${organic} organic items`,                            icon: IndianRupee,   color: "text-green-600",  bg: "bg-green-50",  border: "border-green-100"  },
+    { label: "Avg Rating",       value: avgRating,               sub: "across all products",                                 icon: Star,          color: "text-amber-500",  bg: "bg-amber-50",  border: "border-amber-100", suffix: "star" },
+    { label: "Active Discounts", value: discounted,              sub: "promotional offers",                                  icon: Tag,           color: "text-purple-600", bg: "bg-purple-50", border: "border-purple-100" },
+    { label: "Need Attention",   value: lowStock,                sub: outOfStock > 0 ? `${outOfStock} out of stock` : "monitor closely", icon: AlertTriangle, color: lowStock > 0 ? "text-red-500" : "text-gray-400", bg: lowStock > 0 ? "bg-red-50" : "bg-gray-50", border: lowStock > 0 ? "border-red-100" : "border-gray-100", alert: true },
   ];
 
+  const filtered = useMemo(() =>
+    products.filter(p =>
+      p.name.toLowerCase().includes(search.toLowerCase()) ||
+      p.category.toLowerCase().includes(search.toLowerCase())
+    ),
+  [products, search]);
+
   return (
-    <div className="min-h-screen bg-muted/20 py-8">
-      <div className="container space-y-8">
+    <div className="p-6 space-y-6">
 
-        {/* Header */}
-        <div className="flex items-center gap-4">
-          <div className="w-14 h-14 rounded-2xl bg-purple-100 flex items-center justify-center shadow-sm">
-            <Store className="h-7 w-7 text-purple-600" />
-          </div>
-          <div>
-            <h1 className="font-heading text-3xl font-bold">Store Manager</h1>
-            <p className="text-muted-foreground text-sm mt-0.5">Product catalog analytics &amp; inventory insights</p>
-          </div>
-        </div>
-
-        {/* Stats Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          {stats.map((s, i) => (
-            <Card key={i} className={`border shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 ${s.bg}`}>
-              <CardContent className="flex flex-col items-center gap-2 pt-5 pb-4 text-center">
-                <div className="p-2.5 rounded-xl bg-white/70 shadow-sm">
-                  <s.icon className={`h-5 w-5 ${s.color}`} />
+      {/* OVERVIEW */}
+      {activeTab === "overview" && (
+        <>
+          {/* KPI Strip */}
+          <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+            {kpis.map((k, i) => {
+              const Icon = k.icon;
+              return (
+                <div key={i} className={`bg-white rounded-2xl border ${k.border} p-4 flex flex-col gap-3 hover:shadow-md transition-shadow`}>
+                  <div className="flex items-center justify-between">
+                    <div className={`p-2 rounded-xl ${k.bg}`}>
+                      <Icon className={`h-4 w-4 ${k.color}`} />
+                    </div>
+                    <ArrowUpRight className={`h-4 w-4 ${k.alert && k.value > 0 ? "text-red-400" : "text-gray-200"}`} />
+                  </div>
+                  <div>
+                    <p className={`text-2xl font-bold ${k.alert && k.value > 0 ? "text-red-600" : "text-gray-900"}`}>
+                      {k.value}{k.suffix && <span className="text-sm text-amber-400 ml-1">*</span>}
+                    </p>
+                    <p className="text-xs text-gray-400 font-medium mt-0.5">{k.label}</p>
+                    <p className="text-[11px] text-gray-300 mt-0.5 truncate">{k.sub}</p>
+                  </div>
                 </div>
-                <p className="text-2xl font-bold">{s.value}</p>
-                <p className="text-xs text-muted-foreground font-medium leading-snug">{s.label}</p>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+              );
+            })}
+          </div>
 
-        <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="rounded-full h-11 p-1 bg-muted/60 shadow-sm">
-            <TabsTrigger value="overview"  className="rounded-full gap-1.5 data-[state=active]:shadow-md"><BarChart3 className="h-4 w-4" /> Overview</TabsTrigger>
-            <TabsTrigger value="products"  className="rounded-full gap-1.5 data-[state=active]:shadow-md"><Package className="h-4 w-4" /> Products</TabsTrigger>
-          </TabsList>
-
-          {/* ── Overview Tab ── */}
-          <TabsContent value="overview" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-              {/* Category distribution */}
-              <Card className="lg:col-span-2">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-base font-heading flex items-center gap-2">
-                    <BarChart3 className="h-4 w-4 text-primary" /> Category Value Distribution
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ResponsiveContainer width="100%" height={260}>
-                    <BarChart data={categoryData} margin={{ top: 0, right: 0, left: 0, bottom: 40 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
-                      <XAxis dataKey="name" tick={{ fontSize: 10 }} angle={-35} textAnchor="end" interval={0} />
-                      <YAxis tick={{ fontSize: 11 }} tickFormatter={v => `₹${v}`} />
-                      <Tooltip formatter={v => [formatPrice(v), "Value"]} />
-                      <Bar dataKey="value" radius={[6, 6, 0, 0]}>
-                        {categoryData.map((_, i) => <Cell key={i} fill={COLORS[i % COLORS.length]} />)}
-                      </Bar>
-                    </BarChart>
-                  </ResponsiveContainer>
-                </CardContent>
-              </Card>
-
-              {/* Fruit vs Vegetable pie */}
-              <Card>
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-base font-heading flex items-center gap-2">
-                    <Tag className="h-4 w-4 text-secondary" /> Product Mix
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <ResponsiveContainer width="100%" height={260}>
-                    <PieChart>
-                      <Pie
-                        data={typeBreakdown}
-                        dataKey="value"
-                        nameKey="name"
-                        cx="50%"
-                        cy="45%"
-                        outerRadius={90}
-                        innerRadius={50}
-                        paddingAngle={4}
-                        label={({ name, value }) => `${value}`}
-                        labelLine={false}
-                      >
-                        {typeBreakdown.map((e, i) => <Cell key={i} fill={e.fill} />)}
-                      </Pie>
-                      <Legend />
-                      <Tooltip formatter={(v, n) => [`${v} products`, n]} />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </CardContent>
-              </Card>
+          {/* Chart + Quick Stats */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Bar chart */}
+            <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-100 p-5">
+              <div className="flex items-center justify-between mb-5">
+                <div>
+                  <p className="text-sm font-semibold text-gray-800">Inventory Value by Category</p>
+                  <p className="text-xs text-gray-400 mt-0.5">Stock value across all categories</p>
+                </div>
+                <span className="text-xs font-medium bg-green-50 text-green-600 px-3 py-1 rounded-full border border-green-100">
+                  {categoryData.length} categories
+                </span>
+              </div>
+              <ResponsiveContainer width="100%" height={220}>
+                <BarChart data={categoryData} margin={{ left: 0, right: 8, bottom: 28 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" vertical={false} />
+                  <XAxis dataKey="name" tick={{ fontSize: 10, fill: "#9ca3af" }} angle={-35} textAnchor="end" interval={0} axisLine={false} tickLine={false} />
+                  <YAxis tick={{ fontSize: 10, fill: "#9ca3af" }} tickFormatter={v => `Rs.${(v / 1000).toFixed(0)}k`} axisLine={false} tickLine={false} width={52} />
+                  <Tooltip content={<CustomTooltip />} cursor={{ fill: "#f0fdf4" }} />
+                  <Bar dataKey="value" radius={[6, 6, 0, 0]} maxBarSize={40}>
+                    {categoryData.map((_, idx) => (
+                      <Cell key={idx} fill={BAR_COLORS[idx % BAR_COLORS.length]} />
+                    ))}
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
             </div>
 
-            {/* Highlights row */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              {[
-                { icon: Leaf,     label: "Organic",     value: organic,      color: "text-primary",    bg: "bg-primary/5   border-primary/20"     },
-                { icon: Star,     label: "Avg Rating",  value: avgRating +" ★", color: "text-secondary",  bg: "bg-secondary/5 border-secondary/20"  },
-                { icon: CheckCircle, label: "Discounted", value: discounted,  color: "text-purple-600", bg: "bg-purple-50   border-purple-200"     },
-                { icon: AlertTriangle, label: "Low Stock", value: lowStock,   color: "text-accent",     bg: "bg-accent/5    border-accent/20"      },
-              ].map((m, i) => (
-                <Card key={i} className={`border ${m.bg}`}>
-                  <CardContent className="flex items-center gap-3 p-4">
-                    <m.icon className={`h-7 w-7 ${m.color} shrink-0`} />
-                    <div>
-                      <p className={`text-2xl font-bold ${m.color}`}>{m.value}</p>
-                      <p className="text-xs text-muted-foreground">{m.label}</p>
+            {/* Quick Stats */}
+            <div className="bg-white rounded-2xl border border-gray-100 p-5">
+              <p className="text-sm font-semibold text-gray-800 mb-4">Quick Breakdown</p>
+              <div className="space-y-3">
+                {[
+                  { label: "Fruits",     value: fruits.length,  pct: Math.round(fruits.length  / (products.length || 1) * 100), icon: Apple,         color: "text-orange-500",  bar: "bg-orange-400"  },
+                  { label: "Vegetables", value: veggies.length, pct: Math.round(veggies.length / (products.length || 1) * 100), icon: Leaf,          color: "text-emerald-600", bar: "bg-emerald-500" },
+                  { label: "Organic",    value: organic,        pct: Math.round(organic        / (products.length || 1) * 100), icon: CheckCircle,   color: "text-green-600",   bar: "bg-green-500"   },
+                  { label: "Discounted", value: discounted,     pct: Math.round(discounted     / (products.length || 1) * 100), icon: TrendingUp,    color: "text-blue-500",    bar: "bg-blue-400"    },
+                  { label: "Low Stock",  value: lowStock,       pct: Math.round(lowStock       / (products.length || 1) * 100), icon: AlertTriangle, color: lowStock > 0 ? "text-red-500" : "text-gray-300", bar: lowStock > 0 ? "bg-red-400" : "bg-gray-200" },
+                ].map((s, i) => {
+                  const Icon = s.icon;
+                  return (
+                    <div key={i}>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <span className="flex items-center gap-2 text-xs text-gray-600">
+                          <Icon className={`h-3.5 w-3.5 shrink-0 ${s.color}`} />
+                          {s.label}
+                        </span>
+                        <span className="text-xs font-bold text-gray-800">{s.value}</span>
+                      </div>
+                      <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                        <div className={`h-full rounded-full ${s.bar} transition-all`} style={{ width: `${s.pct}%` }} />
+                      </div>
                     </div>
-                  </CardContent>
-                </Card>
+                  );
+                })}
+              </div>
+
+              <div className="mt-5 pt-4 border-t border-gray-50">
+                <p className="text-xs text-gray-400 font-medium uppercase tracking-wide mb-3">Top 3 by Value</p>
+                {categoryData.slice(0, 3).map((c, i) => (
+                  <div key={i} className="flex items-center justify-between py-1.5">
+                    <div className="flex items-center gap-2">
+                      <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold text-white ${i === 0 ? "bg-green-500" : i === 1 ? "bg-green-400" : "bg-green-300"}`}>
+                        {i + 1}
+                      </span>
+                      <span className="text-xs text-gray-600">{c.fullName}</span>
+                    </div>
+                    <span className="text-xs font-semibold text-gray-800">{formatPrice(c.value)}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Category Breakdown */}
+          <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-50">
+              <div>
+                <p className="text-sm font-semibold text-gray-800">Category Breakdown</p>
+                <p className="text-xs text-gray-400 mt-0.5">Full breakdown with inventory values</p>
+              </div>
+              <span className="text-xs text-gray-400 bg-gray-50 px-2.5 py-1 rounded-full border border-gray-100">
+                {categoryData.length} categories
+              </span>
+            </div>
+            <div className="divide-y divide-gray-50">
+              {categoryData.map((c, i) => (
+                <div key={i} className="flex items-center px-6 py-3 hover:bg-gray-50/50 transition-colors">
+                  <div className="flex items-center gap-3 flex-1 min-w-0">
+                    <span className="w-6 h-6 rounded-lg bg-green-50 flex items-center justify-center text-[10px] font-bold text-green-600 shrink-0">
+                      {i + 1}
+                    </span>
+                    <span className="text-sm font-medium text-gray-800 truncate">{c.fullName}</span>
+                  </div>
+                  <span className="text-xs text-gray-400 w-16 text-center">{c.count} SKUs</span>
+                  <div className="flex items-center gap-3 w-44 justify-end">
+                    <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden max-w-20">
+                      <div className="h-full bg-green-500 rounded-full" style={{ width: `${Math.round(c.value / maxCatValue * 100)}%` }} />
+                    </div>
+                    <span className="text-sm font-semibold text-gray-800 w-20 text-right">{formatPrice(c.value)}</span>
+                  </div>
+                </div>
               ))}
             </div>
-          </TabsContent>
+          </div>
+        </>
+      )}
 
-          {/* ── Products Tab ── */}
-          <TabsContent value="products">
-            <Card>
-              <CardHeader>
-                <CardTitle className="font-heading flex items-center gap-2">
-                  <Package className="h-5 w-5 text-primary" /> Full Product Catalog
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="overflow-x-auto">
-                  <Table>
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>Product</TableHead>
-                        <TableHead>Type</TableHead>
-                        <TableHead>Category</TableHead>
-                        <TableHead>Price</TableHead>
-                        <TableHead>Discount</TableHead>
-                        <TableHead>Stock</TableHead>
-                        <TableHead>Organic</TableHead>
-                        <TableHead>Rating</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {products.map(p => (
-                        <TableRow key={p.id} className="hover:bg-muted/30">
-                          <TableCell>
-                            <div className="flex items-center gap-2">
-                              <img src={p.image} alt={p.name} className="w-9 h-9 rounded-lg object-cover border" />
-                              <span className="font-medium text-sm">{p.name}</span>
-                            </div>
-                          </TableCell>
-                          <TableCell>
-                            <Badge
-                              variant="outline"
-                              className={p.type === "fruit" ? "border-orange-300 text-orange-600 bg-orange-50" : "border-emerald-300 text-emerald-700 bg-emerald-50"}
-                            >
-                              {p.type === "fruit" ? <Apple className="h-3 w-3 mr-1" /> : <Leaf className="h-3 w-3 mr-1" />}
-                              {p.type === "fruit" ? "Fruit" : "Vegetable"}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>
-                            <Badge variant="outline" className="gap-1 text-xs">
-                              <CategoryIcon name={categories.find(c => c.name === p.category)?.icon || "leaf"} className="h-3 w-3" />
-                              {p.category}
-                            </Badge>
-                          </TableCell>
-                          <TableCell className="font-semibold">{formatPrice(p.price)}</TableCell>
-                          <TableCell>
-                            {p.discount > 0
-                              ? <Badge variant="outline" className="text-accent border-accent/30">{p.discount}% off</Badge>
-                              : <span className="text-muted-foreground/40 text-xs">—</span>
-                            }
-                          </TableCell>
-                          <TableCell>
-                            <span className={`flex items-center gap-1 text-sm font-medium ${p.stock <= 5 ? "text-accent" : ""}`}>
-                              {p.stock <= 5 && <AlertTriangle className="h-3 w-3" />}
-                              {p.stock}
-                            </span>
-                          </TableCell>
-                          <TableCell>
-                            {p.organic
-                              ? <CheckCircle className="h-4 w-4 text-primary" />
-                              : <span className="text-muted-foreground/30 text-xs">—</span>
-                            }
-                          </TableCell>
-                          <TableCell>
-                            <span className="flex items-center gap-1 text-sm">
-                              <Star className="h-3.5 w-3.5 fill-amber-400 text-amber-400" /> {p.rating}
-                            </span>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-        </Tabs>
-      </div>
+      {/* CATALOG */}
+      {activeTab === "catalog" && (
+        <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+          {/* Header */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-6 py-4 border-b border-gray-100">
+            <div>
+              <p className="text-sm font-semibold text-gray-800">Product Catalog</p>
+              <p className="text-xs text-gray-400 mt-0.5">{filtered.length} of {products.length} products</p>
+            </div>
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-gray-400 pointer-events-none" />
+              <input
+                placeholder="Search products or category..."
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                className="pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-400 w-56 transition"
+              />
+            </div>
+          </div>
+
+          {/* Table */}
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm min-w-[700px]">
+              <thead>
+                <tr className="bg-gray-50 border-b border-gray-100">
+                  <th className="text-left text-[11px] font-semibold text-gray-400 uppercase tracking-wider px-6 py-3 w-64">Product</th>
+                  <th className="text-left text-[11px] font-semibold text-gray-400 uppercase tracking-wider px-4 py-3 w-36">Category</th>
+                  <th className="text-left text-[11px] font-semibold text-gray-400 uppercase tracking-wider px-4 py-3 w-24">Type</th>
+                  <th className="text-right text-[11px] font-semibold text-gray-400 uppercase tracking-wider px-4 py-3 w-28">Price</th>
+                  <th className="text-center text-[11px] font-semibold text-gray-400 uppercase tracking-wider px-4 py-3 w-24">Discount</th>
+                  <th className="text-center text-[11px] font-semibold text-gray-400 uppercase tracking-wider px-4 py-3 w-24">Stock</th>
+                  <th className="text-center text-[11px] font-semibold text-gray-400 uppercase tracking-wider px-4 py-3 w-24">Rating</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-50">
+                {filtered.length === 0 ? (
+                  <tr>
+                    <td colSpan={7} className="text-center py-16 text-gray-400 text-sm">
+                      No products found for &quot;{search}&quot;
+                    </td>
+                  </tr>
+                ) : filtered.map(p => (
+                  <tr key={p.id} className="hover:bg-green-50/30 transition-colors group">
+                    <td className="px-6 py-3">
+                      <div className="flex items-center gap-3">
+                        <img src={p.image} alt={p.name} className="w-10 h-10 rounded-xl object-cover border border-gray-100 shrink-0 group-hover:scale-105 transition-transform" />
+                        <div className="min-w-0">
+                          <p className="font-semibold text-sm text-gray-800 truncate">{p.name}</p>
+                          {p.organic && (
+                            <p className="text-[10px] text-emerald-600 font-medium flex items-center gap-0.5 mt-0.5">
+                              <CheckCircle className="h-2.5 w-2.5 shrink-0" /> Organic
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 text-xs text-gray-500">{p.category}</td>
+                    <td className="px-4 py-3">
+                      <span className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-full ${
+                        p.type === "fruit"
+                          ? "bg-orange-50 text-orange-600 border border-orange-100"
+                          : "bg-emerald-50 text-emerald-700 border border-emerald-100"
+                      }`}>
+                        {p.type === "fruit" ? <Apple className="h-2.5 w-2.5 shrink-0" /> : <Leaf className="h-2.5 w-2.5 shrink-0" />}
+                        {p.type === "fruit" ? "Fruit" : "Veg"}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-right font-bold text-sm text-gray-800">{formatPrice(p.price)}</td>
+                    <td className="px-4 py-3 text-center">
+                      {p.discount > 0
+                        ? <span className="inline-flex items-center text-[11px] font-semibold text-white bg-blue-500 px-2 py-0.5 rounded-full">{p.discount}% off</span>
+                        : <span className="text-gray-300">-</span>
+                      }
+                    </td>
+                    <td className="px-4 py-3 text-center">
+                      <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${
+                        p.stock === 0        ? "bg-red-50 text-red-600 border border-red-100"
+                        : p.stock <= 5       ? "bg-orange-50 text-orange-600 border border-orange-100"
+                        :                      "bg-gray-50 text-gray-600 border border-gray-100"
+                      }`}>
+                        {p.stock === 0 ? "Out" : p.stock}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-center">
+                      <span className="inline-flex items-center gap-1 text-xs font-semibold text-amber-600 bg-amber-50 px-2.5 py-1 rounded-full border border-amber-100">
+                        <Star className="h-3 w-3 fill-amber-400 text-amber-400 shrink-0" />
+                        {p.rating}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* Table footer */}
+          {filtered.length > 0 && (
+            <div className="px-6 py-3 bg-gray-50 border-t border-gray-100 text-xs text-gray-400 flex items-center justify-between">
+              <span>Showing {filtered.length} products</span>
+              <div className="flex items-center gap-4">
+                <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-orange-400 inline-block" /> Fruit: {fruits.length}</span>
+                <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" /> Veg: {veggies.length}</span>
+                <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full bg-red-400 inline-block" /> Low stock: {lowStock}</span>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
     </div>
   );
 }

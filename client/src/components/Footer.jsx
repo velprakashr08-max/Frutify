@@ -5,7 +5,7 @@ export default function Footer() {
   return (
     <footer className="bg-foreground text-background">
       <div className="container py-12">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
           {/* Brand */}
           <div className="space-y-4">
             <div className="flex items-center gap-2">
@@ -34,15 +34,7 @@ export default function Footer() {
               <li className="flex items-center gap-2"><MapPin className="h-4 w-4 text-primary" /> 123 Farm Lane, Green City</li>
             </ul>
           </div>
-          {/* Hours */}
-          <div className="space-y-4">
-            <h4 className="font-heading font-semibold">Working Hours</h4>
-            <ul className="space-y-2 text-sm text-background/60">
-              <li>Mon – Fri: 7am – 9pm</li>
-              <li>Saturday: 8am – 8pm</li>
-              <li>Sunday: 9am – 6pm</li>
-            </ul>
-          </div>
+
         </div>
         <div className="border-t border-background/10 mt-10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-background/40">
           <p>© {new Date().getFullYear()} Frutify. All rights reserved.</p>

@@ -1,14 +1,15 @@
 import { useState } from 'react';
-import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
-import { Star, ShoppingCart, Plus, Minus, Leaf, Heart, Send } from 'lucide-react';
+import { Star, ShoppingCart, Plus, Minus, Leaf, Heart, Send, CheckCircle } from 'lucide-react';
 import { useCart } from '@/contexts/CartContext';
 import { useProducts } from '@/contexts/ProductContext';
-import { useWishlist } from '@/contexts/WishlistContext';
+import { useWishlist } from '@/contexts/WishlistContext';   
 import { useAuth } from '@/contexts/AuthContext';
+import { formatPrice } from '@/lib/utils';
 import { toast } from 'sonner';
 import ProductCard from '@/components/ProductCard';
 
@@ -20,7 +21,7 @@ export default function ProductDetailModal({ product, open, onOpenChange }) {
   const [reviewRating, setReviewRating] = useState(5);
   const { addItem } = useCart();
   const { reviews, products, addReview } = useProducts();
-  const { toggleWishlist, isInWishlist } = useWishlist();
+  const { toggleWishlist, isInWishlist } = useWishlist();  
   const { user } = useAuth();
 
   if (!product) return null;
@@ -60,8 +61,8 @@ export default function ProductDetailModal({ product, open, onOpenChange }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-3xl max-h-[90vh] overflow-y-auto p-0 rounded-2xl">
+        <DialogTitle className="sr-only">{product.name}</DialogTitle>
         <div className="grid md:grid-cols-2 gap-0">
-          {/* Images */}
           <div className="p-4 sm:p-6 space-y-3 bg-muted/30">
             <div className="aspect-square rounded-xl overflow-hidden bg-muted shadow-inner">
               <img src={product.gallery[selectedImage] || product.image} alt={product.name}
@@ -80,8 +81,6 @@ export default function ProductDetailModal({ product, open, onOpenChange }) {
               </div>
             )}
           </div>
-
-          {/* Details */}
           <div className="p-4 sm:p-6 space-y-4">
             <div>
               <p className="text-[11px] text-muted-foreground uppercase tracking-widest font-semibold mb-1">{product.category}</p>
@@ -173,7 +172,6 @@ export default function ProductDetailModal({ product, open, onOpenChange }) {
               </TabsContent>
 
               <TabsContent value="reviews" className="space-y-4 pt-3">
-                {/* Review form */}
                 {user && (
                   <form onSubmit={handleSubmitReview} className="space-y-2 p-3 rounded-xl border bg-muted/30">
                     <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Write a Review</p>

@@ -12,11 +12,11 @@ const NavLink = forwardRef(
           cn(className, isActive && activeClassName, isPending && pendingClassName)
         }
         {...props}
-      />
+      />   
     );
-  },
+  },     
 );
 
-NavLink.displayName = "NavLink";
+NavLink.displayName = "NavLink";       
 
-export { NavLink };
+export { NavLink };                     
