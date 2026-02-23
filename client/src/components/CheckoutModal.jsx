@@ -112,6 +112,11 @@ export default function CheckoutModal({ open, onOpenChange, cartProducts, subtot
   const [txnId] = useState(() => `FVM${Date.now()}`);
   const [paidMethod, setPaidMethod] = useState('');
 
+  // Snapshots so success screen still shows items after cart is cleared
+  const [snapCart, setSnapCart]           = useState([]);
+  const [snapSubtotal, setSnapSubtotal]   = useState(0);
+  const [snapDiscount, setSnapDiscount]   = useState(0);
+
   const discount = useMemo(() => {
     if (!appliedCoupon) return 0;
     const c = COUPONS[appliedCoupon];
@@ -126,7 +131,7 @@ export default function CheckoutModal({ open, onOpenChange, cartProducts, subtot
   const fmtCard   = v => v.replace(/\D/g, '').slice(0, 16).replace(/(.{4})/g, '$1 ').trim();
   const fmtExpiry = v => { const d = v.replace(/\D/g, '').slice(0, 4); return d.length > 2 ? d.slice(0,2)+'/'+d.slice(2) : d; };
 
-  const addressValid = !!(name.trim() && phone.replace(/\D/g, '').length >= 10);
+  const addressValid = !!(name.trim() && phone.replace(/\D/g, '').length === 10 && address.trim() && city.trim() && pincode.replace(/\D/g, '').length === 6);
   const cardValid    = !!(cardName.trim() && cardNumber.replace(/\s/g,'').length === 16 && expiry.length === 5 && cvv.length === 3);
   const canPay       = method === 'upi' ? !qrExpired : method === 'card' ? cardValid : true;
 
@@ -157,6 +162,10 @@ export default function CheckoutModal({ open, onOpenChange, cartProducts, subtot
   }, [txnId]);
 
   const handlePay = () => {
+    // Snapshot before clearing cart
+    setSnapCart(cartProducts);
+    setSnapSubtotal(subtotal);
+    setSnapDiscount(discount);
     setPaidMethod(method);
     setStage('processing');
     saveOrder({
@@ -197,12 +206,12 @@ export default function CheckoutModal({ open, onOpenChange, cartProducts, subtot
     ...(email ? [`Email       : ${email}`] : []),
     '',
     '-- Items ----------------------------',
-    ...cartProducts.map(ci => `  ${ci.product.name} x${ci.quantity}  ${formatPrice(ci.product.price * ci.quantity)}`),
+    ...snapCart.map(ci => `  ${ci.product.name} x${ci.quantity}  ${formatPrice(ci.product.price * ci.quantity)}`),
     '',
-    ...(discount > 0 ? [`Discount    : -${formatPrice(discount)} (${appliedCoupon})`] : []),
+    ...(snapDiscount > 0 ? [`Discount    : -${formatPrice(snapDiscount)} (${appliedCoupon})`] : []),
     'Shipping    : FREE',
     '--------------------------------------',
-    `TOTAL       : ${formatPrice(finalAmount)}`,
+    `TOTAL       : ${formatPrice(snapSubtotal - snapDiscount)}`,
     '',
     'Thank you for shopping with Frutify!',
     '================================',
@@ -521,7 +530,7 @@ export default function CheckoutModal({ open, onOpenChange, cartProducts, subtot
               <p className="text-muted-foreground">{address}, {city} - {pincode}</p>
             </div>
 
-            <OrderSummary cartProducts={cartProducts} subtotal={subtotal} discount={discount} label="Total Paid" />
+            <OrderSummary cartProducts={snapCart} subtotal={snapSubtotal} discount={snapDiscount} label="Total Paid" />
 
             <div className="flex gap-2 w-full">
               <Button variant="outline" className="flex-1 rounded-full" onClick={printReceipt}>

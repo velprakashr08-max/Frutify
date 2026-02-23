@@ -226,4 +226,4 @@ export default function ProductDetailModal({ product, open, onOpenChange }) {
       </DialogContent>
     </Dialog>
   );
-}
+}    

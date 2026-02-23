@@ -1,24 +1,20 @@
-﻿import { useState, useRef, useCallback, useEffect } from "react";
-import {
-  Dialog, DialogContent, DialogHeader, DialogTitle,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  CreditCard, Smartphone, Banknote, Check, Loader2, Shield,
-  Clock, Download, RefreshCw, Copy, CheckCheck, Leaf, X,
+﻿import {useState,useRef,useCallback,useEffect} from "react";
+import {Dialog,DialogContent,DialogHeader,DialogTitle}from"@/components/ui/dialog";
+import {Button}from"@/components/ui/button";
+import {Input}from"@/components/ui/input";
+import {Label}from"@/components/ui/label";
+import {CreditCard,Smartphone,Banknote,Check,Loader2,Shield,Clock,Download,RefreshCw,Copy,CheckCheck,Leaf,X,
 } from "lucide-react";
-import { QRCodeCanvas } from "qrcode.react";
-import { formatPrice } from "@/lib/utils";
-
+import {QRCodeCanvas}from"qrcode.react";
+import {formatPrice}from"@/lib/utils";
+        
 /* ── QR countdown timer ── */
-function QrTimer({ seconds, onExpire }) {
-  const [left, setLeft] = useState(seconds);
-  useEffect(() => {
-    if (left <= 0) { onExpire(); return; }
+function QrTimer({ seconds,onExpire }) {
+  const [left,setLeft]=useState(seconds);
+  useEffect(()=>{
+    if (left <= 0) {onExpire(); return; }
     const t = setTimeout(() => setLeft(l => l - 1), 1000);
-    return () => clearTimeout(t);
+    return ()=>clearTimeout(t);
   }, [left, onExpire]);
   const mins = String(Math.floor(left / 60)).padStart(2, "0");
   const secs = String(left % 60).padStart(2, "0");
@@ -30,15 +26,15 @@ function QrTimer({ seconds, onExpire }) {
         <div
           className={`h-full rounded-full transition-all duration-1000 ${pct > 30 ? "bg-green-500" : "bg-red-500"}`}
           style={{ width: `${pct}%` }}
-        />
-      </div>
+        />   
+      </div>   
       <span className={`font-mono text-xs font-semibold tabular-nums ${pct <= 30 ? "text-red-500" : "text-gray-500"}`}>
-        {mins}:{secs}
-      </span>
-    </div>
-  );
-}
-
+        {mins}:{secs}  
+      </span>      
+    </div>                    
+  );                 
+}                              
+        
 const METHODS = [
   { key: "upi",  icon: Smartphone,  label: "UPI / QR",       desc: "PhonePe, GPay, Paytm" },
   { key: "card", icon: CreditCard,  label: "Card",            desc: "Credit / Debit card"  },

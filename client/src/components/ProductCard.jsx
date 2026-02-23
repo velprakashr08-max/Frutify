@@ -104,39 +104,39 @@ export default function ProductCard({ product, onQuickView, onEdit, onDelete, co
               <span className="text-[10px] text-gray-500 font-medium">{product.rating}</span>
             </div>
           </div>
-        </div>
+        </div>        
       </div>
-    );
+    );   
   }
-
+        
   return (
     <div className="group rounded-2xl border bg-card overflow-hidden shadow-sm transition-shadow duration-300">
-      <div className="relative overflow-hidden aspect-4/3">
-        <img src={product.image} alt={product.name}
-          className="w-full h-full object-cover" />
+      <div className="relative overflow-hidden aspect-4/3">   
+        <img src={product.image} alt={product.name}   
+          className="w-full h-full object-cover" />      
         <div className="absolute top-3 left-3 flex flex-col gap-1.5">
           {product.organic && (
-            <Badge className="bg-primary text-primary-foreground gap-1 shadow-lg">
+            <Badge className="bg-primary text-primary-foreground gap-1 shadow-lg">   
               <Leaf className="h-3 w-3" /> Organic
             </Badge>
-          )}
+          )}   
           {product.discount > 0 && (
             <Badge className="bg-accent text-accent-foreground shadow-lg">
-              -{product.discount}%
+              -{product.discount}%   
             </Badge>
           )}
-        </div>
+        </div>   
         <button
           onClick={(e) => { e.stopPropagation(); toggleWishlist(product.id); }}
           className={`absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center transition-all duration-300 shadow-lg ${
-            wishlisted
+            wishlisted   
               ? 'bg-accent text-accent-foreground scale-110'
               : 'bg-card/80 backdrop-blur-sm text-muted-foreground hover:bg-accent hover:text-accent-foreground'
-          }`}
+          }`}   
         >
           <Heart className={`h-4 w-4 ${wishlisted ? 'fill-current' : ''}`} />
         </button>
-
+    
         {product.stock <= 5 && product.stock > 0 && (
           <Badge variant="outline" className="absolute bottom-3 left-3 bg-card/90 backdrop-blur-sm text-xs border-accent/30 text-accent gap-1">
             <Flame className="h-3 w-3" /> Only {product.stock} left

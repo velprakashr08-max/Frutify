@@ -30,7 +30,6 @@
   --sidebar-border: 120 10% 90%;
   --sidebar-ring: 145 63% 42%;
 }
-
 .dark {
   --background: 150 20% 6%;
   --foreground: 120 15% 95%;
@@ -60,29 +59,23 @@
   --sidebar-border: 150 15% 18%;
   --sidebar-ring: 145 63% 42%; 
 }
-
-/* ─── Base Element Styles ─── */
 * {
   border-color: hsl(var(--border));
 }
-
 html {
   overflow-x: hidden;
   scroll-behavior: smooth;
 }
-
 html, body {
   width: 100%;
   max-width: 100vw;
 }
-
 body {
   background-color: hsl(var(--background));
   color: hsl(var(--foreground));
   font-family: 'Inter', sans-serif;
   overflow-x: hidden;
 }
-
 html::-webkit-scrollbar {
   display: none;
 }
@@ -90,25 +83,20 @@ html {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
-
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Poppins', sans-serif;
 }
-
-
 @utility glass {
   background-color: rgb(255 255 255 / 0.1);
   backdrop-filter: blur(24px);
   border: 1px solid rgb(255 255 255 / 0.2);
 }
-
 @utility glass-strong {
   background-color: rgb(255 255 255 / 0.8);
   backdrop-filter: blur(24px);
   border: 1px solid rgb(255 255 255 / 0.4);
   box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
 }
-
 #root {
   width: 100%;
   max-width: 100vw;
@@ -116,7 +104,6 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0 auto;
   overflow-x: hidden;
 }
-
 .container {
   max-width: 1536px;
   margin-left: auto;

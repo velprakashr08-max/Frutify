@@ -1,163 +1,139 @@
-import { useState, useMemo } from 'react';
-import { Navigate, useSearchParams } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
-import { useProducts } from '../contexts/ProductContext';
-import { Button } from '../components/ui/Button';
-import { Input } from '../components/ui/Input';
-import { Label } from '../components/ui/Label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/Select';
-import { Switch } from '../components/ui/Switch';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/Table';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '../components/ui/Dialog';
-import {
-  Package, AlertTriangle, Plus, Pencil, Trash2, Upload,
-  BarChart3, Leaf, CheckCircle, XCircle, Star, X, Apple,
-  ShieldAlert, Search,
-} from 'lucide-react';
-import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  AreaChart, Area,
-} from 'recharts';
-import { categories } from '../data/vegetables';
-import CategoryIcon from '../components/CategoryIcon';
-import { formatPrice } from '../lib/utils';
-import { toast } from 'sonner';
-import { TrendingDown, Layers } from 'lucide-react';
-
-const productCategories = categories.filter(c => c.type !== 'all');
-
-const emptyProduct = {
-  name: '', slug: '', category: 'Root Vegetables', type: 'vegetable',
-  price: 0, originalPrice: 0, stock: 0,
-  image: '', gallery: [], description: '',
-  nutrition: { calories: 0, carbs: '0g', protein: '0g', fat: '0g', fiber: '0g' },
-  organic: false, rating: 4.0, reviews: 0, discount: 0, tags: [], dateAdded: new Date().toISOString().slice(0, 10),
+import {useState,useMemo}from'react';
+import {Navigate,useSearchParams}from'react-router-dom';
+import {useAuth}from'../contexts/AuthContext';
+import {useProducts}from'../contexts/ProductContext';
+import {Button}from'../components/ui/Button';
+import {Input}from'../components/ui/Input';
+import {Label}from'../components/ui/Label';
+import {Select,SelectContent,SelectItem,SelectTrigger,SelectValue}from'../components/ui/Select';
+import {Switch}from'../components/ui/Switch';
+import {Table,TableBody,TableCell,TableHead,TableHeader,TableRow}from'../components/ui/Table';
+import {Dialog,DialogContent,DialogHeader,DialogTitle,DialogFooter}from'../components/ui/Dialog';
+import {Package,AlertTriangle,Plus,Pencil,Trash2,Upload,BarChart3,Leaf,CheckCircle,XCircle,Star,X,Apple,ShieldAlert,Search}from'lucide-react';
+import {BarChart,Bar,XAxis,YAxis,CartesianGrid,Tooltip,ResponsiveContainer,AreaChart,Area,}from'recharts';
+import {categories}from'../data/vegetables';
+import CategoryIcon from'../components/CategoryIcon';
+import {formatPrice} from'../lib/utils';
+import {toast}from'sonner';
+import {TrendingDown,Layers}from'lucide-react';
+const productCategories=categories.filter(c =>c.type!=='all');
+const emptyProduct ={name:'',slug:'',category:'Root Vegetables',type:'vegetable',
+  price:0,originalPrice:0,stock:0,
+  image:'',gallery:[],description:'',
+  nutrition:{calories:0,carbs:'0g',protein:'0g',fat:'0g',fiber:'0g'},
+  organic:false,rating:4.0,reviews:0,discount:0,tags:[],dateAdded:new Date().toISOString().slice(0,10),
 };
-
 export default function Admin() {
-  const { user } = useAuth();
-  const { products, addProduct, updateProduct, deleteProduct } = useProducts();
-  const [searchParams, setSearchParams] = useSearchParams();
-  const activeTab = searchParams.get('tab') || 'overview';
-  const [editProduct, setEditProduct] = useState(null);
-  const [isNew, setIsNew] = useState(false);
-  const [deleteId, setDeleteId] = useState(null);
-  const [imagePreview, setImagePreview] = useState('');
-  const [search, setSearch] = useState('');
-
-  const categoryData = useMemo(() => {
-    const map = {};
-    products.forEach(p => {
-      if (!map[p.category]) map[p.category] = { count: 0, value: 0 };
+  const {user}=useAuth();
+  const {products,addProduct,updateProduct,deleteProduct}=useProducts();
+  const [searchParams,setSearchParams]=useSearchParams();
+  const activeTab=searchParams.get('tab')||'overview';
+  const [editProduct,setEditProduct]=useState(null);
+  const [isNew,setIsNew]=useState(false);
+  const [deleteId,setDeleteId]=useState(null);
+  const [imagePreview,setImagePreview]=useState('');
+  const [search,setSearch]=useState('');
+  const categoryData = useMemo(()=>{
+    const map={};
+    products.forEach(p=>{
+      if (!map[p.category])map[p.category]={count:0,value:0};
       map[p.category].count++;
-      map[p.category].value += p.price * p.stock;
+      map[p.category].value +=p.price*p.stock;
     });
     return Object.entries(map)
-      .map(([name, d]) => ({ name: name.length > 14 ? name.slice(0, 13) + '...' : name, count: d.count, value: Math.round(d.value) }))
-      .sort((a, b) => b.value - a.value);
-  }, [products]);
+      .map(([name,d])=>({name:name.length > 14 ?name.slice(0,13) +'...':name,count:d.count,value:Math.round(d.value)}))
+      .sort((a,b)=>b.value-a.value);
+  },[products]);
 
-  const stockTrend = useMemo(() =>
+  const stockTrend=useMemo(()=>
     [...products]
-      .sort((a, b) => a.stock - b.stock)
-      .slice(0, 12)
-      .map(p => ({ name: p.name.length > 10 ? p.name.slice(0, 9) + '...' : p.name, stock: p.stock })),
+      .sort((a,b) =>a.stock -b.stock)
+      .slice(0,12)
+      .map(p=>({name:p.name.length >10 ?p.name.slice(0,9) +'...':p.name,stock:p.stock})),
   [products]);
 
   if (!user?.isAdmin) return <Navigate to="/" replace />;
-
-  const totalValue   = products.reduce((s, p) => s + p.price * p.stock, 0);
-  const lowStock     = products.filter(p => p.stock <= 5);
-  const totalStock   = products.reduce((s, p) => s + p.stock, 0);
-  const avgRating    = products.length ? (products.reduce((s, p) => s + p.rating, 0) / products.length).toFixed(1) : '0';
-  const organicCount = products.filter(p => p.organic).length;
+  const totalValue=products.reduce((s,p) => s + p.price*p.stock,0);
+  const lowStock=products.filter(p => p.stock <=5);
+  const totalStock=products.reduce((s,p) => s + p.stock,0);
+  const avgRating =products.length ? (products.reduce((s,p) => s + p.rating, 0)/products.length).toFixed(1) :'0';
+  const organicCount=products.filter(p =>p.organic).length;
 
   const kpis = [
-    { label: 'Total SKUs',      value: products.length,         sub: `${organicCount} organic`,  icon: Layers,       color: 'text-blue-500',    bg: 'bg-blue-50'    },
-    { label: 'Inventory Value', value: formatPrice(totalValue), sub: `${totalStock} units total`, icon: BarChart3,    color: 'text-green-600',   bg: 'bg-green-50'   },
-    { label: 'Avg Rating',      value: `${avgRating} ★`,        sub: 'across all products',       icon: Star,        color: 'text-amber-500',   bg: 'bg-amber-50'   },
-    { label: 'Low / Out',       value: lowStock.length,         sub: 'need restocking',           icon: TrendingDown, color: 'text-red-500',     bg: 'bg-red-50',    alert: true },
+    { label:'Total SKUs',value:products.length,sub:`${organicCount} organic`,icon:Layers,color:'text-blue-500',bg:'bg-blue-50'    },
+    { label:'Inventory Value',value:formatPrice(totalValue),sub:`${totalStock} units total`,icon:BarChart3,color:'text-green-600',bg:'bg-green-50'},
+    { label:'Avg Rating',value:`${avgRating} ★`,sub:'across all products',icon:Star,color:'text-amber-500',bg:'bg-amber-50'},
+    { label:'Low/Out',value:lowStock.length,sub:'need restocking',icon:TrendingDown,color:'text-red-500',bg:'bg-red-50',alert:true},
   ];
-
-  const openNew  = () => { setEditProduct({ ...emptyProduct, id: Date.now() }); setIsNew(true);  setImagePreview(''); };
-  const openEdit = (p) => { setEditProduct({ ...p }); setIsNew(false); setImagePreview(p.image); };
-
-  const handleSave = () => {
-    if (!editProduct) return;
-    const p = { ...editProduct, slug: editProduct.name.toLowerCase().replace(/\s+/g, '-') };
-    if (p.discount > 0) p.originalPrice = +(p.price / (1 - p.discount / 100)).toFixed(2);
-    else p.originalPrice = p.price;
-    if (isNew) addProduct(p); else updateProduct(p);
-    toast.success(isNew ? 'Product added!' : 'Product updated!');
+const openNew=()=>{setEditProduct({...emptyProduct,id:Date.now() });setIsNew(true);setImagePreview('');};
+const openEdit=(p)=>{setEditProduct({...p});setIsNew(false);setImagePreview(p.image);};
+const handleSave =()=>{
+if(!editProduct) return;
+  const p={...editProduct,slug:editProduct.name.toLowerCase().replace(/\s+/g, '-')};
+    if(p.discount>0)p.originalPrice=+(p.price/(1-p.discount/100)).toFixed(2);
+    else p.originalPrice=p.price;
+    if(isNew)addProduct(p);else updateProduct(p);
+    toast.success(isNew ?'Product added!':'Product updated!');
     setEditProduct(null);
   };
-
-  const handleImageUpload = (e) => {
-    const file = e.target.files?.[0];
-    if (!file || !editProduct) return;
-    const reader = new FileReader();
-    reader.onload = () => {
+  const handleImageUpload =(e)=>{
+    const file=e.target.files?.[0];
+    if (!file||!editProduct) return;
+    const reader=new FileReader();
+    reader.onload=()=>{
       setImagePreview(reader.result);
-      setEditProduct({ ...editProduct, image: reader.result, gallery: [reader.result] });
-    };
-    reader.readAsDataURL(file);
+      setEditProduct({...editProduct,image:reader.result,gallery:[reader.result]});};
+    reader.readAsDataURL(file)};
+const handleDelete =()=>{if (deleteId!==null){deleteProduct(deleteId); 
+  toast.success('Product deleted'); setDeleteId(null);}
   };
 
-  const handleDelete = () => {
-    if (deleteId !== null) { deleteProduct(deleteId); toast.success('Product deleted'); setDeleteId(null); }
-  };
-
-  const filteredProducts = useMemo(() =>
-    products.filter(p =>
-      p.name.toLowerCase().includes(search.toLowerCase()) ||
+  const filteredProducts=useMemo(()=>
+    products.filter(p=>
+      p.name.toLowerCase().includes(search.toLowerCase())||
       p.category.toLowerCase().includes(search.toLowerCase())
     ),
-  [products, search]);
-
+  [products,search]);
   return (
     <>
-      <div className="p-6 space-y-6">
-
-          {/* OVERVIEW */}
-          {activeTab === 'overview' && (
-            <>
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                {kpis.map((k, i) => (
-                  <div key={i} className={`bg-white rounded-xl border p-5 flex items-start gap-4 ${k.alert && k.value > 0 ? 'border-red-200' : 'border-gray-100'}`}>
-                    <div className={`p-2.5 rounded-lg ${k.bg} shrink-0`}>
-                      <k.icon className={`h-4 w-4 ${k.color}`} />
-                    </div>
-                    <div className="min-w-0">
-                      <p className="text-xs text-gray-400 font-medium uppercase tracking-wide">{k.label}</p>
-                      <p className={`text-2xl font-bold mt-0.5 ${k.alert && k.value > 0 ? 'text-red-600' : 'text-gray-900'}`}>{k.value}</p>
-                      <p className="text-xs text-gray-400 mt-0.5">{k.sub}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="bg-white rounded-xl border border-gray-100 p-5">
-                  <p className="text-sm font-semibold text-gray-800 mb-4">Inventory Value by Category</p>
-                  <ResponsiveContainer width="100%" height={220}>
-                    <BarChart data={categoryData} margin={{ left: -10, bottom: 30 }}>
-                      <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
-                      <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#9ca3af' }} angle={-30} textAnchor="end" interval={0} />
-                      <YAxis tick={{ fontSize: 10, fill: '#9ca3af' }} tickFormatter={v => `Rs.${(v / 1000).toFixed(0)}k`} />
-                      <Tooltip contentStyle={{ border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.08)', borderRadius: 8, fontSize: 12 }}
-                        formatter={v => [formatPrice(v), 'Value']} />
-                      <Bar dataKey="value" fill="#16a34a" radius={[4, 4, 0, 0]} />
-                    </BarChart>
-                  </ResponsiveContainer>
-                </div>
-
-                <div className="bg-white rounded-xl border border-gray-100 p-5">
-                  <p className="text-sm font-semibold text-gray-800 mb-4">Lowest Stock Products</p>
-                  <ResponsiveContainer width="100%" height={220}>
-                    <AreaChart data={stockTrend} margin={{ left: -10, bottom: 30 }}>
-                      <defs>
-                        <linearGradient id="stockGrad" x1="0" y1="0" x2="0" y2="1">
-                          <stop offset="5%"  stopColor="#16a34a" stopOpacity={0.15} />
+    <div className="p-6 space-y-6">
+    {activeTab === 'overview' && (
+    <>
+     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      {kpis.map((k,i)=>(
+      <div key={i} className={`bg-white rounded-xl border p-5 flex items-start gap-4 ${k.alert && k.value > 0 ? 'border-red-200' : 'border-gray-100'}`}>
+      <div className={`p-2.5 rounded-lg ${k.bg} shrink-0`}>
+      <k.icon className={`h-4 w-4 ${k.color}`} />
+      </div>
+      <div className="min-w-0">
+      <p className="text-xs text-gray-400 font-medium uppercase tracking-wide">{k.label}</p>
+      <p className={`text-2xl font-bold mt-0.5 ${k.alert && k.value > 0 ? 'text-red-600' : 'text-gray-900'}`}>{k.value}</p>
+      <p className="text-xs text-gray-400 mt-0.5">{k.sub}</p>
+      </div>
+      </div>
+      ))}
+      </div>
+ <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+  <div className="bg-white rounded-xl border border-gray-100 p-5">
+    <p className="text-sm font-semibold text-gray-800 mb-4">Inventory Value by Category</p>
+     <ResponsiveContainer width="100%" height={220}>
+     <BarChart data={categoryData} margin={{ left: -10, bottom: 30 }}>
+     <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
+     <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#9ca3af' }} angle={-30} textAnchor="end" interval={0} />
+     <YAxis tick={{ fontSize: 10, fill: '#9ca3af' }} tickFormatter={v => `Rs.${(v / 1000).toFixed(0)}k`} />
+     <Tooltip contentStyle={{ border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.08)', borderRadius: 8, fontSize: 12 }}
+      formatter={v => [formatPrice(v), 'Value']} />
+      <Bar dataKey="value" fill="#16a34a" radius={[4, 4, 0, 0]} />
+      </BarChart>
+      </ResponsiveContainer>
+  </div>
+ <div className="bg-white rounded-xl border border-gray-100 p-5">
+  <p className="text-sm font-semibold text-gray-800 mb-4">Lowest Stock Products</p>
+  <ResponsiveContainer width="100%" height={220}>
+  <AreaChart data={stockTrend} margin={{ left: -10, bottom: 30 }}>
+  <defs>
+  <linearGradient id="stockGrad" x1="0" y1="0" x2="0" y2="1">
+  <stop offset="5%"  stopColor="#16a34a" stopOpacity={0.15} />
                           <stop offset="95%" stopColor="#16a34a" stopOpacity={0}    />
                         </linearGradient>
                       </defs>
@@ -285,8 +261,6 @@ export default function Admin() {
               </div>
             </div>
           )}
-
-          {/* ALERTS */}
           {activeTab === 'alerts' && (
             <div className="space-y-4">
               {lowStock.length === 0 ? (
@@ -347,8 +321,6 @@ export default function Admin() {
           )}
 
       </div>
-
-      {/* Add/Edit Dialog */}
       <Dialog open={!!editProduct} onOpenChange={v => !v && setEditProduct(null)}>
         <DialogContent className="sm:max-w-xl max-h-[90vh] overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden p-0">
           <div className="sticky top-0 z-10 bg-white border-b px-6 pt-5 pb-4">
@@ -359,7 +331,6 @@ export default function Admin() {
               </DialogTitle>
             </DialogHeader>
           </div>
-
           {editProduct && (
             <div className="px-6 py-4 space-y-5">
               <div className="space-y-2">
@@ -387,13 +358,11 @@ export default function Admin() {
                   </label>
                 )}
               </div>
-
               <div className="space-y-2">
                 <Label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Product Name</Label>
                 <Input placeholder="e.g. Organic Carrots" value={editProduct.name}
                   onChange={e => setEditProduct({ ...editProduct, name: e.target.value })} />
               </div>
-
               <div className="space-y-2">
                 <Label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Category</Label>
                 <Select value={editProduct.category} onValueChange={v => {
@@ -412,7 +381,6 @@ export default function Admin() {
                   </SelectContent>
                 </Select>
               </div>
-
               <div className="grid grid-cols-3 gap-3">
                 <div className="space-y-2">
                   <Label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Price (?)</Label>
@@ -430,7 +398,6 @@ export default function Admin() {
                     onChange={e => setEditProduct({ ...editProduct, discount: +e.target.value })} />
                 </div>
               </div>
-
               <div className="space-y-2">
                 <Label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Description</Label>
                 <textarea className="flex min-h-20 w-full rounded-lg border border-input bg-background px-3 py-2 text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring resize-none"
@@ -438,7 +405,6 @@ export default function Admin() {
                   value={editProduct.description}
                   onChange={e => setEditProduct({ ...editProduct, description: e.target.value })} />
               </div>
-
               <div className="flex items-center justify-between py-2.5 px-3 rounded-lg border border-gray-100 bg-gray-50">
                 <Label className="flex items-center gap-2 cursor-pointer text-sm font-medium text-gray-700">
                   <Leaf className="h-4 w-4 text-emerald-500" /> Organic Product
@@ -448,7 +414,6 @@ export default function Admin() {
               </div>
             </div>
           )}
-
           <div className="sticky bottom-0 bg-white border-t px-6 py-4">
             <DialogFooter>
               <Button variant="outline" className="rounded-lg" onClick={() => setEditProduct(null)}>Cancel</Button>
@@ -459,8 +424,6 @@ export default function Admin() {
           </div>
         </DialogContent>
       </Dialog>
-
-      {/* Delete */}
       <Dialog open={deleteId !== null} onOpenChange={v => !v && setDeleteId(null)}>
         <DialogContent className="sm:max-w-sm">
           <DialogHeader>
