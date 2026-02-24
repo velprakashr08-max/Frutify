@@ -1,13 +1,12 @@
-import { clsx } from "clsx";
-import { twMerge } from "tailwind-merge";
-
+import {clsx} from "clsx";
+import {twMerge} from "tailwind-merge";
 export function cn(...inputs) {
   return twMerge(clsx(inputs));
 }
 
-const USD_TO_INR = 83;
+const USD_TO_INR =83;
 export function formatPrice(usd) {
-  const inr = usd * USD_TO_INR;
+  const inr=usd*USD_TO_INR;
   return `₹${inr.toFixed(0)}`;
 }
 
@@ -16,5 +15,5 @@ export function formatUSD(usd) {
 }       
 
 export function formatINR(usd) {                                     
-  return `₹${(usd * USD_TO_INR).toFixed(0)}`;   
+  return `₹${(usd*USD_TO_INR).toFixed(0)}`;   
 }

@@ -1,19 +1,17 @@
-import { useState } from 'react';
-import { Heart } from 'lucide-react';
-import { Button } from '../components/ui/Button';
-import { Link } from 'react-router-dom';
-import { useWishlist } from '../contexts/WishListContext';
-import { useProducts } from '../contexts/ProductContext';
+import {useState} from 'react';
+import {Heart} from 'lucide-react';
+import {Button} from '../components/ui/Button';
+import {Link} from 'react-router-dom';
+import {useWishlist} from '../contexts/WishListContext';
+import {useProducts} from '../contexts/ProductContext';
 import ProductCard from '../components/ProductCard';
 import ProductDetailModal from '../components/ProductDetailModal';
-
 export default function Wishlist() {
-  const { wishlist } = useWishlist();
-  const { products } = useProducts();
-  const [quickView, setQuickView] = useState(null);
-  const wishlistProducts = products.filter(p => wishlist.includes(p.id));
-
-  if (wishlistProducts.length === 0) {
+  const {wishlist} =useWishlist();
+  const {products} =useProducts();
+  const [quickView,setQuickView] =useState(null);
+  const wishlistProducts =products.filter(p=>wishlist.includes(p.id));
+  if (wishlistProducts.length ===0) {
     return (
       <div className="py-20">
         <div className="container text-center space-y-4">
@@ -27,11 +25,9 @@ export default function Wishlist() {
       </div>
     );
   }
-
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="container space-y-6">
-        {/* Header */}
         <div className="flex items-center justify-between">
           <div>
             <h1 className="font-heading text-2xl font-bold text-gray-900">My Wishlist</h1>
@@ -42,8 +38,6 @@ export default function Wishlist() {
             {wishlistProducts.length}
           </span>
         </div>
-
-        {/* Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
           {wishlistProducts.map(p => (
             <ProductCard key={p.id} product={p} onQuickView={setQuickView} compact />

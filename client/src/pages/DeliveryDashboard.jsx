@@ -1,16 +1,12 @@
-import { useState, useEffect, useMemo } from "react";
-import { Navigate } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
-import { Button } from "../components/ui/Button";
+import {useState,useEffect,useMemo} from "react";
+import {Navigate} from "react-router-dom";
+import {useAuth} from "../contexts/AuthContext";
+import {Button} from "../components/ui/Button";
 import {
-  Truck, CheckCircle, Clock, Package, MapPin, Phone,
-  Star, Bike, IndianRupee, Navigation, User, Calendar,
-  AlertCircle, ChevronRight,
+  Truck,CheckCircle,Clock,Package,MapPin,Phone,Star,Bike,IndianRupee,Navigation,User,Calendar,AlertCircle,ChevronRight,
 } from "lucide-react";
 import { formatPrice } from "../lib/utils";
 import { toast } from "sonner";
-
-// -- helpers -----------------------------------------------------------------
 function getOrders() {
   try {
     const stored = localStorage.getItem("freshveg_orders");
@@ -21,8 +17,6 @@ function getOrders() {
 function saveOrders(orders) {
   localStorage.setItem("freshveg_orders", JSON.stringify(orders));
 }
-
-// -- constants ----------------------------------------------------------------
 const STATUS_LABELS = {
   placed:           "New Order",
   packed:           "Ready to Pick",
@@ -61,12 +55,11 @@ const FAKE_PHONES = [
   "+91 91234 56789", "+91 99887 65432",
 ];
 
-// -- component ----------------------------------------------------------------
 export default function DeliveryDashboard() {
   const { user } = useAuth();
   const [allOrders, setAllOrders] = useState([]);
   const [deliveredToday, setDeliveredToday] = useState(0);
-  const [earningsToday]  = useState(247);   // fixed value for demo
+  const [earningsToday]  = useState(247);   
 
   useEffect(() => {
     const orders = getOrders();
@@ -76,7 +69,6 @@ export default function DeliveryDashboard() {
 
   if (user?.role !== "delivery") return <Navigate to="/" replace />;
 
-  // Orders visible to delivery agent
   const activeOrders = useMemo(
     () => allOrders.filter(o => o.status === "packed" || o.status === "out_for_delivery"),
     [allOrders]
@@ -84,8 +76,6 @@ export default function DeliveryDashboard() {
 
   const readyToPick = activeOrders.filter(o => o.status === "packed").length;
   const inTransit   = activeOrders.filter(o => o.status === "out_for_delivery").length;
-
-  // -- advance order status --------------------------------------------------
   const handleAdvance = (orderId, currentStatus) => {
     const next = NEXT_STATUS[currentStatus];
     if (!next) return;
@@ -114,8 +104,6 @@ export default function DeliveryDashboard() {
 
   return (
     <div className="p-6 space-y-6">
-
-          {/* KPI Strip */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {stats.map((k, i) => (
               <div key={i} className={`bg-white rounded-xl border p-5 ${k.alert && k.value > 0 ? "border-amber-200" : "border-gray-100"}`}>
@@ -125,8 +113,6 @@ export default function DeliveryDashboard() {
               </div>
             ))}
           </div>
-
-          {/* Performance row */}
           <div className="bg-white rounded-xl border border-gray-100 p-5">
             <p className="text-sm font-semibold text-gray-800 mb-4">Today's Performance</p>
             <div className="grid grid-cols-3 gap-4">
@@ -142,8 +128,6 @@ export default function DeliveryDashboard() {
               ))}
             </div>
           </div>
-
-          {/* Active assignments */}
           <div>
             <div className="flex items-center justify-between mb-4">
               <p className="text-sm font-semibold text-gray-800">
@@ -173,7 +157,6 @@ export default function DeliveryDashboard() {
                   return (
                     <div key={order.id} className={`bg-white rounded-xl border border-gray-100 border-l-2 overflow-hidden ${isPick ? "border-l-amber-400" : "border-l-emerald-500"}`}>
                       <div className="p-5 space-y-4">
-                        {/* Row 1 */}
                         <div className="flex items-start justify-between gap-3">
                           <div>
                             <p className="font-mono text-sm font-bold text-gray-800">{order.id}</p>
@@ -183,8 +166,6 @@ export default function DeliveryDashboard() {
                             isPick ? "bg-amber-50 text-amber-700 border border-amber-200" : "bg-emerald-50 text-emerald-700 border border-emerald-200"
                           }`}>{STATUS_LABELS[order.status || "placed"]}</span>
                         </div>
-
-                        {/* Items */}
                         <div className="bg-gray-50 rounded-lg border border-gray-100 p-3 space-y-1">
                           {order.items?.map((item, i) => (
                             <div key={i} className="flex justify-between text-xs text-gray-500">
@@ -193,8 +174,6 @@ export default function DeliveryDashboard() {
                             </div>
                           ))}
                         </div>
-
-                        {/* Delivery info */}
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs text-gray-500">
                           <span className="flex items-start gap-1.5">
                             <MapPin className="h-3.5 w-3.5 shrink-0 mt-0.5 text-gray-400" /> {addr}
@@ -206,8 +185,6 @@ export default function DeliveryDashboard() {
                             <Clock className="h-3.5 w-3.5 text-gray-400" /> ~{isPick ? "5" : "12"} min {isPick ? "to store" : "to deliver"}
                           </span>
                         </div>
-
-                        {/* CTA */}
                         {NEXT_STATUS[order.status] && (
                           <Button
                             onClick={() => handleAdvance(order.id, order.status)}
@@ -229,8 +206,6 @@ export default function DeliveryDashboard() {
               </div>
             )}
           </div>
-
-          {/* Bonus tip */}
           <div className="bg-white rounded-xl border border-gray-100 p-4 flex items-center gap-3">
             <AlertCircle className="h-5 w-5 text-gray-400 shrink-0" />
             <p className="text-sm text-gray-500">

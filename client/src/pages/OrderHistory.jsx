@@ -1,22 +1,19 @@
-import { useState, useEffect } from 'react';
-import { Package, Calendar, Receipt, ShoppingBag } from 'lucide-react';
-import { Card, CardContent } from '../components/ui/Card';
-import { Badge } from '../components/ui/Badge';
-import { Button } from '../components/ui/Button';
-import { Link } from 'react-router-dom';
-import { formatPrice } from '../lib/utils';
-import { getOrders, saveOrder } from '../lib/storage';
-
-export { saveOrder };
-    
+import {useState,useEffect} from 'react';
+import {Package,Calendar,Receipt,ShoppingBag} from 'lucide-react';
+import {Card,CardContent} from '../components/ui/Card';
+import {Badge} from '../components/ui/Badge';
+import {Button} from '../components/ui/Button';
+import {Link} from 'react-router-dom';
+import {formatPrice} from '../lib/utils';
+import {getOrders,saveOrder} from '../lib/storage';
+export {saveOrder};   
 export default function OrderHistory() {     
-  const [orders, setOrders] = useState([]);
-  useEffect(() => {
+  const [orders, setOrders]=useState([]);
+  useEffect(()=>{
     setOrders(getOrders());
-  }, []);
-
-  if (orders.length === 0) {
-    return (
+  },[]);
+  if(orders.length===0){
+    return(
       <div className="py-20">
         <div className="container text-center space-y-4">
           <ShoppingBag className="h-16 w-16 mx-auto text-muted-foreground/30" />
@@ -29,8 +26,7 @@ export default function OrderHistory() {
       </div>
     );
   }   
-
-  return (
+  return(
     <div className="py-8">
       <div className="container space-y-6 max-w-3xl">
         <div>
@@ -38,7 +34,7 @@ export default function OrderHistory() {
           <p className="text-muted-foreground">Your past purchases</p>
         </div>
         <div className="space-y-4">
-          {orders.map(order => (
+          {orders.map(order=>(
             <Card key={order.id} className="overflow-hidden">
               <CardContent className="p-4 sm:p-6 space-y-3">
                 <div className="flex items-center justify-between flex-wrap gap-2">
@@ -61,7 +57,7 @@ export default function OrderHistory() {
                 </div>
                 <div className="flex justify-between items-center pt-2 border-t">
                   <Badge variant="outline" className="text-primary border-primary/30">
-                    <Package className="h-3 w-3 mr-1" /> Delivered
+                    <Package className="h-3 w-3 mr-1"/> Delivered
                   </Badge>
                   <span className="font-bold text-primary">{formatPrice(order.total)}</span>
                 </div>

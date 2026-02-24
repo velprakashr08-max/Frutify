@@ -1,25 +1,13 @@
-﻿import { useState, useMemo } from "react";
-import { Navigate, useSearchParams } from "react-router-dom";
-import { useAuth } from "@/contexts/AuthContext";
-import { useProducts } from "@/contexts/ProductContext";
-import {
-  AlertTriangle, CheckCircle, Leaf, Star,
-  Apple, TrendingUp, Search, ShoppingBag,
-  Tag, IndianRupee, ArrowUpRight,
-} from "lucide-react";
-import {
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip,
-  ResponsiveContainer, Cell,
-} from "recharts";
-import { formatPrice } from "@/lib/utils";
-
-const BAR_COLORS = [
-  "#16a34a","#15803d","#166534","#4ade80","#22c55e",
-  "#86efac","#bbf7d0","#dcfce7","#d1fae5","#a7f3d0",
-];
-
-const CustomTooltip = ({ active, payload, label }) => {
-  if (!active || !payload?.length) return null;
+﻿import{useState,useMemo} from "react";
+import{Navigate,useSearchParams} from "react-router-dom";
+import{useAuth} from "@/contexts/AuthContext";
+import{useProducts} from "@/contexts/ProductContext";
+import{AlertTriangle,CheckCircle,Leaf,Star,Apple,TrendingUp,Search,ShoppingBag,Tag,IndianRupee,ArrowUpRight} from "lucide-react";
+import{BarChart,Bar,XAxis,YAxis,CartesianGrid,Tooltip,ResponsiveContainer,Cell} from "recharts";
+import{formatPrice} from "@/lib/utils";
+const BAR_COLORS=["#16a34a","#15803d","#166534","#4ade80","#22c55e","#86efac","#bbf7d0","#dcfce7","#d1fae5","#a7f3d0"];
+const CustomTooltip=({active,payload,label})=>{
+  if (!active||!payload?.length) return null;
   return (
     <div className="bg-white border border-gray-100 shadow-lg rounded-xl px-4 py-3 text-xs">
       <p className="font-semibold text-gray-700 mb-1">{label}</p>
@@ -27,71 +15,59 @@ const CustomTooltip = ({ active, payload, label }) => {
     </div>
   );
 };
-
 export default function ManagerDashboard() {
-  const { user }     = useAuth();
-  const { products } = useProducts();
-  const [searchParams] = useSearchParams();
-  const activeTab      = searchParams.get("tab") || "overview";
-  const [search, setSearch] = useState("");
-
-  const fruits  = useMemo(() => products.filter(p => p.type === "fruit"),     [products]);
-  const veggies = useMemo(() => products.filter(p => p.type === "vegetable"), [products]);
-
-  const categoryData = useMemo(() => {
-    const map = {};
-    products.forEach(p => {
-      if (!map[p.category]) map[p.category] = { count: 0, value: 0 };
+  const{user}=useAuth();
+  const{products}=useProducts();
+  const[searchParams]=useSearchParams();
+  const activeTab=searchParams.get("tab")||"overview";
+  const[search,setSearch]=useState("");
+  const fruits=useMemo(()=>products.filter(p=>p.type ==="fruit"),[products]);
+  const veggies=useMemo(()=>products.filter(p=>p.type ==="vegetable"),[products]);
+  const categoryData=useMemo(()=>{
+    const map ={};
+    products.forEach(p=>{
+      if (!map[p.category])map[p.category]={count:0,value:0};
       map[p.category].count++;
-      map[p.category].value += p.price * p.stock;
+      map[p.category].value +=p.price*p.stock;
     });
     return Object.entries(map)
-      .map(([name, d]) => ({
-        name: name.length > 12 ? name.slice(0, 12) + "..." : name,
-        fullName: name,
-        count: d.count,
-        value: Math.round(d.value),
+      .map(([name,d]) => ({
+        name:name.length >12?name.slice(0,12) + "..." :name,
+        fullName:name,
+        count:d.count,
+        value:Math.round(d.value),
       }))
-      .sort((a, b) => b.value - a.value);
-  }, [products]);
+      .sort((a,b)=>b.value -a.value);
+  },[products]);
 
-  if (user?.role !== "manager") return <Navigate to="/" replace />;
+  if (user?.role !=="manager") return <Navigate to="/" replace />;
 
-  const totalValue = products.reduce((s, p) => s + p.price * p.stock, 0);
-  const lowStock   = products.filter(p => p.stock <= 5).length;
-  const outOfStock = products.filter(p => p.stock === 0).length;
-  const organic    = products.filter(p => p.organic).length;
-  const discounted = products.filter(p => p.discount > 0).length;
-  const avgRating  = products.length
-    ? (products.reduce((s, p) => s + p.rating, 0) / products.length).toFixed(1)
-    : "0";
-  const maxCatValue = categoryData[0]?.value || 1;
-
-  const kpis = [
-    { label: "Total Products",   value: products.length,         sub: `${fruits.length} fruits - ${veggies.length} veggies`, icon: ShoppingBag,   color: "text-blue-600",   bg: "bg-blue-50",   border: "border-blue-100"   },
-    { label: "Inventory Value",  value: formatPrice(totalValue), sub: `${organic} organic items`,                            icon: IndianRupee,   color: "text-green-600",  bg: "bg-green-50",  border: "border-green-100"  },
-    { label: "Avg Rating",       value: avgRating,               sub: "across all products",                                 icon: Star,          color: "text-amber-500",  bg: "bg-amber-50",  border: "border-amber-100", suffix: "star" },
-    { label: "Active Discounts", value: discounted,              sub: "promotional offers",                                  icon: Tag,           color: "text-purple-600", bg: "bg-purple-50", border: "border-purple-100" },
-    { label: "Need Attention",   value: lowStock,                sub: outOfStock > 0 ? `${outOfStock} out of stock` : "monitor closely", icon: AlertTriangle, color: lowStock > 0 ? "text-red-500" : "text-gray-400", bg: lowStock > 0 ? "bg-red-50" : "bg-gray-50", border: lowStock > 0 ? "border-red-100" : "border-gray-100", alert: true },
+  const totalValue=products.reduce((s,p) =>s +p.price *p.stock,0);
+  const lowStock=products.filter(p=>p.stock<= 5).length;
+  const outOfStock=products.filter(p=>p.stock===0).length;
+  const organic=products.filter(p=>p.organic).length;
+  const discounted=products.filter(p=>p.discount >0).length;
+  const avgRating=products.length
+    ? (products.reduce((s,p)=>s +p.rating,0) /products.length).toFixed(1):"0";
+  const maxCatValue=categoryData[0]?.value ||1;
+  const kpis=[
+    {label:"Total Products",value:products.length,sub:`${fruits.length} fruits - ${veggies.length} veggies`,icon:ShoppingBag,color:"text-blue-600",bg:"bg-blue-50",border:"border-blue-100"},
+    {label:"Inventory Value",value:formatPrice(totalValue),sub:`${organic} organic items`,icon:IndianRupee,color:"text-green-600",bg:"bg-green-50",border:"border-green-100"},
+    {label:"Avg Rating",value:avgRating,sub:"across all products",icon:Star,color:"text-amber-500",bg:"bg-amber-50",border:"border-amber-100",suffix:"star"},
+    {label:"Active Discounts",value:discounted,sub:"promotional offers",icon:Tag,color:"text-purple-600",bg:"bg-purple-50",border:"border-purple-100" },
+    {label:"Need Attention",value:lowStock,sub:outOfStock >0?`${outOfStock} out of stock`:"monitor closely",icon:AlertTriangle,color:lowStock > 0 ? "text-red-500" : "text-gray-400", bg: lowStock > 0 ? "bg-red-50" : "bg-gray-50", border: lowStock > 0 ? "border-red-100" : "border-gray-100", alert: true },
   ];
-
-  const filtered = useMemo(() =>
-    products.filter(p =>
-      p.name.toLowerCase().includes(search.toLowerCase()) ||
-      p.category.toLowerCase().includes(search.toLowerCase())
-    ),
-  [products, search]);
-
+  const filtered = useMemo(()=>
+    products.filter(p=>
+      p.name.toLowerCase().includes(search.toLowerCase())||p.category.toLowerCase().includes(search.toLowerCase())),
+  [products,search]);
   return (
     <div className="p-6 space-y-6">
-
-      {/* OVERVIEW */}
       {activeTab === "overview" && (
         <>
-          {/* KPI Strip */}
           <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-            {kpis.map((k, i) => {
-              const Icon = k.icon;
+            {kpis.map((k,i) => {
+              const Icon =k.icon;
               return (
                 <div key={i} className={`bg-white rounded-2xl border ${k.border} p-4 flex flex-col gap-3 hover:shadow-md transition-shadow`}>
                   <div className="flex items-center justify-between">
@@ -101,7 +77,7 @@ export default function ManagerDashboard() {
                     <ArrowUpRight className={`h-4 w-4 ${k.alert && k.value > 0 ? "text-red-400" : "text-gray-200"}`} />
                   </div>
                   <div>
-                    <p className={`text-2xl font-bold ${k.alert && k.value > 0 ? "text-red-600" : "text-gray-900"}`}>
+                    <p className={`text-2xl font-bold ${k.alert && k.value > 0 ?"text-red-600":"text-gray-900"}`}>
                       {k.value}{k.suffix && <span className="text-sm text-amber-400 ml-1">*</span>}
                     </p>
                     <p className="text-xs text-gray-400 font-medium mt-0.5">{k.label}</p>
@@ -111,10 +87,7 @@ export default function ManagerDashboard() {
               );
             })}
           </div>
-
-          {/* Chart + Quick Stats */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Bar chart */}
             <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-100 p-5">
               <div className="flex items-center justify-between mb-5">
                 <div>
@@ -126,30 +99,28 @@ export default function ManagerDashboard() {
                 </span>
               </div>
               <ResponsiveContainer width="100%" height={220}>
-                <BarChart data={categoryData} margin={{ left: 0, right: 8, bottom: 28 }}>
+                <BarChart data={categoryData} margin={{left:0,right:8,bottom:28}}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f3f4f6" vertical={false} />
                   <XAxis dataKey="name" tick={{ fontSize: 10, fill: "#9ca3af" }} angle={-35} textAnchor="end" interval={0} axisLine={false} tickLine={false} />
-                  <YAxis tick={{ fontSize: 10, fill: "#9ca3af" }} tickFormatter={v => `Rs.${(v / 1000).toFixed(0)}k`} axisLine={false} tickLine={false} width={52} />
-                  <Tooltip content={<CustomTooltip />} cursor={{ fill: "#f0fdf4" }} />
-                  <Bar dataKey="value" radius={[6, 6, 0, 0]} maxBarSize={40}>
-                    {categoryData.map((_, idx) => (
+                  <YAxis tick={{fontSize:10,fill:"#9ca3af"}} tickFormatter={v=>`Rs.${(v /1000).toFixed(0)}k`} axisLine={false} tickLine={false} width={52} />
+                  <Tooltip content={<CustomTooltip />} cursor={{fill: "#f0fdf4"}} />
+                  <Bar dataKey="value" radius={[6,6,0,0]} maxBarSize={40}>
+                    {categoryData.map((_,idx) => (
                       <Cell key={idx} fill={BAR_COLORS[idx % BAR_COLORS.length]} />
                     ))}
                   </Bar>
                 </BarChart>
               </ResponsiveContainer>
             </div>
-
-            {/* Quick Stats */}
             <div className="bg-white rounded-2xl border border-gray-100 p-5">
               <p className="text-sm font-semibold text-gray-800 mb-4">Quick Breakdown</p>
               <div className="space-y-3">
                 {[
-                  { label: "Fruits",     value: fruits.length,  pct: Math.round(fruits.length  / (products.length || 1) * 100), icon: Apple,         color: "text-orange-500",  bar: "bg-orange-400"  },
-                  { label: "Vegetables", value: veggies.length, pct: Math.round(veggies.length / (products.length || 1) * 100), icon: Leaf,          color: "text-emerald-600", bar: "bg-emerald-500" },
-                  { label: "Organic",    value: organic,        pct: Math.round(organic        / (products.length || 1) * 100), icon: CheckCircle,   color: "text-green-600",   bar: "bg-green-500"   },
-                  { label: "Discounted", value: discounted,     pct: Math.round(discounted     / (products.length || 1) * 100), icon: TrendingUp,    color: "text-blue-500",    bar: "bg-blue-400"    },
-                  { label: "Low Stock",  value: lowStock,       pct: Math.round(lowStock       / (products.length || 1) * 100), icon: AlertTriangle, color: lowStock > 0 ? "text-red-500" : "text-gray-300", bar: lowStock > 0 ? "bg-red-400" : "bg-gray-200" },
+                  {label:"Fruits",value:fruits.length,pct:Math.round(fruits.length /(products.length || 1) *100),icon:Apple,     color: "text-orange-500",  bar: "bg-orange-400"  },
+                  {label:"Vegetables",value:veggies.length,pct:Math.round(veggies.length/(products.length || 1) *100),icon:Leaf,          color: "text-emerald-600", bar: "bg-emerald-500" },
+                  {label:"Organic",value:organic,pct:Math.round(organic/(products.length || 1) *100), icon:CheckCircle,color:"text-green-600",   bar: "bg-green-500"   },
+                  {label:"Discounted",value:discounted,pct:Math.round(discounted/(products.length || 1) *100),icon:TrendingUp,color:"text-blue-500",    bar: "bg-blue-400"    },
+                  {label:"Low Stock",value:lowStock,pct:Math.round(lowStock/(products.length || 1) *100),icon:AlertTriangle,color:lowStock > 0 ? "text-red-500" : "text-gray-300", bar: lowStock > 0 ? "bg-red-400" : "bg-gray-200" },
                 ].map((s, i) => {
                   const Icon = s.icon;
                   return (
@@ -171,7 +142,7 @@ export default function ManagerDashboard() {
 
               <div className="mt-5 pt-4 border-t border-gray-50">
                 <p className="text-xs text-gray-400 font-medium uppercase tracking-wide mb-3">Top 3 by Value</p>
-                {categoryData.slice(0, 3).map((c, i) => (
+                {categoryData.slice(0,3).map((c,i) => (
                   <div key={i} className="flex items-center justify-between py-1.5">
                     <div className="flex items-center gap-2">
                       <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold text-white ${i === 0 ? "bg-green-500" : i === 1 ? "bg-green-400" : "bg-green-300"}`}>
@@ -185,8 +156,6 @@ export default function ManagerDashboard() {
               </div>
             </div>
           </div>
-
-          {/* Category Breakdown */}
           <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-50">
               <div>
@@ -198,7 +167,7 @@ export default function ManagerDashboard() {
               </span>
             </div>
             <div className="divide-y divide-gray-50">
-              {categoryData.map((c, i) => (
+              {categoryData.map((c,i)=>(
                 <div key={i} className="flex items-center px-6 py-3 hover:bg-gray-50/50 transition-colors">
                   <div className="flex items-center gap-3 flex-1 min-w-0">
                     <span className="w-6 h-6 rounded-lg bg-green-50 flex items-center justify-center text-[10px] font-bold text-green-600 shrink-0">
@@ -219,11 +188,8 @@ export default function ManagerDashboard() {
           </div>
         </>
       )}
-
-      {/* CATALOG */}
       {activeTab === "catalog" && (
         <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
-          {/* Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-6 py-4 border-b border-gray-100">
             <div>
               <p className="text-sm font-semibold text-gray-800">Product Catalog</p>
@@ -239,8 +205,6 @@ export default function ManagerDashboard() {
               />
             </div>
           </div>
-
-          {/* Table */}
           <div className="overflow-x-auto">
             <table className="w-full text-sm min-w-[700px]">
               <thead>
@@ -314,8 +278,6 @@ export default function ManagerDashboard() {
               </tbody>
             </table>
           </div>
-
-          {/* Table footer */}
           {filtered.length > 0 && (
             <div className="px-6 py-3 bg-gray-50 border-t border-gray-100 text-xs text-gray-400 flex items-center justify-between">
               <span>Showing {filtered.length} products</span>

@@ -1,59 +1,44 @@
-import { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
-import { Button } from '../components/ui/Button';
-import { Input } from '../components/ui/Input';
-import {
-  Leaf, Truck, Shield, Award, Star, ArrowRight, ChevronLeft, ChevronRight,
-  Carrot, TreeDeciduous, Bean, Sprout,
-  Package, Clock, CheckCircle, Users, ShoppingBag, MapPin, Send,
-} from 'lucide-react';
-import { testimonials } from '../data/vegetables';
+import {useState,useEffect,useRef} from 'react';
+import{Link} from 'react-router-dom';
+import{Button} from '../components/ui/Button';
+import{Input} from '../components/ui/Input';
+import {Leaf,Truck,Shield,Award,Star,ArrowRight,ChevronLeft,ChevronRight,Carrot,TreeDeciduous,Bean,Sprout,Package,Clock,CheckCircle,Users, ShoppingBag, MapPin,Send} from 'lucide-react';
+import {testimonials} from '../data/vegetables';
 import Footer from '../components/Footer';
 import heroVideo from '../assets/hero-farm.mp4';
 
 export default function Index() {
-  const [testimonialIdx, setTestimonialIdx] = useState(0);
-  const [scrollY, setScrollY] = useState(0);
-  const heroRef = useRef(null);
-
-  useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY);
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  const [testimonialIdx,setTestimonialIdx] =useState(0);
+  const [scrollY,setScrollY] =useState(0);
+  const heroRef=useRef(null);
+  useEffect(()=>{
+    const handleScroll =()=>setScrollY(window.scrollY);
+    window.addEventListener('scroll',handleScroll,{passive:true});
+    return ()=>window.removeEventListener('scroll',handleScroll);
+  },[]);
 
   const features = [
-    { icon: Leaf, title: '100% Organic', desc: 'Certified organic fruits &amp; vegetables from trusted farms' },
-    { icon: Truck, title: 'Free Delivery', desc: 'Free shipping on all orders, no minimum' },
-    { icon: Shield, title: 'Quality Guarantee', desc: 'Not satisfied? Full refund, no questions asked' },
-    { icon: Award, title: 'Premium Quality', desc: 'Hand-picked for freshness every single day' },
+    {icon:Leaf,title:'100% Organic',desc:'Certified organic fruits &amp; vegetables from trusted farms'},
+    {icon:Truck,title:'Free Delivery',desc:'Free shipping on all orders, no minimum'},
+    {icon:Shield,title:'Quality Guarantee',desc:'Not satisfied? Full refund, no questions asked'},
+    {icon:Award,title:'Premium Quality',desc:'Hand-picked for freshness every single day'},
   ];
-
   const stats = [
-    { value: '10K+', label: 'Happy Customers', icon: Users },
-    { value: '500+', label: 'Products Delivered', icon: ShoppingBag },
-    { value: '50+', label: 'Local Farms', icon: MapPin },
-    { value: '24/7', label: 'Customer Support', icon: Clock },
+    { value:'10K+',label:'Happy Customers',icon:Users},
+    { value:'500+',label:'Products Delivered',icon:ShoppingBag},
+    { value:'50+',label:'Local Farms',icon:MapPin},
+    { value:'24/7',label:'Customer Support',icon:Clock},
   ];
-
-  const steps = [
-    { step: 1, title: 'Browse Products', desc: 'Explore our wide range of fresh organic fruits and vegetables', icon: Sprout },
-    { step: 2, title: 'Add to Cart', desc: 'Select your favorites and add them to your cart', icon: ShoppingBag },
-    { step: 3, title: 'Quick Checkout', desc: 'Pay securely with card or online payment', icon: CheckCircle },
-    { step: 4, title: 'Fast Delivery', desc: 'Get your order delivered fresh to your door', icon: Package },
+  const steps=[
+    {step:1,title:'Browse Products',desc:'Explore our wide range of fresh organic fruits and vegetables',icon:Sprout},
+    {step:2,title:'Add to Cart',desc:'Select your favorites and add them to your cart',icon:ShoppingBag},
+    {step:3,title:'Quick Checkout',desc:'Pay securely with card or online payment',icon:CheckCircle},
+    {step:4,title:'Fast Delivery',desc:'Get your order delivered fresh to your door',icon:Package},
   ];
-
   return (
     <div>
       <section ref={heroRef} className="relative overflow-hidden min-h-[90vh] flex items-center">
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          className="absolute inset-0 w-full h-full object-cover"
-          style={{ transform: `translateY(${scrollY * 0.3}px)` }}
-        >
+        <video autoPlay loop muted playsInline className="absolute inset-0 w-full h-full object-cover" style={{ transform: `translateY(${scrollY * 0.3}px)` }}>
           <source src={heroVideo} type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-linear-to-r from-black/50 via-black/30 to-transparent" />
@@ -145,7 +130,6 @@ export default function Index() {
             <p className="text-gray-500 max-w-md mx-auto mt-2 text-sm">Get fresh fruits &amp; vegetables in 4 simple steps</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 relative">
-            {/* Connector line */}
             <div className="hidden lg:block absolute top-10 left-[12.5%] right-[12.5%] h-px bg-linear-to-r from-transparent via-green-200 to-transparent" />
             {steps.map((s) => {
               const Icon = s.icon;
@@ -175,7 +159,6 @@ export default function Index() {
           </div>
           <div className="max-w-lg mx-auto">
             <div className="relative bg-white rounded-3xl border border-gray-100 shadow-xl p-8">
-              {/* Quote accent */}
               <div className="absolute top-6 right-8 text-6xl font-serif text-green-100 leading-none select-none">&ldquo;</div>
               <div className="flex flex-col items-center text-center gap-5">
                 <img
@@ -194,7 +177,6 @@ export default function Index() {
                   <p className="text-xs text-gray-400 mt-0.5">{testimonials[testimonialIdx].role}</p>
                 </div>
               </div>
-              {/* Controls */}
               <div className="flex justify-center items-center gap-3 mt-6">
                 <button
                   onClick={() => setTestimonialIdx(i => (i - 1 + testimonials.length) % testimonials.length)}

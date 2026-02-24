@@ -1,19 +1,18 @@
-import { Star, ShoppingCart, Eye, Leaf, Heart, Pencil, Trash2, Flame, CheckCircle, AlertTriangle, XCircle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { formatPrice } from '@/lib/utils';
-import { Badge } from '@/components/ui/badge';
-import { categories } from '@/data/vegetables';
-import { useCart } from '@/contexts/CartContext';
-import { useWishlist } from '@/contexts/WishlistContext';
-import { useAuth } from '@/contexts/AuthContext';
+import {Star,ShoppingCart,Eye,Leaf,Heart,Pencil,Trash2,Flame,CheckCircle,AlertTriangle,XCircle} from 'lucide-react';
+import {Button} from '@/components/ui/button';
+import {formatPrice} from '@/lib/utils';
+import {Badge} from '@/components/ui/badge';
+import {categories} from '@/data/vegetables';
+import {useCart} from '@/contexts/CartContext';
+import {useWishlist} from '@/contexts/WishlistContext';
+import {useAuth} from '@/contexts/AuthContext';
 import CategoryIcon from '@/components/CategoryIcon';
-import { toast } from 'sonner';
-
-export default function ProductCard({ product, onQuickView, onEdit, onDelete, compact = false }) {
-  const { addItem } = useCart();
-  const { toggleWishlist, isInWishlist } = useWishlist();
-  const { user } = useAuth();
-  const wishlisted = isInWishlist(product.id);
+import {toast} from 'sonner';
+export default function ProductCard({product,onQuickView,onEdit,onDelete,compact=false}) {
+  const {addItem} =useCart();
+  const {toggleWishlist,isInWishlist}=useWishlist();
+  const {user} =useAuth();
+  const wishlisted =isInWishlist(product.id);
 
   const handleAdd = () => {
     if (product.stock <= 0) return;
@@ -25,7 +24,7 @@ export default function ProductCard({ product, onQuickView, onEdit, onDelete, co
     return (
       <div className="group relative rounded-2xl bg-white border border-gray-100 overflow-hidden shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
         {/* Image */}
-        <div className="relative overflow-hidden" style={{ aspectRatio: '1' }}>
+        <div className="relative overflow-hidden" style={{aspectRatio:'1'}}>
           <img
             src={product.image}
             alt={product.name}
@@ -33,8 +32,6 @@ export default function ProductCard({ product, onQuickView, onEdit, onDelete, co
           />
           {/* Dark gradient on hover */}
           <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-
-          {/* Badges top-left */}
           <div className="absolute top-2 left-2 flex flex-col gap-1">
             {product.organic && (
               <span className="bg-green-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full leading-none shadow">

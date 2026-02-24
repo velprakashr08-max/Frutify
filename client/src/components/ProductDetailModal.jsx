@@ -194,7 +194,6 @@ export default function ProductDetailModal({ product, open, onOpenChange }) {
                     </Button>
                   </form>
                 )}
-
                 {productReviews.length === 0 ? (
                   <p className="text-sm text-muted-foreground text-center py-4">No reviews yet. Be the first!</p>
                 ) : (

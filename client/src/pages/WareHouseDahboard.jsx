@@ -1,65 +1,55 @@
-﻿import { useState, useMemo } from "react";
-import { Navigate } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
-import { useProducts } from "../contexts/ProductContext";
-import {
-  Package, AlertTriangle, Warehouse,
-  RefreshCw, Search, Apple, Leaf, Filter, LayoutGrid,
-} from "lucide-react";
-import { toast } from "sonner";
-
-const stockLevel = (stock) => {
-  if (stock === 0) return { label: "Out of Stock", dot: "bg-red-500",    badge: "bg-red-50 text-red-600",     border: "border-l-red-400"    };
-  if (stock <= 5)  return { label: "Critical",     dot: "bg-orange-500", badge: "bg-orange-50 text-orange-600", border: "border-l-orange-400" };
-  if (stock <= 15) return { label: "Low",          dot: "bg-amber-400",  badge: "bg-amber-50 text-amber-600",  border: "border-l-amber-400"  };
-  return            { label: "Healthy",     dot: "bg-emerald-500", badge: "bg-emerald-50 text-emerald-700", border: "border-l-emerald-400" };
+﻿import {useState,useMemo} from "react";
+import {Navigate} from "react-router-dom";
+import {useAuth} from "../contexts/AuthContext";
+import {useProducts} from "../contexts/ProductContext";
+import {Package,AlertTriangle,Warehouse,RefreshCw,Search,Apple,Leaf,Filter,LayoutGrid} from "lucide-react";
+import {toast} from "sonner";
+const stockLevel = (stock) =>{
+  if (stock=== 0) return {label:"Out of Stock",dot:"bg-red-500",badge:"bg-red-50 text-red-600",border:"border-l-red-400"};
+  if (stock<=5)  return {label:"Critical",dot:"bg-orange-500",badge:"bg-orange-50 text-orange-600",border:"border-l-orange-400"};
+  if (stock<=15) return {label:"Low",dot:"bg-amber-400",badge:"bg-amber-50 text-amber-600",border:"border-l-amber-400"};
+  return{label:"Healthy",dot:"bg-emerald-500",badge:"bg-emerald-50 text-emerald-700",border:"border-l-emerald-400"};
 };
-
-export default function WarehouseDashboard() {
-  const { user }                    = useAuth();
-  const { products, updateProduct } = useProducts();
-  const [search, setSearch]         = useState("");
-  const [restockMap, setRestockMap] = useState({});
-  const [typeFilter, setTypeFilter] = useState("all");
-
-  if (user?.role !== "warehouse") return <Navigate to="/" replace />;
-
+export default function WarehouseDashboard(){
+  const {user}= useAuth();
+  const {products,updateProduct}=useProducts();
+  const [search,setSearch]=useState("");
+  const [restockMap,setRestockMap]=useState({});
+  const [typeFilter,setTypeFilter]=useState("all");
+  if (user?.role !=="warehouse") return <Navigate to="/" replace />;
   const critical = products.filter(p => p.stock === 0);
   const low      = products.filter(p => p.stock > 0 && p.stock <= 5);
   const lowish   = products.filter(p => p.stock > 5 && p.stock <= 15);
   const healthy  = products.filter(p => p.stock > 15);
   const total    = products.reduce((s, p) => s + p.stock, 0);
-
   const kpis = [
-    { label: "Total SKUs",    value: products.length,              sub: "all products",   icon: LayoutGrid,   color: "text-blue-500",   bg: "bg-blue-50"   },
-    { label: "Total Units",   value: total,                        sub: "in warehouse",   icon: Package,      color: "text-green-600",  bg: "bg-green-50"  },
-    { label: "Healthy",       value: healthy.length,               sub: "well stocked",   icon: Leaf,         color: "text-emerald-600",bg: "bg-emerald-50"},
-    { label: "Low / Out",     value: critical.length + low.length, sub: "need restocking",icon: AlertTriangle,color: "text-red-500",    bg: "bg-red-50",   alert: true },
+    { label:"Total SKUs",value:products.length,sub:"all products",icon:LayoutGrid,color:"text-blue-500",bg:"bg-blue-50"},
+    { label:"Total Units",value:total,sub:"in warehouse",icon:Package,color:"text-green-600",bg:"bg-green-50"},
+    { label:"Healthy",value:healthy.length,sub:"well stocked",icon:Leaf,color:"text-emerald-600",bg:"bg-emerald-50"},
+    { label:"Low / Out",value:critical.length + low.length,sub:"need restocking",icon:AlertTriangle,color:"text-red-500",bg:"bg-red-50",   alert: true },
   ];
-
-  const filtered = useMemo(() => {
+  const filtered =useMemo(()=>{
     let result = [...products];
-    if (typeFilter !== "all") result = result.filter(p => p.type === typeFilter);
+    if (typeFilter !== "all") result =result.filter(p => p.type === typeFilter);
     if (search) result = result.filter(p =>
       p.name.toLowerCase().includes(search.toLowerCase()) ||
       p.category.toLowerCase().includes(search.toLowerCase())
     );
-    result.sort((a, b) => a.stock - b.stock);
+    result.sort((a,b)=>a.stock-b.stock);
     return result;
-  }, [products, typeFilter, search]);
+  }, [products,typeFilter,search]);
 
-  const handleRestock = (product) => {
-    const qty = Number(restockMap[product.id]) || 20;
-    if (qty <= 0) { toast.error("Enter a valid quantity"); return; }
-    updateProduct({ ...product, stock: product.stock + qty });
-    setRestockMap(prev => ({ ...prev, [product.id]: "" }));
-    toast.success(`Restocked ${product.name}`, { description: `+${qty} units � New total: ${product.stock + qty}` });
+  const handleRestock=(product)=>{
+    const qty =Number(restockMap[product.id]) || 20;
+    if (qty <= 0) {toast.error("Enter a valid quantity"); return;}
+    updateProduct({...product,stock:product.stock + qty});
+    setRestockMap(prev => ({...prev,[product.id]: ""}));
+    toast.success(`Restocked ${product.name}`,{description:`+${qty} units � New total: ${product.stock + qty}` });
   };
-
   return (
     <div className="p-6 space-y-6">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            {kpis.map((k, i) => (
+            {kpis.map((k,i) => (
               <div key={i} className={`bg-white rounded-xl border p-5 flex items-start gap-4 ${k.alert && k.value > 0 ? "border-red-200" : "border-gray-100"}`}>
                 <div className={`p-2.5 rounded-lg ${k.bg} shrink-0`}>
                   <k.icon className={`h-4 w-4 ${k.color}`} />
@@ -78,17 +68,17 @@ export default function WarehouseDashboard() {
               <p className="text-sm font-bold text-gray-900">{total} <span className="font-normal text-gray-400 text-xs">total units</span></p>
             </div>
             <div className="flex h-2.5 rounded-full overflow-hidden gap-px bg-gray-100">
-              {healthy.length  > 0 && <div className="bg-emerald-500 transition-all" style={{ width: `${(healthy.length  / products.length) * 100}%` }} />}
-              {lowish.length   > 0 && <div className="bg-amber-400 transition-all"   style={{ width: `${(lowish.length   / products.length) * 100}%` }} />}
-              {low.length      > 0 && <div className="bg-orange-500 transition-all"  style={{ width: `${(low.length      / products.length) * 100}%` }} />}
-              {critical.length > 0 && <div className="bg-red-500 transition-all"     style={{ width: `${(critical.length / products.length) * 100}%` }} />}
+              {healthy.length >0 && <div className="bg-emerald-500 transition-all" style={{ width: `${(healthy.length  / products.length) * 100}%` }} />}
+              {lowish.length >0 && <div className="bg-amber-400 transition-all"   style={{ width: `${(lowish.length   / products.length) * 100}%` }} />}
+              {low.length>0 && <div className="bg-orange-500 transition-all"  style={{ width: `${(low.length      / products.length) * 100}%` }} />}
+              {critical.length>0 && <div className="bg-red-500 transition-all"     style={{ width: `${(critical.length / products.length) * 100}%` }} />}
             </div>
             <div className="flex flex-wrap gap-x-5 gap-y-1 mt-3 text-xs text-gray-400">
               {[
-                { dot: "bg-emerald-500", label: `Healthy (${healthy.length})`   },
-                { dot: "bg-amber-400",   label: `Low (${lowish.length})`        },
-                { dot: "bg-orange-500",  label: `Critical (${low.length})`      },
-                { dot: "bg-red-500",     label: `Out of Stock (${critical.length})` },
+                { dot:"bg-emerald-500",label:`Healthy (${healthy.length})`   },
+                { dot:"bg-amber-400",label:`Low (${lowish.length})`        },
+                { dot:"bg-orange-500",label:`Critical (${low.length})`      },
+                { dot:"bg-red-500",label:`Out of Stock (${critical.length})` },
               ].map((l, i) => (
                 <span key={i} className="flex items-center gap-1.5">
                   <span className={`w-2 h-2 rounded-full ${l.dot}`} /> {l.label}
