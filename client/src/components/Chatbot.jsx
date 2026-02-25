@@ -4,31 +4,25 @@ import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
 import {useAuth} from '@/contexts/AuthContext';
 import {useProducts} from '@/contexts/ProductContext';
-
-const greetings = [
+const greetings =[
   "Hi there! I'm Frutify Assistant. How can I help you today?",
   "You can ask me about products, orders, categories, or anything else!",
 ];
-
-function getBotReply(msg,isAdmin,products) {
-  const lower = msg.toLowerCase();
-  if (lower.includes('hello')||lower.includes('hi')||lower.includes('hey'))
+function getBotReply(msg,isAdmin,products){
+  const lower=msg.toLowerCase();
+  if(lower.includes('hello')||lower.includes('hi')||lower.includes('hey'))
     return "Hello! How can I help you today? Ask me about products, prices, categories, or orders.";
-
   if (lower.includes('price')||lower.includes('cost')) {
     const match=products.find(p=>lower.includes(p.name.toLowerCase()));
-    if (match) return `${match.name} is priced at $${match.price.toFixed(2)}.`;
+    if(match) return `${match.name} is priced at $${match.price.toFixed(2)}.`;
     return "Which product are you interested in? I can share the price details.";
   }
-
-  if (lower.includes('stock')||lower.includes('available')) {
+  if(lower.includes('stock')||lower.includes('available')){
     const match=products.find(p=>lower.includes(p.name.toLowerCase()));
-    if (match) return `${match.name} has ${match.stock} units in stock.`;
-    if (isAdmin) {
+    if(match) return `${match.name} has ${match.stock} units in stock.`;
+    if(isAdmin) {
       const low=products.filter(p=>p.stock <= 5);
-      return low.length > 0
-        ? `Low stock items: ${low.map(p=>`${p.name} (${p.stock})`).join(', ')}`
-        : "All products have good stock levels!";
+      return low.length >0 ?`Low stock items:${low.map(p=>`${p.name} (${p.stock})`).join(', ')}`:"All products have good stock levels!";
     }
     return "Tell me the product name and I'll check availability for you.";
   }
@@ -40,10 +34,8 @@ function getBotReply(msg,isAdmin,products) {
 
   if (lower.includes('organic'))
     return `We have ${products.filter(p => p.organic).length} organic products. Use the organic filter on the products page!`;
-
   if (lower.includes('order')||lower.includes('delivery'))
     return "You can view your orders on the Order History page. We offer free delivery on all orders!";
-
   if (lower.includes('discount')||lower.includes('offer')||lower.includes('sale'))
     return `Currently ${products.filter(p => p.discount > 0).length} products are on sale. Check them out on the products page!`;
 

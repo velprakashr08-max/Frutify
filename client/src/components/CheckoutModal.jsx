@@ -1,50 +1,42 @@
-﻿import { useState, useMemo, useEffect, useRef, useCallback } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
-import {
-  Check, Loader2, Printer, Download,
-  MapPin, Tag, Mail, ChevronRight, ChevronLeft,
-  Truck, Gift, ShieldCheck, Banknote, CreditCard,
-  Smartphone, Clock, Copy, CheckCheck, RefreshCw, Leaf, Shield,
-} from 'lucide-react';
-import { QRCodeCanvas } from 'qrcode.react';
-import { useCart } from '@/contexts/CartContext';
-import { saveOrder } from '@/lib/storage';
-import { formatPrice } from '@/lib/utils';
-
-const UPI_ID = 'frutify@upi';
-
-const COUPONS = {
-  FRESH10:  { type: 'percent', value: 10, label: '10% off', minOrder: 2 },
-  SAVE20:   { type: 'percent', value: 20, label: '20% off', minOrder: 10 },
-  FLAT50:   { type: 'flat',    value: 50 / 83, label: 'Rs.50 off', minOrder: 5 },
-  WELCOME:  { type: 'percent', value: 15, label: '15% off (New user)', minOrder: 0 },
+﻿import{useState,useMemo,useEffect,useRef,useCallback} from 'react';
+import{Dialog,DialogContent,DialogHeader,DialogTitle} from '@/components/ui/dialog';
+import{Input} from '@/components/ui/input';
+import{Button} from '@/components/ui/button';
+import{Label} from '@/components/ui/label';
+import{Check,Loader2,Printer,Download,MapPin,Tag,Mail,ChevronRight,ChevronLeft,Truck,Gift,ShieldCheck,Banknote,CreditCard,Smartphone,Clock,Copy,CheckCheck,RefreshCw,Leaf,Shield} from 'lucide-react';
+import{QRCodeCanvas} from 'qrcode.react';
+import{useCart} from '@/contexts/CartContext';
+import{saveOrder} from '@/lib/storage';
+import{formatPrice} from '@/lib/utils';
+const UPI_ID ='frutify@upi';
+const COUPONS ={
+  FRESH10:{type:'percent',value:10,label:'10% off',minOrder:2},
+  SAVE20:{type:'percent',value:20,label:'20% off',minOrder:10},
+  FLAT50:{type:'flat',value:50/83,label:'Rs.50 off',minOrder:5},
+  WELCOME:{type:'percent',value:15,label:'15% off (New user)',minOrder:0},
 };
-
 const METHODS = [
-  { key: 'upi',  icon: Smartphone,  label: 'UPI / QR',   desc: 'GPay, PhonePe, Paytm' },
-  { key: 'card', icon: CreditCard,  label: 'Card',        desc: 'Credit / Debit card'  },
-  { key: 'cod',  icon: Banknote,    label: 'Cash on Delivery', desc: 'Pay at your door' },
+  { key:'upi',icon:Smartphone,label:'UPI / QR',desc:'GPay,PhonePe,Paytm'},
+  { key:'card',icon:CreditCard,label:'Card',desc:'Credit / Debit card'},
+  { key:'cod',icon:Banknote,label:'Cash on Delivery',desc:'Pay at your door'},
 ];
 
-function QrTimer({ seconds, onExpire }) {
-  const [left, setLeft] = useState(seconds);
-  useEffect(() => {
-    if (left <= 0) { onExpire(); return; }
-    const t = setTimeout(() => setLeft(l => l - 1), 1000);
-    return () => clearTimeout(t);
-  }, [left, onExpire]);
-  const mins = String(Math.floor(left / 60)).padStart(2, '0');
-  const secs = String(left % 60).padStart(2, '0');
-  const pct  = (left / seconds) * 100;
+function QrTimer({seconds,onExpire}){
+  const[left,setLeft]=useState(seconds);
+  useEffect(()=>{
+    if (left<=0){onExpire();return;}
+    const t=setTimeout(()=>setLeft(l=>l-1),1000);
+    return()=>clearTimeout(t);
+  },[left,onExpire]);
+  const mins=String(Math.floor(left/60)).padStart(2,'0');
+  const secs=String(left%60).padStart(2,'0');
+  const pct=(left/seconds)*100;
   return (
     <div className="flex items-center gap-2">
       <Clock className="h-3.5 w-3.5 text-gray-400 shrink-0" />
       <div className="flex-1 h-1.5 rounded-full bg-gray-100 overflow-hidden">
         <div className={`h-full rounded-full transition-all duration-1000 ${pct > 30 ? 'bg-green-500' : 'bg-red-500'}`}
-          style={{ width: `${pct}%` }} />
+          style={{width:`${pct}%`}} />
       </div>
       <span className={`font-mono text-xs font-semibold tabular-nums ${pct <= 30 ? 'text-red-500' : 'text-gray-500'}`}>
         {mins}:{secs}
@@ -53,16 +45,16 @@ function QrTimer({ seconds, onExpire }) {
   );
 }
 
-function OrderSummary({ cartProducts, subtotal, discount, label }) {
-  return (
+function OrderSummary({cartProducts,subtotal,discount,label}){
+  return(
     <div className="border-t pt-3 space-y-1">
-      {cartProducts.map(ci => (
+      {cartProducts.map(ci=>(
         <div key={ci.productId} className="flex justify-between text-sm">
           <span>{ci.product.name} x{ci.quantity}</span>
-          <span>{formatPrice(ci.product.price * ci.quantity)}</span>
+          <span>{formatPrice(ci.product.price*ci.quantity)}</span>
         </div>
       ))}
-      {discount > 0 && (
+      {discount > 0 &&(
         <div className="flex justify-between text-sm text-green-600">
           <span>Discount</span>
           <span>-{formatPrice(discount)}</span>
@@ -74,173 +66,140 @@ function OrderSummary({ cartProducts, subtotal, discount, label }) {
       </div>
       <div className="flex justify-between font-bold pt-2 border-t">
         <span>{label}</span>
-        <span className="text-primary">{formatPrice(subtotal - discount)}</span>
+        <span className="text-primary">{formatPrice(subtotal-discount)}</span>
       </div>
     </div>
   );
 }
 
-export default function CheckoutModal({ open, onOpenChange, cartProducts, subtotal }) {
-  const { clearCart } = useCart();
-
-  // stages: address -> payment -> processing -> success
-  const [stage, setStage] = useState('address');
-
-  // Address
-  const [name, setName]       = useState('');
-  const [phone, setPhone]     = useState('');
-  const [email, setEmail]     = useState('');
-  const [address, setAddress] = useState('');
-  const [city, setCity]       = useState('');
-  const [pincode, setPincode] = useState('');
-
-  // Coupon
-  const [couponCode, setCouponCode]       = useState('');
-  const [appliedCoupon, setAppliedCoupon] = useState(null);
-  const [couponError, setCouponError]     = useState('');
+export default function CheckoutModal({open,onOpenChange,cartProducts,subtotal}){
+  const {clearCart}=useCart();
+  const [stage,setStage]=useState('address');
+  const [name,setName]=useState('');
+  const [phone,setPhone]=useState('');
+  const [email,setEmail]=useState('');
+  const [address,setAddress]=useState('');
+  const [city,setCity]=useState('');
+  const [pincode,setPincode]=useState('');
+  const [couponCode,setCouponCode]=useState('');
+  const [appliedCoupon,setAppliedCoupon]=useState(null);
+  const [couponError,setCouponError]=useState('');
 
   // Payment method
-  const [method, setMethod]   = useState('upi');
-  const [cardNumber, setCardNumber] = useState('');
-  const [expiry, setExpiry]         = useState('');
-  const [cvv, setCvv]               = useState('');
-  const [cardName, setCardName]     = useState('');
-  const [qrExpired, setQrExpired]   = useState(false);
-  const [copied, setCopied]         = useState(false);
-  const qrRef = useRef(null);
-
-  const [txnId] = useState(() => `FVM${Date.now()}`);
-  const [paidMethod, setPaidMethod] = useState('');
-
-  // Snapshots so success screen still shows items after cart is cleared
-  const [snapCart, setSnapCart]           = useState([]);
-  const [snapSubtotal, setSnapSubtotal]   = useState(0);
-  const [snapDiscount, setSnapDiscount]   = useState(0);
-
-  const discount = useMemo(() => {
-    if (!appliedCoupon) return 0;
-    const c = COUPONS[appliedCoupon];
+  const [method,setMethod]=useState('upi');
+  const [cardNumber,setCardNumber]=useState('');
+  const [expiry,setExpiry]=useState('');
+  const [cvv,setCvv]=useState('');
+  const [cardName,setCardName]=useState('');
+  const [qrExpired,setQrExpired]=useState(false);
+  const [copied,setCopied]=useState(false);
+  const qrRef=useRef(null);
+  const [txnId]=useState(()=> `FVM${Date.now()}`);
+  const [paidMethod,setPaidMethod]=useState('');
+  const [snapCart,setSnapCart]=useState([]);
+  const [snapSubtotal,setSnapSubtotal]=useState(0);
+  const [snapDiscount,setSnapDiscount]=useState(0);
+  const discount=useMemo(()=>{
+    if(!appliedCoupon) return 0;
+    const c=COUPONS[appliedCoupon];
     if (!c) return 0;
-    return c.type === 'percent' ? subtotal * (c.value / 100) : c.value;
-  }, [appliedCoupon, subtotal]);
-
-  const finalAmount = subtotal - discount;
-  const inrAmount   = (finalAmount * 83).toFixed(2);
-  const upiString   = `upi://pay?pa=${UPI_ID}&pn=Frutify&am=${inrAmount}&cu=INR&tn=Order-${txnId}`;
-
-  const fmtCard   = v => v.replace(/\D/g, '').slice(0, 16).replace(/(.{4})/g, '$1 ').trim();
-  const fmtExpiry = v => { const d = v.replace(/\D/g, '').slice(0, 4); return d.length > 2 ? d.slice(0,2)+'/'+d.slice(2) : d; };
-
-  const addressValid = !!(name.trim() && phone.replace(/\D/g, '').length === 10 && address.trim() && city.trim() && pincode.replace(/\D/g, '').length === 6);
-  const cardValid    = !!(cardName.trim() && cardNumber.replace(/\s/g,'').length === 16 && expiry.length === 5 && cvv.length === 3);
-  const canPay       = method === 'upi' ? !qrExpired : method === 'card' ? cardValid : true;
-
-  const applyCoupon = () => {
-    const key = couponCode.trim().toUpperCase();
+    return c.type ==='percent'?subtotal*(c.value/100):c.value;
+  },[appliedCoupon,subtotal]);
+  const finalAmount=subtotal-discount;
+  const inrAmount=(finalAmount*83).toFixed(2);
+  const upiString=`upi://pay?pa=${UPI_ID}&pn=Frutify&am=${inrAmount}&cu=INR&tn=Order-${txnId}`;
+  const fmtCard =v=>v.replace(/\D/g,'').slice(0,16).replace(/(.{4})/g,'$1').trim();
+  const fmtExpiry=v=>{const d =v.replace(/\D/g,'').slice(0,4); return d.length > 2 ? d.slice(0,2)+'/'+d.slice(2) :d;};
+  const addressValid=!!(name.trim() && phone.replace(/\D/g, '').length ===10 && address.trim() && city.trim() && pincode.replace(/\D/g, '').length === 6);
+  const cardValid=!!(cardName.trim() && cardNumber.replace(/\s/g,'').length ===16 && expiry.length ===5 && cvv.length ===3);
+  const canPay=method==='upi' ?!qrExpired:method ==='card' ?cardValid:true;
+  const applyCoupon =()=>{
+    const key=couponCode.trim().toUpperCase();
     setCouponError('');
-    if (!COUPONS[key]) { setCouponError('Invalid coupon code'); return; }
-    const c = COUPONS[key];
-    if (subtotal < c.minOrder) { setCouponError(`Minimum order: ${formatPrice(c.minOrder)}`); return; }
+    if (!COUPONS[key]){setCouponError('Invalid coupon code'); return;}
+    const c =COUPONS[key];
+    if (subtotal<c.minOrder){setCouponError(`Minimum order:${formatPrice(c.minOrder)}`);return;}
     setAppliedCoupon(key);
   };
-
-  const removeCoupon = () => { setAppliedCoupon(null); setCouponCode(''); setCouponError(''); };
-
-  const copyUpi = () => {
-    navigator.clipboard.writeText(UPI_ID).catch(() => {});
+  const removeCoupon =()=>{setAppliedCoupon(null);setCouponCode('');setCouponError('');};
+  const copyUpi =()=>{
+    navigator.clipboard.writeText(UPI_ID).catch(()=>{});
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setTimeout(()=>setCopied(false),2000);
   };
-
-  const downloadQr = useCallback(() => {
-    const canvas = qrRef.current?.querySelector('canvas');
-    if (!canvas) return;
-    const a = document.createElement('a');
-    a.href = canvas.toDataURL('image/png');
-    a.download = `frutify-qr-${txnId}.png`;
+  const downloadQr=useCallback(()=>{
+    const canvas=qrRef.current?.querySelector('canvas');
+    if(!canvas) return;
+    const a=document.createElement('a');
+    a.href=canvas.toDataURL('image/png');
+    a.download=`frutify-qr-${txnId}.png`;
     a.click();
-  }, [txnId]);
-
-  const handlePay = () => {
-    // Snapshot before clearing cart
+  },[txnId]);
+  const handlePay =()=>{
     setSnapCart(cartProducts);
     setSnapSubtotal(subtotal);
     setSnapDiscount(discount);
     setPaidMethod(method);
     setStage('processing');
     saveOrder({
-      id: txnId,
-      date: new Date().toISOString(),
-      items: cartProducts.map(ci => ({ name: ci.product.name, quantity: ci.quantity, price: ci.product.price })),
-      total: finalAmount,
-      discount,
-      coupon: appliedCoupon || null,
-      method: method === 'upi' ? 'UPI / QR' : method === 'card' ? 'Card' : 'Cash on Delivery',
-      address: { name, phone, email, address, city, pincode },
+      id:txnId,date:new Date().toISOString(),
+      items:cartProducts.map(ci=>({name:ci.product.name,quantity:ci.quantity,price:ci.product.price})),
+  total:finalAmount,discount,coupon: appliedCoupon ||null,
+      method:method ==='upi' ? 'UPI / QR' :method ==='card' ? 'Card' :'Cash on Delivery',
+      address:{name,phone,email,address,city,pincode},
     });
     clearCart();
-    setTimeout(() => setStage('success'), 2200);
+    setTimeout(()=>setStage('success'),2200);
   };
-
-  const handleContinue = () => {
+  const handleContinue =()=>{
     setStage('address');
-    setName(''); setPhone(''); setEmail(''); setAddress(''); setCity(''); setPincode('');
-    setCouponCode(''); setAppliedCoupon(null); setCouponError('');
-    setMethod('upi'); setCardNumber(''); setExpiry(''); setCvv(''); setCardName('');
+    setName('');setPhone('');setEmail('');setAddress('');setCity('');setPincode('');
+    setCouponCode('');setAppliedCoupon(null);setCouponError('');
+    setMethod('upi');setCardNumber('');setExpiry('');setCvv('');setCardName('');
     setQrExpired(false);
     onOpenChange(false);
   };
-
-  const receiptText = () => [
+  const receiptText =()=>[
     '================================',
     '        Frutify Receipt         ',
     '================================',
     '',
-    `Transaction : ${txnId}`,
-    `Date        : ${new Date().toLocaleString()}`,
-    `Payment     : ${paidMethod === 'upi' ? 'UPI / QR' : paidMethod === 'card' ? 'Card' : 'Cash on Delivery'}`,
-    '',
-    `Deliver to  : ${name}`,
-    `Phone       : ${phone}`,
-    `Address     : ${address}, ${city} - ${pincode}`,
-    ...(email ? [`Email       : ${email}`] : []),
-    '',
+    `Transaction:${txnId}`,
+    `Date:${new Date().toLocaleString()}`,
+    `Payment:${paidMethod ==='upi' ?'UPI / QR':paidMethod ==='card' ?'Card':'Cash on Delivery'}`,'',
+    `Deliver to:${name}`,
+    `Phone:${phone}`,
+    `Address:${address},${city}-${pincode}`,...(email ?[`Email:${email}`]:[]),'',
     '-- Items ----------------------------',
-    ...snapCart.map(ci => `  ${ci.product.name} x${ci.quantity}  ${formatPrice(ci.product.price * ci.quantity)}`),
+    ...snapCart.map(ci=>`${ci.product.name} x${ci.quantity}  ${formatPrice(ci.product.price *ci.quantity)}`),
     '',
-    ...(snapDiscount > 0 ? [`Discount    : -${formatPrice(snapDiscount)} (${appliedCoupon})`] : []),
-    'Shipping    : FREE',
+    ...(snapDiscount >0 ?[`Discount:-${formatPrice(snapDiscount)}(${appliedCoupon})`]:[]),
+    'Shipping:FREE',
     '--------------------------------------',
-    `TOTAL       : ${formatPrice(snapSubtotal - snapDiscount)}`,
-    '',
+    `TOTAL:${formatPrice(snapSubtotal-snapDiscount)}`,'',
     'Thank you for shopping with Frutify!',
     '================================',
   ].join('\n');
 
-  const downloadReceipt = () => {
-    const blob = new Blob([receiptText()], { type: 'text/plain' });
-    const url  = URL.createObjectURL(blob);
-    const a    = document.createElement('a');
-    a.href = url; a.download = `receipt-${txnId}.txt`; a.click();
+  const downloadReceipt =()=>{
+    const blob=new Blob([receiptText()],{type:'text/plain'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;a.download =`receipt-${txnId}.txt`;a.click();
     URL.revokeObjectURL(url);
   };
-
-  const printReceipt = () => {
-    const w = window.open('', '', 'width=400,height=600');
-    if (w) { w.document.write(`<pre style="font-family:monospace;padding:20px">${receiptText()}</pre>`); w.print(); }
+  const printReceipt=()=>{
+    const w =window.open('','','width=400,height=600');
+    if(w){w.document.write(`<pre style="font-family:monospace;padding:20px">${receiptText()}</pre>`); w.print();}
   };
-
-  const emailReceipt = () => {
-    const subject = encodeURIComponent(`Frutify Receipt - ${txnId}`);
-    const body    = encodeURIComponent(receiptText());
+  const emailReceipt =()=>{
+    const subject=encodeURIComponent(`Frutify Receipt-${txnId}`);
+    const body=encodeURIComponent(receiptText());
     window.open(`mailto:${email}?subject=${subject}&body=${body}`);
   };
-
   return (
-    <Dialog open={open} onOpenChange={v => { if (stage !== 'processing') { onOpenChange(v); if (!v) setStage('address'); } }}>
+    <Dialog open={open} onOpenChange={v=>{ if(stage !=='processing'){onOpenChange(v);if(!v) setStage('address');}}}>
       <DialogContent className="sm:max-w-lg rounded-2xl max-h-[90vh] overflow-y-auto [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
-
-        {/* ═══ STEP 1: ADDRESS ═══ */}
         {stage === 'address' && (
           <>
             <DialogHeader>
