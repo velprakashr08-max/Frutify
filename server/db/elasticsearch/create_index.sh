@@ -1,33 +1,13 @@
-#!/bin/bash
-# ============================================================
-#  Frutify — Elasticsearch Index Setup
-#  Run: bash server/db/elasticsearch/create_index.sh
-#
-#  Prerequisites: ES running on localhost:9200
-#  Check: curl http://localhost:9200
-# ============================================================
-
 ES="http://localhost:9200"
 INDEX="frutify_products"
-
 echo ""
-echo "── Connecting to Elasticsearch ──────────────"
-curl -s "$ES" | grep "cluster_name" && echo "✔  ES is up" || { echo "✘  ES not reachable"; exit 1; }
-
-# ── Delete existing index if re-running ──────────────────────
+echo "connecting to Elasticsearch "
+curl -s "$ES" | grep "cluster_name" && echo "ES is up"||{echo "ES not reachable";exit 1;}
 echo ""
-echo "── Dropping old index (if exists) ───────────"
-curl -s -X DELETE "$ES/$INDEX" | grep -q '"acknowledged":true' && echo "✔  Old index deleted" || echo "–  Index did not exist"
-
-
-# ============================================================
-#  Create index: frutify_products
-#  Settings: 1 shard, 0 replicas (dev config — use 1+ replicas in prod)
-#  Analysis: custom analyzer for product names
-# ============================================================
+echo "dropping old index"
+curl -s -X DELETE "$ES/$INDEX" | grep -q '"acknowledged":true' && echo " Old index deleted" || echo "Index did not exist"
 echo ""
-echo "── Creating index: $INDEX ────────────────────"
-
+echo "creating index: $INDEX"
 curl -s -X PUT "$ES/$INDEX" \
   -H "Content-Type: application/json" \
   -d '{
@@ -79,7 +59,7 @@ curl -s -X PUT "$ES/$INDEX" \
         "slug": {
           "type": "keyword"
         },
-        "category": {
+        "category": {         
           "type": "keyword"
         },
         "type": {
@@ -93,7 +73,7 @@ curl -s -X PUT "$ES/$INDEX" \
         },
         "price": {
           "type": "float"
-        },
+        },    
         "original_price": {
           "type": "float"
         },
@@ -122,15 +102,9 @@ curl -s -X PUT "$ES/$INDEX" \
       }
     }
   }' | python3 -m json.tool
-
-
-# ── Verify ────────────────────────────────────────────────────
 echo ""
 echo "── Verifying index ───────────────────────────"
 curl -s "$ES/$INDEX/_stats/docs" | grep '"count"'
-
-
-# ── Seed a test document ──────────────────────────────────────
 echo ""
 echo "── Seeding one test document ─────────────────"
 curl -s -X POST "$ES/$INDEX/_doc/test-001" \
@@ -152,9 +126,6 @@ curl -s -X POST "$ES/$INDEX/_doc/test-001" \
     },
     "updated_at": "2026-02-22T00:00:00Z"
   }' | python3 -m json.tool
-
-
-# ── Test search ───────────────────────────────────────────────
 echo ""
 echo "── Test: search for 'carr' (autocomplete) ────"
 curl -s -X GET "$ES/$INDEX/_search" \
@@ -168,12 +139,9 @@ curl -s -X GET "$ES/$INDEX/_search" \
     "_source": ["name", "category", "price"],
     "size": 3
   }' | python3 -m json.tool
-
-
 # ── Delete test document ──────────────────────────────────────
 curl -s -X DELETE "$ES/$INDEX/_doc/test-001" > /dev/null
-
 echo ""
-echo "🎉  Elasticsearch index ready: $INDEX"
-echo "     Node: $ES"
+echo "Elasticsearch index:$INDEX"
+echo "Node:$ES"
 echo ""

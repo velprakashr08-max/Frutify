@@ -1,130 +1,94 @@
-﻿import {useState,useRef,useCallback,useEffect} from "react";
-import {Dialog,DialogContent,DialogHeader,DialogTitle}from"@/components/ui/dialog";
-import {Button}from"@/components/ui/button";
-import {Input}from"@/components/ui/input";
-import {Label}from"@/components/ui/label";
-import {CreditCard,Smartphone,Banknote,Check,Loader2,Shield,Clock,Download,RefreshCw,Copy,CheckCheck,Leaf,X,
-} from "lucide-react";
-import {QRCodeCanvas}from"qrcode.react";
-import {formatPrice}from"@/lib/utils";
-        
-/* ── QR countdown timer ── */
-function QrTimer({ seconds,onExpire }) {
+﻿import{useState,useRef,useCallback,useEffect} from "react";
+import{Dialog,DialogContent,DialogHeader,DialogTitle}from"@/components/ui/dialog";
+import{Button}from"@/components/ui/button";
+import{Input}from"@/components/ui/input";
+import{Label}from"@/components/ui/label";
+import{CreditCard,Smartphone,Banknote,Check,Loader2,Shield,Clock,Download,RefreshCw,Copy,CheckCheck,Leaf,X} from "lucide-react";
+import{QRCodeCanvas}from"qrcode.react";
+import{formatPrice}from"@/lib/utils";
+function QrTimer({seconds,onExpire}){
   const [left,setLeft]=useState(seconds);
   useEffect(()=>{
-    if (left <= 0) {onExpire(); return; }
-    const t = setTimeout(() => setLeft(l => l - 1), 1000);
+  if (left <=0){onExpire();return;}
+  const t=setTimeout(()=>setLeft(l =>l-1),1000);
     return ()=>clearTimeout(t);
-  }, [left, onExpire]);
-  const mins = String(Math.floor(left / 60)).padStart(2, "0");
-  const secs = String(left % 60).padStart(2, "0");
-  const pct = (left / seconds) * 100;
+  },[left,onExpire]);
+  const mins=String(Math.floor(left/60)).padStart(2,"0");
+  const secs=String(left % 60).padStart(2,"0");
+  const pct=(left/seconds)*100;
   return (
     <div className="flex items-center gap-2">
       <Clock className="h-3.5 w-3.5 text-gray-400 shrink-0" />
       <div className="flex-1 h-1.5 rounded-full bg-gray-100 overflow-hidden">
         <div
-          className={`h-full rounded-full transition-all duration-1000 ${pct > 30 ? "bg-green-500" : "bg-red-500"}`}
+          className={`h-full rounded-full transition-all duration-1000 ${pct > 30 ? "bg-green-500" :"bg-red-500"}`}
           style={{ width: `${pct}%` }}
         />   
       </div>   
-      <span className={`font-mono text-xs font-semibold tabular-nums ${pct <= 30 ? "text-red-500" : "text-gray-500"}`}>
+      <span className={`font-mono text-xs font-semibold tabular-nums ${pct <= 30 ? "text-red-500" :"text-gray-500"}`}>
         {mins}:{secs}  
       </span>      
     </div>                    
   );                 
-}                              
-        
+}                                    
 const METHODS = [
-  { key: "upi",  icon: Smartphone,  label: "UPI / QR",       desc: "PhonePe, GPay, Paytm" },
-  { key: "card", icon: CreditCard,  label: "Card",            desc: "Credit / Debit card"  },
-  { key: "cod",  icon: Banknote,    label: "Cash on Delivery",desc: "Pay at your door"      },
+  { key:"upi",icon:Smartphone,label:"UPI / QR",desc:"PhonePe,GPay,Paytm" },
+  { key:"card",icon:CreditCard,label:"Card",desc:"Credit/Debit card"  },
+  { key:"cod",icon:Banknote,label:"Cash on Delivery",desc:"Pay at your door"      },
 ];
-
-const UPI_ID = "frutify@upi";
-
-/**
- * PaymentModal
- * Props:
- *   open         – boolean
- *   onOpenChange – fn
- *   amount       – number (in app currency)
- *   orderId      – string
- *   onSuccess    – fn(method)  called after successful payment flow
- */
-export default function PaymentModal({ open, onOpenChange, amount = 0, orderId = "", onSuccess }) {
-  const [method, setMethod] = useState("upi");
-  const [stage, setStage]   = useState("pick"); // pick | pay | processing | success
-
-  /* Card fields */
-  const [cardNumber, setCardNumber] = useState("");
-  const [expiry, setExpiry]         = useState("");
-  const [cvv, setCvv]               = useState("");
-  const [cardName, setCardName]     = useState("");
-
-  /* UPI */
-  const [qrExpired, setQrExpired] = useState(false);
-  const [copied, setCopied]       = useState(false);
-  const qrRef = useRef(null);
-
-  const inrAmount = (amount * 83).toFixed(2);
-  const upiString = `upi://pay?pa=${UPI_ID}&pn=Frutify&am=${inrAmount}&cu=INR&tn=Order-${orderId}`;
-
-  /* Formatters */
-  const fmtCard   = v => v.replace(/\D/g, "").slice(0, 16).replace(/(.{4})/g, "$1 ").trim();
-  const fmtExpiry = v => { const d = v.replace(/\D/g, "").slice(0, 4); return d.length > 2 ? d.slice(0,2)+"/"+d.slice(2) : d; };
-
-  /* Validation */
-  const cardValid = cardName.trim() && cardNumber.replace(/\s/g,"").length === 16 && expiry.length === 5 && cvv.length === 3;
-  const canPay = method === "upi" ? !qrExpired : method === "card" ? cardValid : true;
-
-  /* Copy UPI ID */
+const UPI_ID ="frutify@upi";
+export default function PaymentModal({open,onOpenChange,amount=0,orderId ="",onSuccess}){
+  const [method,setMethod]=useState("upi");
+  const [stage,setStage]=useState("pick");
+  const [cardNumber,setCardNumber]=useState("");
+  const [expiry,setExpiry]=useState("");
+  const [cvv,setCvv]=useState("");
+  const [cardName,setCardName]=useState("");
+  const [qrExpired,setQrExpired]=useState(false);
+  const [copied,setCopied]=useState(false);
+  const qrRef=useRef(null);
+  const inrAmount=(amount*83).toFixed(2);
+  const upiString=`upi://pay?pa=${UPI_ID}&pn=Frutify&am=${inrAmount}&cu=INR&tn=Order-${orderId}`;
+  //i took help here to learn ho to fix formatters from ai
+  const fmtCard=v=>v.replace(/\D/g,"").slice(0,16).replace(/(.{4})/g, "$1 ").trim();
+  const fmtExpiry=v=>{const d=v.replace(/\D/g,"").slice(0, 4); return d.length > 2 ?d.slice(0,2)+"/"+d.slice(2):d;};
+  const cardValid =cardName.trim() &&cardNumber.replace(/\s/g,"").length ===16 && expiry.length ===5 && cvv.length ===3;
+  const canPay =method ==="upi"?!qrExpired:method==="card" ?cardValid:true;
   const copyUpi = () => {
-    navigator.clipboard.writeText(UPI_ID).catch(() => {});
+    navigator.clipboard.writeText(UPI_ID).catch(()=>{});
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setTimeout(()=>setCopied(false),2000);
   };
-
-  /* Download QR */
-  const downloadQr = useCallback(() => {
-    const canvas = qrRef.current?.querySelector("canvas");
+  const downloadQr=useCallback(()=>{
+    const canvas=qrRef.current?.querySelector("canvas");
     if (!canvas) return;
-    const a = document.createElement("a");
-    a.href = canvas.toDataURL("image/png");
-    a.download = `frutify-qr-${orderId}.png`;
+    const a=document.createElement("a");
+    a.href=canvas.toDataURL("image/png");
+    a.download=`frutify-qr-${orderId}.png`;
     a.click();
-  }, [orderId]);
-
-  /* Pay handler */
-  const handlePay = () => {
+  },[orderId]);
+  const handlePay =()=>{
     setStage("processing");
-    setTimeout(() => {
+    setTimeout(()=>{
       setStage("success");
-    }, 2200);
+    },2200);
   };
-
-  /* Reset on close */
-  const handleClose = (v) => {
-    if (!v) {
+  const handleClose =(v)=>{
+    if(!v){
       setStage("pick");
       setMethod("upi");
-      setCardNumber(""); setExpiry(""); setCvv(""); setCardName("");
+      setCardNumber("");setExpiry("");setCvv("");setCardName("");
       setQrExpired(false);
     }
     onOpenChange(v);
   };
-
-  /* Confirm success */
-  const handleConfirm = () => {
+  const handleConfirm =()=>{
     handleClose(false);
     onSuccess?.(method);
   };
-
   return (
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-md p-0 overflow-hidden">
-
-        {/* ── Header ── */}
         <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-gray-100">
           <div className="flex items-center gap-2.5">
             <div className="p-1.5 rounded-lg bg-green-50">
@@ -132,9 +96,9 @@ export default function PaymentModal({ open, onOpenChange, amount = 0, orderId =
             </div>
             <div>
               <DialogTitle className="text-base font-bold text-gray-900 leading-none">
-                {stage === "success" ? "Payment Successful" : "Complete Payment"}
+                {stage ==="success"?"Payment Successful":"Complete Payment"}
               </DialogTitle>
-              {stage !== "success" && (
+              {stage !== "success" &&(
                 <p className="text-xs text-gray-400 mt-0.5">Order #{orderId}</p>
               )}
             </div>
@@ -145,12 +109,10 @@ export default function PaymentModal({ open, onOpenChange, amount = 0, orderId =
             </div>
           </div>
         </div>
-
-        {/* ── SUCCESS ── */}
-        {stage === "success" && (
+        {stage === "success" &&(
           <div className="px-6 py-10 flex flex-col items-center gap-4 text-center">
             <div className="w-16 h-16 rounded-full bg-green-50 flex items-center justify-center">
-              <Check className="h-8 w-8 text-green-600" />
+              <Check className="h-8 w-8 text-green-600"/>
             </div>
             <div>
               <p className="text-lg font-bold text-gray-900">Payment Confirmed!</p>
@@ -164,7 +126,7 @@ export default function PaymentModal({ open, onOpenChange, amount = 0, orderId =
               <div className="flex justify-between text-sm">
                 <span className="text-gray-500">Method</span>
                 <span className="font-medium text-gray-700">
-                  {method === "upi" ? "UPI / QR" : method === "card" ? "Card" : "Cash on Delivery"}
+                  {method==="upi"?"UPI / QR" :method ==="card"?"Card":"Cash on Delivery"}
                 </span>
               </div>
               <div className="flex justify-between text-sm">
@@ -177,9 +139,7 @@ export default function PaymentModal({ open, onOpenChange, amount = 0, orderId =
             </Button>
           </div>
         )}
-
-        {/* ── PROCESSING ── */}
-        {stage === "processing" && (
+        {stage ==="processing" &&(
           <div className="px-6 py-16 flex flex-col items-center gap-4 text-center">
             <div className="w-16 h-16 rounded-full bg-green-50 flex items-center justify-center">
               <Loader2 className="h-8 w-8 text-green-600 animate-spin" />
@@ -190,12 +150,8 @@ export default function PaymentModal({ open, onOpenChange, amount = 0, orderId =
             </div>
           </div>
         )}
-
-        {/* ── PICK & PAY ── */}
         {(stage === "pick" || stage === "pay") && (
           <div className="px-6 pt-5 pb-6 space-y-5">
-
-            {/* Method tabs */}
             <div className="grid grid-cols-3 gap-2">
               {METHODS.map(m => {
                 const Icon = m.icon;
@@ -206,7 +162,7 @@ export default function PaymentModal({ open, onOpenChange, amount = 0, orderId =
                     className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border text-center transition-all ${
                       method === m.key
                         ? "border-green-500 bg-green-50 text-green-700"
-                        : "border-gray-200 hover:border-gray-300 text-gray-500"
+                        :"border-gray-200 hover:border-gray-300 text-gray-500"
                     }`}
                   >
                     <Icon className={`h-5 w-5 ${method === m.key ? "text-green-600" : "text-gray-400"}`} />
@@ -216,12 +172,9 @@ export default function PaymentModal({ open, onOpenChange, amount = 0, orderId =
                 );
               })}
             </div>
-
-            {/* ── UPI / QR ── */}
             {method === "upi" && (
               <div className="space-y-4">
                 <div className="flex gap-3">
-                  {/* QR */}
                   <div ref={qrRef} className="relative shrink-0">
                     <div className={`p-2 rounded-xl border-2 bg-white transition-all ${qrExpired ? "border-red-200 opacity-40 grayscale" : "border-green-200"}`}>
                       <QRCodeCanvas
@@ -245,8 +198,6 @@ export default function PaymentModal({ open, onOpenChange, amount = 0, orderId =
                       </button>
                     )}
                   </div>
-
-                  {/* Info panel */}
                   <div className="flex-1 space-y-3">
                     <div>
                       <p className="text-xs text-gray-400 font-medium uppercase tracking-wide">Amount</p>
@@ -267,14 +218,10 @@ export default function PaymentModal({ open, onOpenChange, amount = 0, orderId =
                     </button>
                   </div>
                 </div>
-
-                {/* Timer */}
                 <div className="space-y-1">
                   <p className="text-xs text-gray-400">QR expires in</p>
                   <QrTimer key={String(qrExpired)} seconds={300} onExpire={() => setQrExpired(true)} />
                 </div>
-
-                {/* Instructions */}
                 <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 space-y-1.5">
                   <p className="text-xs font-semibold text-blue-800">How to pay via UPI</p>
                   {[
@@ -299,11 +246,8 @@ export default function PaymentModal({ open, onOpenChange, amount = 0, orderId =
                 </Button>
               </div>
             )}
-
-            {/* ── CARD ── */}
             {method === "card" && (
               <div className="space-y-4">
-                {/* Card preview */}
                 <div className="bg-linear-to-br from-gray-800 to-gray-900 rounded-2xl p-5 text-white shadow-lg">
                   <div className="flex justify-between items-start mb-6">
                     <Leaf className="h-6 w-6 text-green-400" />
@@ -325,8 +269,6 @@ export default function PaymentModal({ open, onOpenChange, amount = 0, orderId =
                     </div>
                   </div>
                 </div>
-
-                {/* Fields */}
                 <div className="space-y-3">
                   <div className="space-y-1.5">
                     <Label className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Card Number</Label>
@@ -383,9 +325,7 @@ export default function PaymentModal({ open, onOpenChange, amount = 0, orderId =
                 </Button>
               </div>
             )}
-
-            {/* ── COD ── */}
-            {method === "cod" && (
+            {method === "cod" &&(
               <div className="space-y-4">
                 <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 space-y-2">
                   <div className="flex items-center gap-2">
@@ -396,38 +336,33 @@ export default function PaymentModal({ open, onOpenChange, amount = 0, orderId =
                     Keep <span className="font-bold">₹{inrAmount}</span> ready when your order arrives. Our delivery agent will collect exact change if possible.
                   </p>
                 </div>
-
                 <div className="bg-white border border-gray-100 rounded-xl divide-y divide-gray-50">
                   {[
-                    { label: "Order amount", value: formatPrice(amount) },
-                    { label: "Cash to keep (INR)", value: `₹${inrAmount}` },
-                    { label: "Delivery charge", value: "FREE" },
-                    { label: "Estimated delivery", value: "30–45 min" },
-                  ].map((r, i) => (
+                    {label:"Order amount",value:formatPrice(amount)},
+                    {label:"Cash to keep (INR)",value:`₹${inrAmount}`},
+                    {label:"Delivery charge",value:"FREE"},
+                    {label:"Estimated delivery",value:"30–45 min"},
+                  ].map((r,i)=>(
                     <div key={i} className="flex justify-between px-4 py-2.5 text-sm">
                       <span className="text-gray-500">{r.label}</span>
-                      <span className={`font-semibold ${r.value === "FREE" ? "text-green-600" : "text-gray-900"}`}>{r.value}</span>
+                      <span className={`font-semibold ${r.value === "FREE" ? "text-green-600":"text-gray-900"}`}>{r.value}</span>
                     </div>
                   ))}
                 </div>
-
                 <div className="flex items-start gap-2 text-xs text-gray-400">
-                  <Shield className="h-3.5 w-3.5 text-green-500 shrink-0 mt-0.5" />
+                  <Shield className="h-3.5 w-3.5 text-green-500 shrink-0 mt-0.5"/>
                   You can cancel before the order is packed. No charges apply.
                 </div>
-
                 <Button
                   onClick={handlePay}
-                  className="w-full h-11 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl"
-                >
-                  <Banknote className="h-4 w-4 mr-2" />
+                  className="w-full h-11 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-xl">
+                  <Banknote className="h-4 w-4 mr-2"/>
                   Confirm Cash on Delivery
                 </Button>
               </div>
             )}
           </div>
         )}
-
       </DialogContent>
     </Dialog>
   );

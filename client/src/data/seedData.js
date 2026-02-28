@@ -2,8 +2,8 @@ import React from 'react'
 
 const seedData = () => {
   return (
-    <div>
-      
+    <div>       
+        <h1>Seed Data</h1>
     </div>
   )
 }

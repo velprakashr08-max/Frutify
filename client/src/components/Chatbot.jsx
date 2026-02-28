@@ -12,7 +12,7 @@ function getBotReply(msg,isAdmin,products){
   const lower=msg.toLowerCase();
   if(lower.includes('hello')||lower.includes('hi')||lower.includes('hey'))
     return "Hello! How can I help you today? Ask me about products, prices, categories, or orders.";
-  if (lower.includes('price')||lower.includes('cost')) {
+  if (lower.includes('price')||lower.includes('cost')){
     const match=products.find(p=>lower.includes(p.name.toLowerCase()));
     if(match) return `${match.name} is priced at $${match.price.toFixed(2)}.`;
     return "Which product are you interested in? I can share the price details.";
@@ -20,27 +20,27 @@ function getBotReply(msg,isAdmin,products){
   if(lower.includes('stock')||lower.includes('available')){
     const match=products.find(p=>lower.includes(p.name.toLowerCase()));
     if(match) return `${match.name} has ${match.stock} units in stock.`;
-    if(isAdmin) {
-      const low=products.filter(p=>p.stock <= 5);
+    if(isAdmin){
+      const low=products.filter(p=>p.stock <=5);
       return low.length >0 ?`Low stock items:${low.map(p=>`${p.name} (${p.stock})`).join(', ')}`:"All products have good stock levels!";
     }
     return "Tell me the product name and I'll check availability for you.";
   }
 
-  if (lower.includes('categor')) {
-    const cats =[...new Set(products.map(p => p.category))];
+  if (lower.includes('categor')){
+    const cats =[...new Set(products.map(p=>p.category))];
     return `We have these categories: ${cats.join(', ')}. Browse them on the products page!`;
   }
 
   if (lower.includes('organic'))
-    return `We have ${products.filter(p => p.organic).length} organic products. Use the organic filter on the products page!`;
+    return `We have ${products.filter(p =>p.organic).length} organic products. Use the organic filter on the products page!`;
   if (lower.includes('order')||lower.includes('delivery'))
     return "You can view your orders on the Order History page. We offer free delivery on all orders!";
   if (lower.includes('discount')||lower.includes('offer')||lower.includes('sale'))
     return `Currently ${products.filter(p => p.discount > 0).length} products are on sale. Check them out on the products page!`;
 
   if (isAdmin && (lower.includes('revenue')||lower.includes('total')||lower.includes('analytics')))
-    return `Quick stats: ${products.length} products, total inventory value $${products.reduce((s, p) => s + p.price * p.stock, 0).toFixed(2)}, ${products.filter(p => p.stock <= 5).length} low-stock alerts.`;
+    return `Quick stats: ${products.length} products, total inventory value $${products.reduce((s,p) => s + p.price * p.stock, 0).toFixed(2)}, ${products.filter(p => p.stock <= 5).length} low-stock alerts.`;
 
   if (lower.includes('help'))
     return "I can help with:\n• Product info & prices\n• Stock availability\n• Categories\n• Order tracking\n• Discounts & offers" + (isAdmin ? "\n• Revenue & analytics" : "");
@@ -49,23 +49,21 @@ function getBotReply(msg,isAdmin,products){
 }
 
 export default function Chatbot() {
-  const [open, setOpen] =useState(false);
+  const [open,setOpen] =useState(false);
   const [messages, setMessages] =useState([
-    {id:1, role:'bot',text:greetings[0] },
-    {id:2, role:'bot',text:greetings[1] },
+    {id:1,role:'bot',text:greetings[0]},
+    {id:2,role:'bot',text:greetings[1]},
   ]);
   const [input,setInput]=useState('');
   const scrollRef=useRef(null);
   const {user}=useAuth();
   const {products}=useProducts();
-
-  useEffect(() => {
-    scrollRef.current?.scrollTo({ top:scrollRef.current.scrollHeight, behavior:'smooth' });
-  }, [messages]);
-
-  const send = () => {
+  useEffect(()=>{
+    scrollRef.current?.scrollTo({top:scrollRef.current.scrollHeight,behavior:'smooth'});
+  },[messages]);
+  const send =()=>{
     if (!input.trim()) return;
-    const userMsg={ id:Date.now(), role:'user', text:input.trim() };
+    const userMsg={id:Date.now(),role:'user',text:input.trim()};
     setMessages(prev=>[...prev,userMsg]);
     setInput('');
    
@@ -77,7 +75,6 @@ export default function Chatbot() {
          
   return (      
     <>    
-      {/* FAB */}    
       <button     
         onClick={() => setOpen(!open)}
         className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-primary text-primary-foreground shadow-lg hover:shadow-xl flex items-center justify-center transition-all duration-300 hover:scale-105"
@@ -85,10 +82,8 @@ export default function Chatbot() {
         {open ? <X className="h-6 w-6" /> : <MessageCircle className="h-6 w-6" />}
       </button>
 
-      {/* Chat Window */}
-      {open && (
+      {open &&(
         <div className="fixed bottom-24 right-6 z-50 w-87.5 max-h-125 rounded-2xl border bg-card shadow-2xl flex flex-col overflow-hidden animate-fade-in">
-          {/* Header */}           
           <div className="bg-primary text-primary-foreground px-4 py-3 flex items-center gap-3">
             <Bot className="h-6 w-6" />
             <div>    
@@ -96,9 +91,7 @@ export default function Chatbot() {
               <p className="text-xs opacity-80">{user?.isAdmin ? 'Admin Mode' : 'Online'}</p>
             </div>    
           </div>
-     
-          {/* Messages */}
-          <div ref={scrollRef} className="flex-1 overflow-y-auto p-3 space-y-3 min-h-75">
+               <div ref={scrollRef} className="flex-1 overflow-y-auto p-3 space-y-3 min-h-75">
             {messages.map(m =>(
               <div key={m.id} className={`flex gap-2 ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 {m.role === 'bot' && (    
@@ -121,8 +114,6 @@ export default function Chatbot() {
               </div>
             ))}
           </div>
-
-          {/* Input */}
           <div className="border-t p-3 flex gap-2">
             <Input
               value={input}

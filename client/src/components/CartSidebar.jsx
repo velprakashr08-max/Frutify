@@ -7,15 +7,15 @@ import {formatPrice} from '@/lib/utils';
 import {useNavigate} from 'react-router-dom';
 import {useState} from 'react';
 import CheckoutModal from '@/components/CheckoutModal';
-export default function CartSidebar() {
+export default function CartSidebar(){
   const {items,removeItem,updateQty,clearCart,showCart,setShowCart}=useCart();
   const {products}=useProducts();
   const [showCheckout,setShowCheckout]=useState(false);   
   const cartProducts=items.map(ci=>{
     const product=products.find(p=>p.id===ci.productId);
-    return product ? { ...ci, product } : null;
+    return product ? {...ci,product}:null;
   }).filter(Boolean);
-  const subtotal=cartProducts.reduce((s, ci) => s + ci.product.price * ci.quantity, 0);
+  const subtotal=cartProducts.reduce((s,ci)=>s+ci.product.price*ci.quantity,0);
   return (
     <>
       <Sheet open={showCart} onOpenChange={setShowCart}>
@@ -25,7 +25,7 @@ export default function CartSidebar() {
               <ShoppingBag className="h-5 w-5" /> Shopping Cart
             </SheetTitle>
           </SheetHeader>
-          {cartProducts.length === 0 ? (
+          {cartProducts.length === 0 ?(
             <div className="flex-1 flex flex-col items-center justify-center gap-4 text-muted-foreground">
               <ShoppingBag className="h-16 w-16 opacity-30" />
               <p className="text-lg font-medium">Your cart is empty</p>
@@ -34,7 +34,7 @@ export default function CartSidebar() {
           ) : (
             <>
               <div className="flex-1 overflow-y-auto space-y-4 py-4">
-                {cartProducts.map(ci => (
+                {cartProducts.map(ci=>(
                   <div key={ci.productId} className="flex gap-3 p-3 rounded-lg border bg-card">
                     <img src={ci.product.image} alt={ci.product.name} className="w-16 h-16 rounded-md object-cover" />
                     <div className="flex-1 min-w-0">

@@ -2,11 +2,10 @@ import React from 'react'
 
 const fruitsData = () => {
   return (
-    <div>
-       
+    <div>         
+          
     </div>
   )
 }
-
+      
 export default fruitsData
-  

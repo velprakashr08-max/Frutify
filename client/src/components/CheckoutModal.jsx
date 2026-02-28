@@ -50,7 +50,7 @@ function OrderSummary({cartProducts,subtotal,discount,label}){
     <div className="border-t pt-3 space-y-1">
       {cartProducts.map(ci=>(
         <div key={ci.productId} className="flex justify-between text-sm">
-          <span>{ci.product.name} x{ci.quantity}</span>
+          <span>{ci.product.name}x{ci.quantity}</span>
           <span>{formatPrice(ci.product.price*ci.quantity)}</span>
         </div>
       ))}
@@ -198,16 +198,15 @@ export default function CheckoutModal({open,onOpenChange,cartProducts,subtotal})
     window.open(`mailto:${email}?subject=${subject}&body=${body}`);
   };
   return (
-    <Dialog open={open} onOpenChange={v=>{ if(stage !=='processing'){onOpenChange(v);if(!v) setStage('address');}}}>
+    <Dialog open={open} onOpenChange={v=>{if(stage !=='processing'){onOpenChange(v);if(!v) setStage('address');}}}>
       <DialogContent className="sm:max-w-lg rounded-2xl max-h-[90vh] overflow-y-auto [&::-webkit-scrollbar]:hidden [scrollbar-width:none]">
-        {stage === 'address' && (
+        {stage ==='address' &&(
           <>
             <DialogHeader>
               <DialogTitle className="font-heading flex items-center gap-2">
-                <MapPin className="h-5 w-5" /> Delivery Details
+                <MapPin className="h-5 w-5" />Delivery Details
               </DialogTitle>
             </DialogHeader>
-
             <div className="flex items-center gap-1 text-xs text-muted-foreground">
               <span className="bg-primary text-primary-foreground rounded-full w-5 h-5 flex items-center justify-center text-[10px] font-bold">1</span>
               <span className="font-medium text-primary">Address</span>
@@ -218,7 +217,6 @@ export default function CheckoutModal({open,onOpenChange,cartProducts,subtotal})
               <span className="bg-muted rounded-full w-5 h-5 flex items-center justify-center text-[10px]">3</span>
               <span>Done</span>
             </div>
-
             <div className="space-y-3">
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
@@ -240,63 +238,56 @@ export default function CheckoutModal({open,onOpenChange,cartProducts,subtotal})
               <div className="space-y-1">
                 <Label className="text-xs">Address *</Label>
                 <Input placeholder="House No, Street, Landmark" value={address} className="rounded-lg"
-                  onChange={e => setAddress(e.target.value)} />
+                  onChange={e =>setAddress(e.target.value)} />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <Label className="text-xs">City *</Label>
                   <Input placeholder="Mumbai" value={city} className="rounded-lg"
-                    onChange={e => setCity(e.target.value)} />
+                    onChange={e =>setCity(e.target.value)} />
                 </div>
                 <div className="space-y-1">
                   <Label className="text-xs">Pincode *</Label>
                   <Input placeholder="400001" value={pincode} className="rounded-lg"
-                    onChange={e => setPincode(e.target.value.replace(/\D/g, '').slice(0, 6))} />
+                    onChange={e=>setPincode(e.target.value.replace(/\D/g,'').slice(0,6))} />
                 </div>
               </div>
 
               <div className="space-y-2 pt-1">
-                <Label className="text-xs flex items-center gap-1"><Tag className="h-3 w-3" /> Coupon Code</Label>
-                {appliedCoupon ? (
+                <Label className="text-xs flex items-center gap-1"><Tag className="h-3 w-3"/>Coupon Code</Label>
+                {appliedCoupon ?(
                   <div className="flex items-center gap-2 bg-green-50 border border-green-200 rounded-lg p-2">
                     <Gift className="h-4 w-4 text-green-600" />
-                    <span className="text-sm font-medium text-green-700 flex-1">{appliedCoupon} - {COUPONS[appliedCoupon].label}</span>
+                    <span className="text-sm font-medium text-green-700 flex-1">{appliedCoupon}-{COUPONS[appliedCoupon].label}</span>
                     <Button variant="ghost" size="sm" className="h-6 text-xs text-red-500 hover:text-red-700" onClick={removeCoupon}>Remove</Button>
                   </div>
                 ) : (
                   <div className="flex gap-2">
-                    <Input placeholder="e.g. FRESH10" value={couponCode} className="rounded-lg flex-1"
-                      onChange={e => { setCouponCode(e.target.value.toUpperCase()); setCouponError(''); }} />
+                    <Input placeholder="COUPON" value={couponCode} className="rounded-lg flex-1"
+                      onChange={e=>{setCouponCode(e.target.value.toUpperCase());setCouponError('');}} />
                     <Button variant="outline" size="sm" className="rounded-lg" onClick={applyCoupon} disabled={!couponCode.trim()}>Apply</Button>
                   </div>
                 )}
                 {couponError && <p className="text-xs text-red-500">{couponError}</p>}
-                {!appliedCoupon && <p className="text-[10px] text-muted-foreground">Try: FRESH10, SAVE20, FLAT50, WELCOME</p>}
+                {!appliedCoupon && <p className="text-[10px] text-muted-foreground">Try:FRESH10, SAVE20, FLAT50, WELCOME</p>}
               </div>
-
               <OrderSummary cartProducts={cartProducts} subtotal={subtotal} discount={discount} label="Total" />
-
               <div className="flex items-center gap-2 bg-primary/5 rounded-lg p-2 text-xs text-primary">
                 <Truck className="h-4 w-4" />
-                <span className="font-medium">Estimated delivery: 30-45 mins</span>
+                <span className="font-medium">Estimated delivery:45 mins</span>
               </div>
-
-              <Button className="w-full rounded-full" onClick={() => setStage('payment')} disabled={!addressValid}>
+              <Button className="w-full rounded-full" onClick={()=>setStage('payment')} disabled={!addressValid}>
                 Continue to Payment <ChevronRight className="h-4 w-4 ml-1" />
               </Button>
             </div>
-          </>
-        )}
-
-        {/* ═══ STEP 2: PAYMENT ═══ */}
-        {stage === 'payment' && (
+          </>)}
+        {stage ==='payment' &&(
           <>
             <DialogHeader>
               <DialogTitle className="font-heading flex items-center gap-2">
-                <CreditCard className="h-5 w-5" /> Payment
+                <CreditCard className="h-5 w-5"/> Payment
               </DialogTitle>
             </DialogHeader>
-
             <div className="flex items-center gap-1 text-xs text-muted-foreground">
               <span className="bg-primary/20 text-primary rounded-full w-5 h-5 flex items-center justify-center text-[10px]">&#10003;</span>
               <span className="text-muted-foreground">Address</span>
@@ -307,50 +298,44 @@ export default function CheckoutModal({open,onOpenChange,cartProducts,subtotal})
               <span className="bg-muted rounded-full w-5 h-5 flex items-center justify-center text-[10px]">3</span>
               <span>Done</span>
             </div>
-
             <div className="space-y-4">
-              {/* Delivery summary */}
               <div className="flex items-start gap-2 bg-muted/50 rounded-lg p-2 text-xs">
-                <MapPin className="h-3.5 w-3.5 mt-0.5 text-muted-foreground" />
+                <MapPin className="h-3.5 w-3.5 mt-0.5 text-muted-foreground"/>
                 <div className="flex-1">
-                  <span className="font-medium">{name}</span> - {phone}<br />
+                  <span className="font-medium">{name}</span>-{phone}<br/>
                   <span className="text-muted-foreground">{address}, {city} - {pincode}</span>
                 </div>
-                <Button variant="ghost" size="sm" className="h-6 text-xs" onClick={() => setStage('address')}>
-                  <ChevronLeft className="h-3 w-3 mr-0.5" /> Edit
+                <Button variant="ghost" size="sm" className="h-6 text-xs" onClick={()=>setStage('address')}>
+                  <ChevronLeft className="h-3 w-3 mr-0.5"/>Edit
                 </Button>
               </div>
-
-              {/* Method selector */}
               <div className="grid grid-cols-3 gap-2">
-                {METHODS.map(m => {
-                  const Icon = m.icon;
+                {METHODS.map(m=>{
+                  const Icon=m.icon;
                   return (
                     <button key={m.key}
-                      onClick={() => { setMethod(m.key); setQrExpired(false); }}
+                      onClick={()=>{setMethod(m.key);setQrExpired(false);}}
                       className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border text-center transition-all ${
-                        method === m.key
+                        method ===m.key
                           ? 'border-green-500 bg-green-50 text-green-700'
                           : 'border-gray-200 hover:border-gray-300 text-gray-500'
                       }`}>
-                      <Icon className={`h-5 w-5 ${method === m.key ? 'text-green-600' : 'text-gray-400'}`} />
+                      <Icon className={`h-5 w-5 ${method ===m.key ? 'text-green-600' :'text-gray-400'}`} />
                       <span className="text-xs font-semibold leading-tight">{m.label}</span>
                       <span className="text-[10px] text-gray-400 leading-tight hidden sm:block">{m.desc}</span>
                     </button>
                   );
                 })}
               </div>
-
-              {/* UPI */}
-              {method === 'upi' && (
+              {method ==='upi' &&(
                 <div className="space-y-3">
                   <div className="flex gap-3">
                     <div ref={qrRef} className="relative shrink-0">
                       <div className={`p-2 rounded-xl border-2 bg-white transition-all ${qrExpired ? 'border-red-200 opacity-40 grayscale' : 'border-green-200'}`}>
-                        <QRCodeCanvas value={upiString} size={110} level="H" fgColor="#111827" />
+                        <QRCodeCanvas value={upiString} size={110} level="H" fgColor="#111827"/>
                       </div>
                       {qrExpired && (
-                        <button onClick={() => setQrExpired(false)}
+                        <button onClick={()=>setQrExpired(false)}
                           className="absolute inset-0 flex flex-col items-center justify-center gap-1 rounded-xl bg-black/5">
                           <RefreshCw className="h-5 w-5 text-gray-600" />
                           <span className="text-[10px] font-semibold text-gray-600">Refresh</span>
@@ -367,59 +352,57 @@ export default function CheckoutModal({open,onOpenChange,cartProducts,subtotal})
                         <button onClick={copyUpi}
                           className="flex items-center gap-1.5 bg-gray-50 border border-gray-200 rounded-lg px-2.5 py-1.5 text-xs font-mono text-gray-700 hover:bg-gray-100 transition-colors w-full justify-between">
                           <span>{UPI_ID}</span>
-                          {copied ? <CheckCheck className="h-3 w-3 text-green-600 shrink-0" /> : <Copy className="h-3 w-3 text-gray-400 shrink-0" />}
+                          {copied ? <CheckCheck className="h-3 w-3 text-green-600 shrink-0" />:<Copy className="h-3 w-3 text-gray-400 shrink-0" />}
                         </button>
                       </div>
                     </div>
                   </div>
-                  <QrTimer key={String(qrExpired)} seconds={300} onExpire={() => setQrExpired(true)} />
+                  <QrTimer key={String(qrExpired)} seconds={300} onExpire={()=>setQrExpired(true)} />
                   <div className="flex items-center gap-1 text-xs text-gray-400">
-                    <ShieldCheck className="h-3.5 w-3.5 text-green-600" />
-                    <span>Secured by UPI - Amount: <strong className="text-foreground">{formatPrice(finalAmount)}</strong></span>
+                    <ShieldCheck className="h-3.5 w-3.5 text-green-600"/>
+                    <span>Secured by UPI -Amount:<strong className="text-foreground">{formatPrice(finalAmount)}</strong></span>
                   </div>
                 </div>
               )}
-
-              {/* Card */}
-              {method === 'card' && (
+              {method ==='card'&&(
                 <div className="space-y-3">
                   <div className="bg-linear-to-br from-gray-800 to-gray-900 rounded-2xl p-4 text-white shadow-lg">
                     <div className="flex justify-between items-start mb-4">
                       <Leaf className="h-5 w-5 text-green-400" />
                       <p className="text-[10px] uppercase tracking-widest text-gray-400">Frutify Pay</p>
                     </div>
-                    <p className="font-mono text-sm tracking-widest mb-3 text-gray-200">{cardNumber || '...  ...  ...  ...'}</p>
+                    <p className="font-mono text-sm tracking-widest mb-3 text-gray-200">{cardNumber||'...  ...  ...  ...'}</p>
                     <div className="flex justify-between items-end text-xs">
                       <div>
                         <p className="text-gray-400 uppercase tracking-wide text-[9px]">Card Holder</p>
-                        <p className="font-medium mt-0.5">{cardName || 'YOUR NAME'}</p>
+                        <p className="font-medium mt-0.5">{cardName||'YOUR NAME'}</p>
                       </div>
                       <div className="text-right">
                         <p className="text-gray-400 uppercase tracking-wide text-[9px]">Expires</p>
-                        <p className="font-medium mt-0.5">{expiry || 'MM/YY'}</p>
+                        <p className="font-medium mt-0.5">{expiry||'MM/YY'}</p>
                       </div>
                     </div>
                   </div>
                   <div className="space-y-1.5">
                     <Label className="text-xs">Card Number</Label>
                     <Input placeholder="1234 5678 9012 3456" value={cardNumber}
-                      onChange={e => setCardNumber(fmtCard(e.target.value))} className="font-mono tracking-wide rounded-lg" />
+                      onChange={e=>setCardNumber(fmtCard(e.target.value))} className="font-mono tracking-wide rounded-lg"/>
                   </div>
                   <div className="space-y-1.5">
                     <Label className="text-xs">Name on Card</Label>
                     <Input placeholder="Full name" value={cardName}
-                      onChange={e => setCardName(e.target.value)} className="rounded-lg" />
+                      onChange={e=>setCardName(e.target.value)} className="rounded-lg" />
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div className="space-y-1.5">
                       <Label className="text-xs">Expiry</Label>
                       <Input placeholder="MM/YY" value={expiry} maxLength={5}
-                        onChange={e => setExpiry(fmtExpiry(e.target.value))} className="rounded-lg" />
+                        onChange={e=>setExpiry(fmtExpiry(e.target.value))} className="rounded-lg"/>
                     </div>
                     <div className="space-y-1.5">
                       <Label className="text-xs">CVV</Label>
                       <Input type="password" placeholder="..." value={cvv} maxLength={3}
-                        onChange={e => setCvv(e.target.value.replace(/\D/g,'').slice(0,3))} className="rounded-lg" />
+                        onChange={e=>setCvv(e.target.value.replace(/\D/g,'').slice(0,3))} className="rounded-lg" />
                     </div>
                   </div>
                   <div className="flex items-center gap-2 text-xs text-gray-400">
@@ -428,86 +411,74 @@ export default function CheckoutModal({open,onOpenChange,cartProducts,subtotal})
                   </div>
                 </div>
               )}
-
-              {/* COD */}
-              {method === 'cod' && (
+              {method === 'cod'&&(
                 <div className="flex items-start gap-2 bg-amber-50 border border-amber-200 rounded-xl p-3">
                   <Banknote className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
                   <div>
                     <p className="text-sm font-semibold text-amber-800">Cash on Delivery</p>
-                    <p className="text-xs text-amber-700 mt-0.5">Keep <strong>{formatPrice(finalAmount)}</strong> ready when your order arrives.</p>
+                    <p className="text-xs text-amber-700 mt-0.5">Keep<strong>{formatPrice(finalAmount)}</strong>ready when your order arrives.</p>
                   </div>
                 </div>
               )}
-
               <OrderSummary cartProducts={cartProducts} subtotal={subtotal} discount={discount} label="Total" />
-
               <div className="flex gap-2">
-                <Button variant="outline" className="rounded-full" onClick={() => setStage('address')}>
-                  <ChevronLeft className="h-4 w-4 mr-1" /> Back
+                <Button variant="outline" className="rounded-full" onClick={()=>setStage('address')}>
+                  <ChevronLeft className="h-4 w-4 mr-1" />Back
                 </Button>
                 <Button className="flex-1 rounded-full bg-green-600 hover:bg-green-700 text-white"
                   disabled={!canPay} onClick={handlePay}>
-                  {method === 'card' && `Pay ${formatPrice(finalAmount)}`}
-                  {method === 'upi'  && `I've Completed Payment`}
-                  {method === 'cod'  && `Place Order ${formatPrice(finalAmount)}`}
+                  {method ==='card'&&`Pay ${formatPrice(finalAmount)}`}
+                  {method ==='upi'&&`I've Completed Payment`}
+                  {method ==='cod'&&`Place Order ${formatPrice(finalAmount)}`}
                 </Button>
               </div>
             </div>
           </>
         )}
-
-        {/* ═══ PROCESSING ═══ */}
-        {stage === 'processing' && (
+        {stage === 'processing' &&(
           <div className="flex flex-col items-center justify-center py-12 gap-4">
-            <Loader2 className="h-12 w-12 text-primary animate-spin" />
+            <Loader2 className="h-12 w-12 text-primary animate-spin"/>
             <p className="text-lg font-heading font-semibold">Processing Order...</p>
             <p className="text-sm text-muted-foreground">Please wait while we confirm your order.</p>
           </div>
         )}
-
-        {/* ═══ SUCCESS ═══ */}
-        {stage === 'success' && (
+        {stage ==='success'&&(
           <div className="flex flex-col items-center py-6 gap-4">
             <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center">
               <Check className="h-10 w-10 text-primary" />
             </div>
             <h3 className="font-heading text-xl font-bold">
-              {paidMethod === 'cod' ? 'Order Placed!' : 'Payment Successful!'}
+              {paidMethod ==='cod' ?'Order Placed!':'Payment Successful!'}
             </h3>
             <div className="text-center space-y-1 text-sm text-muted-foreground">
               <p>Transaction ID: <span className="font-mono font-medium text-foreground">{txnId}</span></p>
-              <p>Method: {paidMethod === 'card' ? 'Credit Card' : paidMethod === 'upi' ? 'UPI (QR)' : 'Cash on Delivery'}</p>
+              <p>Method:{paidMethod ==='card' ?'Credit Card' :paidMethod ==='upi' ?'UPI (QR)':'Cash on Delivery'}</p>
               <p>{new Date().toLocaleString()}</p>
             </div>
-
             <div className="w-full bg-muted/50 rounded-lg p-3 text-xs space-y-1">
               <div className="flex items-center gap-1.5 font-medium">
-                <Truck className="h-3.5 w-3.5 text-primary" /> Delivering to
+                <Truck className="h-3.5 w-3.5 text-primary"/>Delivering to
               </div>
-              <p>{name} - {phone}</p>
-              <p className="text-muted-foreground">{address}, {city} - {pincode}</p>
+              <p>{name}-{phone}</p>
+              <p className="text-muted-foreground">{address},{city} -{pincode}</p>
             </div>
-
             <OrderSummary cartProducts={snapCart} subtotal={snapSubtotal} discount={snapDiscount} label="Total Paid" />
-
             <div className="flex gap-2 w-full">
               <Button variant="outline" className="flex-1 rounded-full" onClick={printReceipt}>
-                <Printer className="h-4 w-4 mr-1" /> Print
+                <Printer className="h-4 w-4 mr-1" />Print
               </Button>
               <Button variant="outline" className="flex-1 rounded-full" onClick={downloadReceipt}>
-                <Download className="h-4 w-4 mr-1" /> Download
+                <Download className="h-4 w-4 mr-1" />Download
               </Button>
-              {email && (
+              {email &&(
                 <Button variant="outline" className="flex-1 rounded-full" onClick={emailReceipt}>
-                  <Mail className="h-4 w-4 mr-1" /> Email
+                  <Mail className="h-4 w-4 mr-1"/>Email
                 </Button>
               )}
             </div>
             <Button className="w-full rounded-full" onClick={handleContinue}>Continue Shopping</Button>
           </div>
         )}
-
       </DialogContent>
     </Dialog>
   );
