@@ -104,7 +104,7 @@ export default function Index() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {features.map((f, i) => {
-              const Icon = f.icon;
+              const Icon = f.icon;       
               return (
                 <div key={i} className="group bg-white rounded-2xl border border-gray-100 p-6 flex flex-col items-start gap-4 hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
                   <div className="w-12 h-12 rounded-xl bg-green-50 border border-green-100 flex items-center justify-center group-hover:bg-green-600 transition-colors duration-300">
@@ -116,14 +116,14 @@ export default function Index() {
                   </div>
                   <div className="mt-auto w-8 h-0.5 bg-green-200 group-hover:w-16 group-hover:bg-green-500 transition-all duration-300 rounded-full" />
                 </div>
-              );
+              );      
             })}
           </div>
         </div>
       </section>
 
       <section className="py-20">
-        <div className="container">
+        <div className="container">   
           <div className="text-center mb-12">
             <span className="inline-block text-xs font-bold tracking-widest uppercase text-green-600 bg-green-50 px-3 py-1 rounded-full border border-green-100 mb-3">Simple Process</span>
             <h2 className="font-heading text-3xl font-bold text-gray-900">How It Works</h2>
@@ -131,7 +131,7 @@ export default function Index() {
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 relative">
             <div className="hidden lg:block absolute top-10 left-[12.5%] right-[12.5%] h-px bg-linear-to-r from-transparent via-green-200 to-transparent" />
-            {steps.map((s) => {
+            {steps.map((s) => {     
               const Icon = s.icon;
               return (
                 <div key={s.step} className="relative flex flex-col items-center text-center gap-4 group">
@@ -139,7 +139,7 @@ export default function Index() {
                     <Icon className="h-8 w-8 text-green-600" />
                     <span className="absolute -top-2.5 -right-2.5 w-6 h-6 rounded-full bg-green-600 text-white text-xs font-bold flex items-center justify-center shadow">
                       {s.step}
-                    </span>
+                    </span>            
                   </div>
                   <div>
                     <h3 className="font-heading font-bold text-gray-800 mb-1">{s.title}</h3>

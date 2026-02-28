@@ -3,15 +3,15 @@ import {useNavigate} from 'react-router-dom';
 import {Dialog,DialogContent,DialogTitle} from '@/components/ui/dialog';
 import {Input} from '@/components/ui/input';
 import {Button} from '@/components/ui/button';
-import {Leaf,LogIn,Crown,Package,Warehouse,Truck,ShoppingBag,Sprout,ArrowRight} from 'lucide-react';
+import {Leaf,LogIn,Crown,Package,Warehouse,ShoppingBag,Sprout,ArrowRight} from 'lucide-react';
 import {useAuth} from '@/contexts/AuthContext';
 const DEMO_ACCOUNTS =[
   { name:'admin',label:'Admin',desc:'Full control',icon: Crown,color:'text-purple-600',bg:'bg-purple-50',ring:'ring-purple-200',dot:'bg-purple-400'},
   { name:'manager',label:'Manager',desc:'Analytics',icon: Package,color:'text-blue-600',bg:'bg-blue-50',ring:'ring-blue-200',dot:'bg-blue-400'},
   { name:'warehouse',label:'Warehouse',desc:'Inventory',icon: Warehouse,color:'text-amber-600',bg:'bg-amber-50',ring:'ring-amber-200',dot:'bg-amber-400'},
-  { name:'delivery',label:'Delivery',desc:'Orders',icon: Truck,color:'text-emerald-600',bg:'bg-emerald-50',ring:'ring-emerald-200',dot:'bg-emerald-400'},
+  { name:'farmer',label:'Farmer',desc:'Sell produce',icon: Sprout,color:'text-lime-600',bg:'bg-lime-50',ring:'ring-lime-200',dot:'bg-lime-400'},
 ];
-const ROLE_ROUTES ={admin:'/admin',manager:'/manager',warehouse:'/warehouse',delivery:'/delivery'};
+const ROLE_ROUTES ={admin:'/admin',manager:'/manager',warehouse:'/warehouse',farmer:'/farmer'};
 export default function LoginModal({open,onOpenChange}){
   const {login} =useAuth();
   const navigate=useNavigate();

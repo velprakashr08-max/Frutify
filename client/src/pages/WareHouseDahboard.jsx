@@ -1,21 +1,52 @@
-﻿import {useState,useMemo} from "react";
+﻿import {useState,useMemo,useEffect} from "react";
 import {Navigate} from "react-router-dom";
 import {useAuth} from "../contexts/AuthContext";
 import {useProducts} from "../contexts/ProductContext";
-import {Package,AlertTriangle,Warehouse,RefreshCw,Search,Apple,Leaf,Filter,LayoutGrid} from "lucide-react";
+import {Package,AlertTriangle,RefreshCw,Search,Apple,Leaf,Filter,LayoutGrid,Sprout,CheckCircle2,XCircle,Clock,IndianRupee} from "lucide-react";
 import {toast} from "sonner";
+
+const FARMER_REQUESTS_KEY = "frutify_farmer_requests";
+function loadFarmerRequests(){try{return JSON.parse(localStorage.getItem(FARMER_REQUESTS_KEY)||"[]");}catch{return [];}}
 const stockLevel = (stock) =>{
   if (stock=== 0) return {label:"Out of Stock",dot:"bg-red-500",badge:"bg-red-50 text-red-600",border:"border-l-red-400"};
   if (stock<=5)  return {label:"Critical",dot:"bg-orange-500",badge:"bg-orange-50 text-orange-600",border:"border-l-orange-400"};
   if (stock<=15) return {label:"Low",dot:"bg-amber-400",badge:"bg-amber-50 text-amber-600",border:"border-l-amber-400"};
   return{label:"Healthy",dot:"bg-emerald-500",badge:"bg-emerald-50 text-emerald-700",border:"border-l-emerald-400"};
 };
+const STATUS_CFG = {
+  pending:  {badge:"bg-amber-50 text-amber-700 border-amber-200",  dot:"bg-amber-400",  Icon:Clock         },
+  approved: {badge:"bg-emerald-50 text-emerald-700 border-emerald-200", dot:"bg-emerald-500", Icon:CheckCircle2  },
+  rejected: {badge:"bg-red-50 text-red-600 border-red-200",         dot:"bg-red-400",    Icon:XCircle       },
+};
+
 export default function WarehouseDashboard(){
   const {user}= useAuth();
   const {products,updateProduct}=useProducts();
   const [search,setSearch]=useState("");
   const [restockMap,setRestockMap]=useState({});
   const [typeFilter,setTypeFilter]=useState("all");
+  const [farmerReqs,setFarmerReqs]=useState(loadFarmerRequests);
+  const [reqTab,setReqTab]=useState("pending");
+
+  useEffect(()=>{
+    const onStorage=()=>setFarmerReqs(loadFarmerRequests());
+    window.addEventListener("storage",onStorage);
+    return ()=>window.removeEventListener("storage",onStorage);
+  },[]);
+
+  const pendingReqs  = useMemo(()=>farmerReqs.filter(r=>r.status==="pending"),[farmerReqs]);
+  const resolvedReqs = useMemo(()=>farmerReqs.filter(r=>r.status!=="pending").sort((a,b)=>b.submittedAt-a.submittedAt),[farmerReqs]);
+
+  const filtered =useMemo(()=>{
+    let result = [...products];
+    if (typeFilter !== "all") result =result.filter(p => p.type === typeFilter);
+    if (search) result = result.filter(p =>
+      p.name.toLowerCase().includes(search.toLowerCase()) ||
+      p.category.toLowerCase().includes(search.toLowerCase())
+    );
+    result.sort((a,b)=>a.stock-b.stock);
+    return result;
+  }, [products,typeFilter,search]);
   if (user?.role !=="warehouse") return <Navigate to="/" replace />;
   const critical = products.filter(p => p.stock === 0);
   const low      = products.filter(p => p.stock > 0 && p.stock <= 5);
@@ -28,23 +59,26 @@ export default function WarehouseDashboard(){
     { label:"Healthy",value:healthy.length,sub:"well stocked",icon:Leaf,color:"text-emerald-600",bg:"bg-emerald-50"},
     { label:"Low / Out",value:critical.length + low.length,sub:"need restocking",icon:AlertTriangle,color:"text-red-500",bg:"bg-red-50",   alert: true },
   ];
-  const filtered =useMemo(()=>{
-    let result = [...products];
-    if (typeFilter !== "all") result =result.filter(p => p.type === typeFilter);
-    if (search) result = result.filter(p =>
-      p.name.toLowerCase().includes(search.toLowerCase()) ||
-      p.category.toLowerCase().includes(search.toLowerCase())
-    );
-    result.sort((a,b)=>a.stock-b.stock);
-    return result;
-  }, [products,typeFilter,search]);
-
   const handleRestock=(product)=>{
     const qty =Number(restockMap[product.id]) || 20;
     if (qty <= 0) {toast.error("Enter a valid quantity"); return;}
     updateProduct({...product,stock:product.stock + qty});
     setRestockMap(prev => ({...prev,[product.id]: ""}));
-    toast.success(`Restocked ${product.name}`,{description:`+${qty} units � New total: ${product.stock + qty}` });
+    toast.success(`Restocked ${product.name}`,{description:`+${qty} units — New total: ${product.stock + qty}` });
+  };
+
+  const handleFarmerReq=(id,action)=>{
+    const updated = loadFarmerRequests().map(r=>r.id===id?{...r,status:action}:r);
+    localStorage.setItem(FARMER_REQUESTS_KEY,JSON.stringify(updated));
+    setFarmerReqs(updated);
+    const req = farmerReqs.find(r=>r.id===id);
+    if(action==="approved" && req){
+      const match = products.find(p=>p.name.toLowerCase()===req.productName.toLowerCase());
+      if(match) updateProduct({...match,stock:match.stock+req.quantity});
+    }
+    toast.success(action==="approved"?"Request approved!":"Request rejected",{
+      description: req ? `${req.productName} · ${req.farmerName}` : undefined
+    });
   };
   return (
     <div className="p-6 space-y-6">
@@ -85,6 +119,86 @@ export default function WarehouseDashboard(){
                 </span>
               ))}
             </div>
+          </div>
+
+          {/* Farmer supply requests */}
+          <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
+            <div className="flex items-center justify-between gap-4 px-5 py-4 border-b border-gray-100 flex-wrap">
+              <div className="flex items-center gap-2">
+                <Sprout className="h-4 w-4 text-lime-600" />
+                <p className="text-sm font-semibold text-gray-800">Farmer Supply Requests</p>
+                {pendingReqs.length>0 && (
+                  <span className="px-2 py-0.5 text-xs font-bold bg-amber-500 text-white rounded-full">{pendingReqs.length}</span>
+                )}
+              </div>
+              <div className="flex gap-1 p-1 bg-gray-100 rounded-lg">
+                {[{key:"pending",label:"Pending"},{key:"resolved",label:"Resolved"}].map(t=>(
+                  <button key={t.key} onClick={()=>setReqTab(t.key)}
+                    className={`px-3 py-1 rounded-md text-xs font-semibold transition-all ${
+                      reqTab===t.key?"bg-white text-gray-900 shadow-sm":"text-gray-500 hover:text-gray-700"
+                    }`}>{t.label}</button>
+                ))}
+              </div>
+            </div>
+
+            {reqTab==="pending" && (
+              pendingReqs.length===0
+                ? <p className="text-center py-10 text-sm text-gray-400">No pending supply requests.</p>
+                : <div className="divide-y divide-gray-50">
+                    {pendingReqs.map(req=>(
+                      <div key={req.id} className="flex items-center gap-4 px-5 py-3.5">
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-semibold text-gray-800 truncate">{req.productName}</p>
+                          <p className="text-xs text-gray-400">{req.farmerName} · {req.category} · {req.type}</p>
+                        </div>
+                        <div className="hidden sm:block text-right shrink-0">
+                          <p className="text-sm font-semibold text-gray-800">{req.quantity} kg</p>
+                          <p className="text-xs text-gray-400">₹{req.pricePerUnit}/kg</p>
+                        </div>
+                        <div className="hidden md:flex items-center gap-1 text-sm font-bold text-gray-900 shrink-0">
+                          <IndianRupee className="h-3.5 w-3.5" />
+                          {(req.quantity*req.pricePerUnit).toLocaleString("en-IN")}
+                        </div>
+                        <div className="flex gap-2 shrink-0">
+                          <button onClick={()=>handleFarmerReq(req.id,"approved")}
+                            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-600 hover:text-white hover:border-emerald-600 transition-colors">
+                            <CheckCircle2 className="h-3.5 w-3.5" /> Approve
+                          </button>
+                          <button onClick={()=>handleFarmerReq(req.id,"rejected")}
+                            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-red-50 text-red-600 border border-red-200 hover:bg-red-500 hover:text-white hover:border-red-500 transition-colors">
+                            <XCircle className="h-3.5 w-3.5" /> Reject
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+            )}
+
+            {reqTab==="resolved" && (
+              resolvedReqs.length===0
+                ? <p className="text-center py-10 text-sm text-gray-400">No resolved requests yet.</p>
+                : <div className="divide-y divide-gray-50">
+                    {resolvedReqs.map(req=>{
+                      const sc=STATUS_CFG[req.status]||STATUS_CFG.pending;
+                      return (
+                        <div key={req.id} className="flex items-center gap-4 px-5 py-3.5">
+                          <div className={`w-2 h-2 rounded-full shrink-0 ${sc.dot}`} />
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-semibold text-gray-800 truncate">{req.productName}</p>
+                            <p className="text-xs text-gray-400">{req.farmerName} · {new Date(req.submittedAt).toLocaleDateString("en-IN",{day:"2-digit",month:"short",year:"numeric"})}</p>
+                          </div>
+                          <div className="hidden sm:block text-right shrink-0">
+                            <p className="text-sm font-semibold text-gray-800">{req.quantity} kg @ ₹{req.pricePerUnit}</p>
+                          </div>
+                          <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border shrink-0 ${sc.badge}`}>
+                            <sc.Icon className="h-3 w-3" />
+                            {req.status.charAt(0).toUpperCase()+req.status.slice(1)}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+            )}
           </div>
 
           {/* Inventory table */}

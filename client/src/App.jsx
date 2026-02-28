@@ -14,8 +14,8 @@ const Products=lazy(()=>import("./pages/Products"));
 const Admin =lazy(()=>import("./pages/Admin"));     
 const Wishlist=lazy(()=>import("./pages/Wishlist"));    
 const OrderHistory=lazy(()=>import("./pages/OrderHistory"));
-const DeliveryDashboard=lazy(()=>import("./pages/DeliveryDashboard"));
 const ManagerDashboard =lazy(()=>import("./pages/ManagerDashboard"));
+const FarmerDashboard=lazy(()=>import("./pages/FarmerDashboard"));
 const WarehouseDashboard=lazy(()=>import("./pages/WareHouseDahboard"));
 const NotFound =lazy(()=>import("./pages/NotFound"));
 function PageLoader() {     
@@ -43,9 +43,9 @@ const App =()=>(
     <Route path="/admin" element={<Admin />} />
     <Route path="/wishlist" element={<Wishlist />} />
     <Route path="/orders" element={<OrderHistory />} />
-    <Route path="/delivery" element={<DeliveryDashboard />} />
     <Route path="/manager" element={<ManagerDashboard />} />
     <Route path="/warehouse" element={<WarehouseDashboard />} />
+    <Route path="/farmer" element={<FarmerDashboard />} />
     <Route path="*" element={<NotFound />} />
   </Routes>
   </Suspense>

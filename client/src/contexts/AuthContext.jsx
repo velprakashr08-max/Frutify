@@ -11,8 +11,8 @@ export function AuthProvider({ children }) {
     if (!trimmed) return;  
     const lower=trimmed.toLowerCase();   
     const isAdmin=lower==='admin';
-    const role =['admin','manager','delivery','warehouse'].includes(lower)?lower:'customer';
-    const bgColor=isAdmin?'27ae60':lower==='manager'?'8b5cf6':lower==='delivery'?'f59e0b':lower==='warehouse'?'f97316':'27ae60';
+    const role =['admin','manager','farmer','warehouse'].includes(lower)?lower:'customer';
+    const bgColor=isAdmin?'27ae60':lower==='manager'?'8b5cf6':lower==='farmer'?'84cc16':lower==='warehouse'?'f97316':'27ae60';
     const u = { 
       name:trimmed,
       isAdmin, 

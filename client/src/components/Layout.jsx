@@ -1,6 +1,6 @@
 ﻿import {useState, useEffect} from 'react';
 import {Link, useLocation, useSearchParams} from 'react-router-dom';
-import {ShoppingCart,User,LogOut,Menu,X,Leaf,Heart,Crown,BarChart3,Package,ShieldAlert,Warehouse,Truck} from 'lucide-react';
+import {ShoppingCart,User,LogOut,Menu,X,Leaf,Heart,Crown,BarChart3,Package,ShieldAlert,Warehouse,Sprout} from 'lucide-react';
 import {useAuth} from '@/contexts/AuthContext';
 import {useCart} from '@/contexts/CartContext';
 import {useWishlist} from '@/contexts/WishlistContext';
@@ -9,7 +9,7 @@ import {Button} from '@/components/ui/button';
 import LoginModal from '@/components/LoginModal';
 import CartSidebar from '@/components/CartSidebar';
 import PageTransition from '@/components/PageTransition';
-const INTERNAL_ROUTES =['/admin','/manager','/warehouse','/delivery'];
+const INTERNAL_ROUTES =['/admin','/manager','/warehouse','/farmer'];
 const SIDEBAR_NAV ={
   admin: [
     {key:'overview',icon:BarChart3,label:'Overview'},
@@ -21,19 +21,24 @@ const SIDEBAR_NAV ={
     { key:'catalog',icon:Package,label:'Catalog'  },
   ],
   warehouse:[{key:null,icon:Warehouse,label:'Inventory'}],
-  delivery:[{key:null,icon:Truck,label:'My Orders'}],
+  farmer:[
+    {key:'sell',icon:Sprout,label:'Sell Produce'},
+    {key:'requests',icon:Package,label:'My Requests'},
+  ],
 };
 const ROLE_TITLE ={
   admin:'Admin Panel',
   manager:'Manager',
   warehouse:'Warehouse',
-  delivery:'Delivery',
+  farmer:'Farmer Portal',
 };
 const TAB_LABELS ={
   overview:'Overview',
   products:'Products',
   alerts:'Stock Alerts',
   catalog:'Catalog',
+  sell:'Sell Produce',
+  requests:'My Requests',
 };
 export default function Layout({children}){
   const {user,logout,showLogin,setShowLogin}=useAuth();
@@ -57,12 +62,12 @@ export default function Layout({children}){
   const roleTitle=ROLE_TITLE[role]||'';
   const pageTitle=TAB_LABELS[activeTab]||sidebarNav[0]?.label||roleTitle;
   const lowStockCount=products?.filter(p=>p.stock<= 5).length ?? 0;
-  const roleLabel=user?.isAdmin?'Admin':user?.role==='manager' ?'Manager':user?.role==='warehouse'?'Warehouse':user?.role==='delivery'?'Delivery':'Customer';
+  const roleLabel=user?.isAdmin?'Admin':user?.role==='manager'?'Manager':user?.role==='warehouse'?'Warehouse':user?.role==='farmer'?'Farmer':'Customer';
   const links = [{to:'/',label:'Home'},{to:'/products',label:'Products'},{to:'/wishlist',label:'Wishlist'},{to:'/orders',label:'Orders'},
     ...(user?.isAdmin?[{to:'/admin',label:'Admin'}]:[]),
     ...(user?.role==='manager'?[{to:'/manager',label:'Manager Dashboard'}]:[]),
     ...(user?.role==='warehouse'?[{to:'/warehouse',label:'Warehouse Dashboard'}]:[]),
-    ...(user?.role==='delivery'?[{to:'/delivery',label:'Delivery Dashboard'}]:[]),
+    ...(user?.role==='farmer'?[{to:'/farmer',label:'Farmer Portal'}]:[]),
   ];
   if (isInternal){
     return(
@@ -80,7 +85,7 @@ export default function Layout({children}){
               const isActive =item.key ?activeTab===item.key||(!activeTab && item.key ===sidebarNav[0]?.key):true;
               const Icon=item.icon;    
               return(
-                <Link
+                <Link   
                   key={item.key ?? item.label}
                   to={item.key ? `?tab=${item.key}`:location.pathname}
                   className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
@@ -155,7 +160,7 @@ export default function Layout({children}){
       </div>
     );
   }
-  return (
+  return (      
     <div className="min-h-screen flex flex-col">
       <header className={`sticky top-0 z-40 transition-all duration-500 ${
         scrolled ?'bg-background/95 backdrop-blur-xl shadow-md border-b':'bg-background/80 backdrop-blur-sm border-b border-transparent'
@@ -182,11 +187,11 @@ export default function Layout({children}){
                     {wishlist.length}
                   </span>)}
             </Link>
-            </Button>
+            </Button>        
             <Button
-              variant="ghost"
+              variant="ghost"    
               size="icon"
-              className="relative"
+              className="relative"          
               onClick={()=>user ?setShowCart(true):setShowLogin(true)}
               title={user ?'Shopping Cart':'Login to access cart'}  >
               <ShoppingCart className={`h-5 w-5 ${!user ? 'opacity-50' : ''}`} />
@@ -250,7 +255,8 @@ export default function Layout({children}){
       <PageTransition>{children}</PageTransition>
       </main>
       <LoginModal open={showLogin} onOpenChange={setShowLogin} />
-      <CartSidebar/>
-    </div>
+      <CartSidebar/>            
+    </div>                   
   );
 }
+                                     

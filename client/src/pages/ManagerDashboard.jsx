@@ -40,6 +40,10 @@ export default function ManagerDashboard() {
       .sort((a,b)=>b.value -a.value);
   },[products]);
 
+  const filtered = useMemo(()=>
+    products.filter(p=>
+      p.name.toLowerCase().includes(search.toLowerCase())||p.category.toLowerCase().includes(search.toLowerCase())),
+  [products,search]);
   if (user?.role !=="manager") return <Navigate to="/" replace />;
 
   const totalValue=products.reduce((s,p) =>s +p.price *p.stock,0);
@@ -57,10 +61,6 @@ export default function ManagerDashboard() {
     {label:"Active Discounts",value:discounted,sub:"promotional offers",icon:Tag,color:"text-purple-600",bg:"bg-purple-50",border:"border-purple-100" },
     {label:"Need Attention",value:lowStock,sub:outOfStock >0?`${outOfStock} out of stock`:"monitor closely",icon:AlertTriangle,color:lowStock > 0 ? "text-red-500" : "text-gray-400", bg: lowStock > 0 ? "bg-red-50" : "bg-gray-50", border: lowStock > 0 ? "border-red-100" : "border-gray-100", alert: true },
   ];
-  const filtered = useMemo(()=>
-    products.filter(p=>
-      p.name.toLowerCase().includes(search.toLowerCase())||p.category.toLowerCase().includes(search.toLowerCase())),
-  [products,search]);
   return (
     <div className="p-6 space-y-6">
       {activeTab === "overview" && (

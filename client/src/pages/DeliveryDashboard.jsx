@@ -67,12 +67,12 @@ export default function DeliveryDashboard() {
     setDeliveredToday(orders.filter(o => o.status === "delivered").length);
   }, []);
 
-  if (user?.role !== "delivery") return <Navigate to="/" replace />;
-
   const activeOrders = useMemo(
     () => allOrders.filter(o => o.status === "packed" || o.status === "out_for_delivery"),
     [allOrders]
   );
+
+  if (user?.role !== "delivery") return <Navigate to="/" replace />;
 
   const readyToPick = activeOrders.filter(o => o.status === "packed").length;
   const inTransit   = activeOrders.filter(o => o.status === "out_for_delivery").length;

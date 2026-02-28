@@ -5,16 +5,16 @@
   {id:4,name:'Cruciferous',icon:'tree',type:'vegetable' },
   {id:5,name:'Fruiting Vegetables',icon:'apple',type:'vegetable' },
   {id:6,name:'Mushrooms',icon:'bean',type:'vegetable' },
-  {id:7,name:'Citrus Fruits',icon:'citrus',type:'fruit'},
+  {id:7,name:'Citrus Fruits',icon:'citrus',type:'fruit'},     
   {id:8,name:'Tropical Fruits',icon:'tropical',type:'fruit'},
   {id:9,name:'Stone Fruits',icon:'cherry',type:'fruit'},
   {id:10,name:'Berries',icon:'grape',type:'fruit'},
   {id:11,name:'Melons & Gourds',icon:'leaf',type:'fruit'},
-];
-export const defaultVegetables = [
-  {
+];                                    
+export const defaultVegetables =[             
+  {      
     id: 1,name:'Organic Carrots',slug:'organic-carrots',category:'Root Vegetables',type:'vegetable',
-    price:2.99,originalPrice:3.99,stock:15,
+    price:2.99,originalPrice:3.99,stock:15,         
     image:'https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=500',
     gallery:['https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=500', 'https://images.unsplash.com/photo-1447175008436-054170c2e979?w=500'],
     description:'Fresh organic carrots harvested from local farms. Sweet, crunchy, and packed with beta-carotene.',
@@ -31,7 +31,7 @@ export const defaultVegetables = [
     nutrition:{calories:55,carbs:'11g',protein:'3.7g',fat:'0.6g',fiber:'5.1g' },
     organic:true,rating:4.6,reviews:98,discount:19,tags:['organic','superfood','vitamin-c'],
     dateAdded:'2026-02-18',
-  },
+  },   
   {
     id: 3,name:'Roma Tomatoes',slug:'roma-tomatoes',category:'Fruiting Vegetables',type:'vegetable',
     price:4.29,originalPrice:4.99,stock:30,
@@ -51,7 +51,7 @@ export const defaultVegetables = [
     nutrition:{calories:23, carbs:'3.6g', protein: '2.9g', fat: '0.4g', fiber: '2.2g' },
     organic:true,rating:4.7,reviews:156,discount:20,tags:['organic','iron-rich','ready-to-eat'],
     dateAdded:'2026-01-24',
-  },
+  },   
   {
     id:5,name:'Shiitake Mushrooms',slug:'shiitake-mushrooms',category:'Mushrooms',type:'vegetable',
     price:5.99,originalPrice:7.49,stock:8,
@@ -62,7 +62,7 @@ export const defaultVegetables = [
     organic:true,rating:4.9,reviews:67,discount:20,tags:['organic','umami','premium'],
     dateAdded:'2026-01-27',
   },
-  {
+  {            
     id: 6,name:'Red Bell Peppers',slug:'red-bell-peppers',category:'Fruiting Vegetables',type:'vegetable',
     price:3.79,originalPrice:4.49,stock:25,
     image:'https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?w=500',
@@ -70,9 +70,9 @@ export const defaultVegetables = [
     description: 'Sweet and crunchy red bell peppers, bursting with vitamin C. Great raw, roasted, or stuffed.',
     nutrition:{calories:31,carbs:'6g',protein:'1g',fat:'0.3g',fiber:'2.1g' },
     organic:false,rating:4.4,reviews:112,discount:16,tags:['sweet','vitamin-c','versatile'],
-    dateAdded:'2026-01-30',     
+    dateAdded:'2026-01-30',               
   },     
-  {    
+  {                 
     id:7,name:'Organic Kale',slug:'organic-kale',category:'Leafy Greens',type:'vegetable',
     price:3.29,originalPrice:3.99,stock:20,
     image:'https://images.unsplash.com/photo-1524179091875-bf99a9a6af57?w=500',
@@ -100,9 +100,9 @@ export const defaultVegetables = [
     description:'Dense, white cauliflower head. The low-carb darling â€” rice it, mash it, or roast it.',
     nutrition:{calories:25,carbs:'5g',protein:'1.9g',fat:'0.3g',fiber:'2.0g'},
     organic:true,rating:4.5,reviews:76,discount:17,tags:['organic','low-carb','keto'],
-    dateAdded:'2026-02-08',
-  },
-  {
+    dateAdded:'2026-02-08',                   
+  },              
+  {    
     id: 10, name:'Portobello Mushrooms',slug:'portobello-mushrooms',category:'Mushrooms',type:'vegetable',
     price:4.99,originalPrice:5.99,stock:10,
     image:'https://images.unsplash.com/photo-1552825897-bb05e1366c84?w=500',
@@ -217,7 +217,7 @@ export const defaultFruits = [
 ];
 
 export const defaultReviews =[
-  {id:1,productId:1,userName:'Sarah Johnson',userAvatar:'https://i.pravatar.cc/150?img=1',rating:5,date:'2026-01-30',title:'Best carrots ever!', comment: 'These organic carrots are incredibly fresh and sweet. My kids love them!', helpful: 24 },
+  {id:1,productId:1,userName:'',userAvatar:'https://i.pravatar.cc/150?img=1',rating:5,date:'2026-01-30',title:'Best carrots ever!', comment: 'These organic carrots are incredibly fresh and sweet. My kids love them!', helpful: 24 },
   {id:2,productId:1,userName:'Mike Chen',userAvatar:'https://i.pravatar.cc/150?img=3', rating:4,date:'2026-02-14',title: 'Great quality', comment: 'Very fresh and crunchy. Slightly smaller than expected but taste is amazing.', helpful: 12 },
   {id:3,productId:2,userName:'Emily Davis',userAvatar:'https://i.pravatar.cc/150?img=5', rating:5,date:'2026-02-05',title: 'Perfect broccoli', comment: "The freshest broccoli I've found. Green and firm, no yellowing at all.", helpful: 18 },
   {id:4,productId:3,userName:'James Wilson',userAvatar:'https://i.pravatar.cc/150?img=7', rating:4,date:'2026-02-18',title: 'Great for sauce', comment: 'Made an amazing marinara with these Roma tomatoes. Very flavorful.', helpful: 9 },
@@ -227,8 +227,8 @@ export const defaultReviews =[
   {id:8,productId:109,userName:'David Kim',userAvatar:'https://i.pravatar.cc/150?img=15', rating:5,date:'2026-02-20',title: 'Best blueberries', comment: 'Wild blueberries with incredible depth of flavour. My morning oats have never tasted better!', helpful: 38 },
 ];
 export const testimonials = [
-  { name:'Maria Garcia',avatar:'https://i.pravatar.cc/150?img=20',text:'Frutify has completely changed how I shop. Fresh fruits and veggies delivered right to my door!', role: 'Home Chef' },
-  { name:'Robert Smith',avatar:'https://i.pravatar.cc/150?img=22',text:'The organic selection is amazing. I love knowing exactly where my food comes from.', role: 'Health Enthusiast' },
-  { name:'Jennifer Lee',avatar:'https://i.pravatar.cc/150?img=24',text:'Fast delivery and the quality is always top-notch. My go-to for weekly fruits and veggies!', role: 'Busy Mom' },
+  { name:'Pat Cummins',avatar:'https://i.pravatar.cc/150?img=20',text:'Frutify has completely changed how I shop. Fresh fruits and veggies delivered right to my door!', role: 'Home Chef' },
+  { name:'Virat Kohli',avatar:'https://i.pravatar.cc/150?img=22',text:'The organic selection is amazing. I love knowing exactly where my food comes from.', role: 'Health Enthusiast' },
+  { name:'Bhuvaneswar Kumar',avatar:'https://i.pravatar.cc/150?img=24',text:'Fast delivery and the quality is always top-notch. My go-to for weekly fruits and veggies!', role: 'Busy Mom' },
 ];
-export const defaultProducts=[...defaultVegetables,...defaultFruits];
+export const defaultProducts=[...defaultVegetables,...defaultFruits];                                     

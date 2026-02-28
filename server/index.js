@@ -7,10 +7,10 @@ app.use(cors(
   app.use(express.json())      
   const PORT=PROCESS.env.PORT || 5000;
 
-
+     
 //   Node js Basics
 // Installing Node.js
-// Running Javascript with Node.js     
+// Running Javascript with Node.js       
 // Node.js Modules system
 // Understanding module.exports and require
 // Explore the module wrapper functions
@@ -111,15 +111,15 @@ app.use(cors(
 // Setting up a Node.js project with TypeScript
 // Configuring TypeScript with tsconfig.json
 // Working with modules and types in TypeScript
-// express js with typescript
+// express js with typescript 
 // mongoose with typescript    
-
-
+  
+        
 app.post('/api/test',(req,res)=>{
-  console.log('Received data:',req.body);   
+  console.log('Received data:',req.body);      
   res.json({message:'Data received successfully',received:req.body});  
 });        
   
-app.listen(PORT,()=>{    
+app.listen(PORT,()=>{       
   console.log(`Server Running on port ${PORT}`);  
-});   
+});          
