@@ -4,7 +4,7 @@ import{Button}from"@/components/ui/button";
 import{Input}from"@/components/ui/input";
 import{Label}from"@/components/ui/label";
 import{CreditCard,Smartphone,Banknote,Check,Loader2,Shield,Clock,Download,RefreshCw,Copy,CheckCheck,Leaf,X} from "lucide-react";
-import{QRCodeCanvas}from"qrcode.react";
+import{QRCodeCanvas}from"qrcode.react";       
 import{formatPrice}from"@/lib/utils";
 function QrTimer({seconds,onExpire}){
   const [left,setLeft]=useState(seconds);
@@ -22,30 +22,30 @@ function QrTimer({seconds,onExpire}){
       <div className="flex-1 h-1.5 rounded-full bg-gray-100 overflow-hidden">
         <div
           className={`h-full rounded-full transition-all duration-1000 ${pct > 30 ? "bg-green-500" :"bg-red-500"}`}
-          style={{ width: `${pct}%` }}
+          style={{ width: `${pct}%` }}        
         />   
-      </div>   
+      </div>                              
       <span className={`font-mono text-xs font-semibold tabular-nums ${pct <= 30 ? "text-red-500" :"text-gray-500"}`}>
         {mins}:{secs}  
-      </span>      
-    </div>                    
+      </span>                                                                             
+    </div>                               
   );                 
-}                                    
-const METHODS = [
+}                                        
+const METHODS =[
   { key:"upi",icon:Smartphone,label:"UPI / QR",desc:"PhonePe,GPay,Paytm" },
   { key:"card",icon:CreditCard,label:"Card",desc:"Credit/Debit card"  },
-  { key:"cod",icon:Banknote,label:"Cash on Delivery",desc:"Pay at your door"      },
+  { key:"cod",icon:Banknote,label:"Cash on Delivery",desc:"Pay at your door"},
 ];
 const UPI_ID ="frutify@upi";
 export default function PaymentModal({open,onOpenChange,amount=0,orderId ="",onSuccess}){
-  const [method,setMethod]=useState("upi");
+  const [method,setMethod]=useState("upi");        
   const [stage,setStage]=useState("pick");
   const [cardNumber,setCardNumber]=useState("");
   const [expiry,setExpiry]=useState("");
-  const [cvv,setCvv]=useState("");
-  const [cardName,setCardName]=useState("");
-  const [qrExpired,setQrExpired]=useState(false);
-  const [copied,setCopied]=useState(false);
+  const [cvv,setCvv]=useState("");      
+  const [cardName,setCardName]=useState("");        
+  const [qrExpired,setQrExpired]=useState(false);       
+  const [copied,setCopied]=useState(false);     
   const qrRef=useRef(null);
   const inrAmount=(amount*83).toFixed(2);
   const upiString=`upi://pay?pa=${UPI_ID}&pn=Frutify&am=${inrAmount}&cu=INR&tn=Order-${orderId}`;
@@ -54,11 +54,11 @@ export default function PaymentModal({open,onOpenChange,amount=0,orderId ="",onS
   const fmtExpiry=v=>{const d=v.replace(/\D/g,"").slice(0, 4); return d.length > 2 ?d.slice(0,2)+"/"+d.slice(2):d;};
   const cardValid =cardName.trim() &&cardNumber.replace(/\s/g,"").length ===16 && expiry.length ===5 && cvv.length ===3;
   const canPay =method ==="upi"?!qrExpired:method==="card" ?cardValid:true;
-  const copyUpi = () => {
-    navigator.clipboard.writeText(UPI_ID).catch(()=>{});
+  const copyUpi = () => {    
+    navigator.clipboard.writeText(UPI_ID).catch(()=>{});                
     setCopied(true);
-    setTimeout(()=>setCopied(false),2000);
-  };
+    setTimeout(()=>setCopied(false),2000);                      
+  };           
   const downloadQr=useCallback(()=>{
     const canvas=qrRef.current?.querySelector("canvas");
     if (!canvas) return;
@@ -74,35 +74,35 @@ export default function PaymentModal({open,onOpenChange,amount=0,orderId ="",onS
     },2200);
   };
   const handleClose =(v)=>{
-    if(!v){
+    if(!v){          
       setStage("pick");
       setMethod("upi");
       setCardNumber("");setExpiry("");setCvv("");setCardName("");
-      setQrExpired(false);
+      setQrExpired(false);      
     }
     onOpenChange(v);
   };
-  const handleConfirm =()=>{
+  const handleConfirm =()=>{       
     handleClose(false);
-    onSuccess?.(method);
-  };
-  return (
+    onSuccess?.(method);      
+  };                                                             
+  return (    
     <Dialog open={open} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-md p-0 overflow-hidden">
         <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-gray-100">
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2.5">            
             <div className="p-1.5 rounded-lg bg-green-50">
               <Leaf className="h-4 w-4 text-green-600" />
             </div>
-            <div>
+            <div>         
               <DialogTitle className="text-base font-bold text-gray-900 leading-none">
                 {stage ==="success"?"Payment Successful":"Complete Payment"}
-              </DialogTitle>
+              </DialogTitle>                                                                      
               {stage !== "success" &&(
                 <p className="text-xs text-gray-400 mt-0.5">Order #{orderId}</p>
-              )}
-            </div>
-          </div>
+              )}           
+            </div>                                                         
+          </div>                                                                                                      
           <div className="flex items-center gap-2">
             <div className="bg-green-50 border border-green-100 px-3 py-1 rounded-full">
               <p className="text-sm font-bold text-green-700">{formatPrice(amount)}</p>
@@ -112,7 +112,7 @@ export default function PaymentModal({open,onOpenChange,amount=0,orderId ="",onS
         {stage === "success" &&(
           <div className="px-6 py-10 flex flex-col items-center gap-4 text-center">
             <div className="w-16 h-16 rounded-full bg-green-50 flex items-center justify-center">
-              <Check className="h-8 w-8 text-green-600"/>
+              <Check className="h-8 w-8 text-green-600"/>                         
             </div>
             <div>
               <p className="text-lg font-bold text-gray-900">Payment Confirmed!</p>
@@ -310,10 +310,10 @@ export default function PaymentModal({open,onOpenChange,amount=0,orderId ="",onS
                   </div>
                 </div>
 
-                <div className="flex items-center gap-2 text-xs text-gray-400">
+                {/* <div className="flex items-center gap-2 text-xs text-gray-400">
                   <Shield className="h-3.5 w-3.5 text-green-500 shrink-0" />
-                  256-bit SSL encrypted & 3D Secure protected
-                </div>
+                  256-bit SSL encrypte
+                </div> */}
 
                 <Button
                   disabled={!cardValid}
@@ -333,10 +333,10 @@ export default function PaymentModal({open,onOpenChange,amount=0,orderId ="",onS
                     <p className="text-sm font-semibold text-amber-800">Cash on Delivery Selected</p>
                   </div>
                   <p className="text-xs text-amber-700 leading-relaxed">
-                    Keep <span className="font-bold">₹{inrAmount}</span> ready when your order arrives. Our delivery agent will collect exact change if possible.
+                    Keep <span className="font-bold">₹{inrAmount}</span> ready when your order arrives.
                   </p>
                 </div>
-                <div className="bg-white border border-gray-100 rounded-xl divide-y divide-gray-50">
+                <div className="bg-white border border-gray-100 rounded-xl divide-y divide-gray-50">                          
                   {[
                     {label:"Order amount",value:formatPrice(amount)},
                     {label:"Cash to keep (INR)",value:`₹${inrAmount}`},
@@ -351,7 +351,7 @@ export default function PaymentModal({open,onOpenChange,amount=0,orderId ="",onS
                 </div>
                 <div className="flex items-start gap-2 text-xs text-gray-400">
                   <Shield className="h-3.5 w-3.5 text-green-500 shrink-0 mt-0.5"/>
-                  You can cancel before the order is packed. No charges apply.
+                  You can cancel before the order is packed.
                 </div>
                 <Button
                   onClick={handlePay}
