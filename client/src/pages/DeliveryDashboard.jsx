@@ -5,58 +5,54 @@ import {Button} from "../components/ui/Button";
 import {
   Truck,CheckCircle,Clock,Package,MapPin,Phone,Star,Bike,IndianRupee,Navigation,User,Calendar,AlertCircle,ChevronRight,
 } from "lucide-react";
-import { formatPrice } from "../lib/utils";
-import { toast } from "sonner";
-function getOrders() {
-  try {
-    const stored = localStorage.getItem("freshveg_orders");
+import {formatPrice} from "../lib/utils";
+import {toast} from "sonner";
+function getOrders(){
+  try{
+    const stored =localStorage.getItem("freshveg_orders");
     return stored ? JSON.parse(stored) : [];
-  } catch { return []; }
+  } catch { return [];}
 }
 
 function saveOrders(orders) {
   localStorage.setItem("freshveg_orders", JSON.stringify(orders));
 }
-const STATUS_LABELS = {
-  placed:           "New Order",
-  packed:           "Ready to Pick",
-  out_for_delivery: "Out for Delivery",
-  delivered:        "Delivered",
+const STATUS_LABELS = {placed:"New Order",packed:"Ready to Pick",out_for_delivery:"Out for Delivery",delivered:"Delivered",
 };
 
-const STATUS_STYLES = {
-  placed:           "bg-blue-50   text-blue-700   border-blue-200",
-  packed:           "bg-amber-50  text-amber-700  border-amber-200",
-  out_for_delivery: "bg-primary/10 text-primary  border-primary/30",
-  delivered:        "bg-green-50  text-green-700  border-green-200",
+const STATUS_STYLES ={
+  placed:"bg-blue-50   text-blue-700   border-blue-200",
+  packed:"bg-amber-50  text-amber-700  border-amber-200",
+  out_for_delivery:"bg-primary/10 text-primary  border-primary/30",
+  delivered:"bg-green-50  text-green-700  border-green-200",
 };
 
-const NEXT_STATUS = {
-  packed:           "out_for_delivery",
-  out_for_delivery: "delivered",
+const NEXT_STATUS ={
+  packed:"out_for_delivery",
+  out_for_delivery:"delivered",
 };
 
-const BTN_LABEL = {
-  packed:           "Pick Up",
-  out_for_delivery: "Mark Delivered",
+const BTN_LABEL={
+  packed:"Pick Up",
+  out_for_delivery:"Mark Delivered",
 };
 
-const FAKE_ADDRESSES = [
-  "14, MG Road, Bengaluru � 560001",
-  "22, Anna Salai, Chennai � 600002",
-  "5, FC Road, Pune � 411004",
-  "88, Connaught Place, New Delhi � 110001",
-  "3, Park Street, Kolkata � 700016",
-  "12, Jubilee Hills, Hyderabad � 500033",
+const FAKE_ADDRESSES =[
+  "14, MG Road, Bengaluru  560001",
+  "22, Anna Salai, Chennai  600002",
+  "5, FC Road, Pune  411004",
+  "88, Connaught Place, New Delhi  110001",
+  "3, Park Street, Kolkata  700016",
+  "12, Jubilee Hills, Hyderabad  500033",
 ];
 
-const FAKE_PHONES = [
-  "+91 98765 43210", "+91 87654 32109", "+91 76543 21098",
-  "+91 91234 56789", "+91 99887 65432",
+const FAKE_PHONES =[
+  "+91 98765 43210","+91 87654 32109","+91 76543 21098",
+  "+91 91234 56789","+91 99887 65432",
 ];
 
 export default function DeliveryDashboard() {
-  const { user } = useAuth();
+  const {user}=useAuth();
   const [allOrders, setAllOrders] = useState([]);
   const [deliveredToday, setDeliveredToday] = useState(0);
   const [earningsToday]  = useState(247);   
@@ -71,41 +67,40 @@ export default function DeliveryDashboard() {
     () => allOrders.filter(o => o.status === "packed" || o.status === "out_for_delivery"),
     [allOrders]
   );
-
+            
   if (user?.role !== "delivery") return <Navigate to="/" replace />;
 
   const readyToPick = activeOrders.filter(o => o.status === "packed").length;
   const inTransit   = activeOrders.filter(o => o.status === "out_for_delivery").length;
   const handleAdvance = (orderId, currentStatus) => {
     const next = NEXT_STATUS[currentStatus];
-    if (!next) return;
+    if (!next) return;          
 
-    const updated = allOrders.map(o =>
-      o.id === orderId ? { ...o, status: next } : o
-    );
-
+    const updated =allOrders.map(o=>
+      o.id === orderId ?{...o,status:next}:o
+    );  
     saveOrders(updated);
     setAllOrders(updated);
 
-    if (next === "delivered") {
-      setDeliveredToday(p => p + 1);
-      toast.success("Order delivered! Great job ??", { description: `Order #${orderId} marked as delivered.` });
-    } else {
-      toast.success("Picked up � heading out!", { description: `Order #${orderId} is now out for delivery.` });
+    if(next ==="delivered"){
+      setDeliveredToday(p=>p+1);
+      toast.success("Order delivered! Great job ??",{description:`Order #${orderId} marked as delivered.` });
+    } else{
+      toast.success("Picked up heading out!",{description: `Order #${orderId} is now out for delivery.` });
     }
   };
 
   const stats = [
-    { label: "Ready to Pick",   value: readyToPick,               sub: "awaiting pick-up",  alert: readyToPick > 0 },
-    { label: "In Transit",      value: inTransit,                 sub: "out for delivery"                          },
-    { label: "Delivered Today", value: deliveredToday,            sub: "completed"                                 },
-    { label: "Earnings Today",  value: formatPrice(earningsToday),sub: "estimated"                                 },
-  ];
+    {label:"Ready to Pick",value:readyToPick,sub:"awaiting pick-up",alert:readyToPick >0},
+    {label:"In Transit",value:inTransit,sub:"out for delivery"},
+    {label:"Delivered Today",value:deliveredToday,sub:"completed"},
+    {label:"Earnings Today",value:formatPrice(earningsToday),sub:"estimated"},
+  ];     
 
   return (
     <div className="p-6 space-y-6">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-            {stats.map((k, i) => (
+            {stats.map((k,i)=>(
               <div key={i} className={`bg-white rounded-xl border p-5 ${k.alert && k.value > 0 ? "border-amber-200" : "border-gray-100"}`}>
                 <p className="text-xs text-gray-400 font-medium uppercase tracking-wide">{k.label}</p>
                 <p className={`text-2xl font-bold mt-1.5 ${k.alert && k.value > 0 ? "text-amber-600" : "text-gray-900"}`}>{k.value}</p>
@@ -117,10 +112,10 @@ export default function DeliveryDashboard() {
             <p className="text-sm font-semibold text-gray-800 mb-4">Today's Performance</p>
             <div className="grid grid-cols-3 gap-4">
               {[
-                { label: "On-time Rate", value: "96%"    },
-                { label: "Avg Delivery", value: "18 min" },
-                { label: "Rating",       value: "4.9 ?"  },
-              ].map((m, i) => (
+                {label:"On-time Rate",value:"96%"},
+                {label:"Avg Delivery",value:"18 min"},
+                {label:"Rating",value:"4.9 ?"},
+              ].map((m,i)=>(
                 <div key={i} className="text-center p-4 rounded-lg bg-gray-50 border border-gray-100">
                   <p className="text-xl font-bold text-gray-900">{m.value}</p>
                   <p className="text-xs text-gray-400 mt-1">{m.label}</p>
@@ -132,28 +127,26 @@ export default function DeliveryDashboard() {
             <div className="flex items-center justify-between mb-4">
               <p className="text-sm font-semibold text-gray-800">
                 Active Assignments
-                                {activeOrders.length > 0 && (
+            {activeOrders.length > 0 &&(
                   <span className="ml-2 inline-flex items-center justify-center w-5 h-5 rounded-full bg-green-600 text-white text-[10px] font-bold">
                     {activeOrders.length}
-                  </span>
-                )}
-              </p>
-            </div>
-
-            {activeOrders.length === 0 ? (
+                  </span>       
+                )}         
+              </p>      
+            </div>     
+            {activeOrders.length === 0 ?(
               <div className="bg-white rounded-xl border border-gray-100 p-12 text-center">
                 <CheckCircle className="h-10 w-10 text-emerald-500 mx-auto mb-3" />
                 <p className="text-sm font-semibold text-gray-700">No pending deliveries</p>
                 <p className="text-xs text-gray-400 mt-1">All clear! New orders will appear here.</p>
               </div>
-            ) : (
+            ):(
               <div className="space-y-3">
-                {activeOrders.map((order, idx) => {
-                  const isPick = order.status === "packed";
-                  const addr   = FAKE_ADDRESSES[idx % FAKE_ADDRESSES.length];
-                  const phone  = FAKE_PHONES[idx % FAKE_PHONES.length];
-                  const total  = order.total ?? order.items?.reduce((s, i) => s + i.price * i.quantity, 0) ?? 0;
-
+                {activeOrders.map((order,idx)=>{
+                  const isPick=order.status ==="packed";
+                  const addr=FAKE_ADDRESSES[idx %FAKE_ADDRESSES.length];
+                  const phone=FAKE_PHONES[idx % FAKE_PHONES.length];
+                  const total=order.total ?? order.items?.reduce((s, i) => s + i.price * i.quantity,0) ??0;
                   return (
                     <div key={order.id} className={`bg-white rounded-xl border border-gray-100 border-l-2 overflow-hidden ${isPick ? "border-l-amber-400" : "border-l-emerald-500"}`}>
                       <div className="p-5 space-y-4">
@@ -167,7 +160,7 @@ export default function DeliveryDashboard() {
                           }`}>{STATUS_LABELS[order.status || "placed"]}</span>
                         </div>
                         <div className="bg-gray-50 rounded-lg border border-gray-100 p-3 space-y-1">
-                          {order.items?.map((item, i) => (
+                          {order.items?.map((item,i)=>(                     
                             <div key={i} className="flex justify-between text-xs text-gray-500">
                               <span className="truncate">{item.name} �{item.quantity}</span>
                               <span className="shrink-0 ml-2 font-medium text-gray-700">{formatPrice(item.price * item.quantity)}</span>
@@ -201,7 +194,7 @@ export default function DeliveryDashboard() {
                         )}
                       </div>
                     </div>
-                  );
+                  );              
                 })}
               </div>
             )}
@@ -211,9 +204,8 @@ export default function DeliveryDashboard() {
             <p className="text-sm text-gray-500">
               Complete all deliveries before 8 PM for a{" "}
               <span className="font-semibold text-gray-800">?50 punctuality bonus</span>.
-            </p>
+            </p>      
           </div>
-
-    </div>
-  );
-}
+     
+    </div>                     
+  );}

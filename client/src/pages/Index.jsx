@@ -56,19 +56,19 @@ export default function Index() {
         </div>
         <div className="container relative z-10 pl-12 md:pl-20 lg:pl-32 pr-8" style={{ transform: `translateY(${scrollY * -0.15}px)`, opacity: Math.max(0, 1 - scrollY / 600) }}>
           <div className="max-w-2xl space-y-8 animate-fade-in">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary text-primary-foreground text-sm font-medium shadow-lg">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-white text-sm font-medium shadow-lg" style={{background:'#16a34a'}}>
               <Leaf className="h-4 w-4" />
               Farm Fresh &amp; Organic
             </div>
             <h1 className="font-heading text-4xl md:text-6xl lg:text-7xl font-extrabold leading-[1.1] text-white">
-              Fresh <span className="text-primary">Fruits &amp; Veggies</span> Delivered to You
+              Fresh <span style={{color:'#fbbf18'}}>Fruits &amp; Veggies</span> Delivered to You
             </h1>
             <p className="text-lg text-white/70 max-w-lg leading-relaxed">
               Discover the finest organic fruits and vegetables sourced directly from local farms.
               Fresh, healthy, and delivered right to your doorstep.
             </p>
             <div className="flex flex-wrap gap-3">
-              <Button asChild size="lg" className="rounded-full px-8 shadow-lg">
+              <Button asChild size="lg" className="rounded-full px-8 shadow-lg border-0 text-white hover:opacity-90" style={{background:'#16a34a'}}>
                 <Link to="/products">Shop Now <ArrowRight className="h-4 w-4 ml-1" /></Link>
               </Button>
               <Button asChild size="lg" className="rounded-full px-8 bg-foreground/80 text-background hover:bg-foreground shadow-lg border-0">
@@ -83,12 +83,19 @@ export default function Index() {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-0 divide-x divide-gray-100">
             {stats.map((s, i) => {
               const Icon = s.icon;
+              const isGold = i % 2 !== 0;
               return (
                 <div key={i} className="flex flex-col items-center gap-2 py-2">
-                  <div className="w-10 h-10 rounded-xl bg-green-50 flex items-center justify-center">
-                    <Icon className="h-5 w-5 text-green-600" />
+                  <div
+                    className="w-10 h-10 rounded-xl flex items-center justify-center"
+                    style={isGold ? {background:'#fffbeb',border:'1px solid #fde68a'} : {background:'#f0fdf4',border:'1px solid #bbf7d0'}}
+                  >
+                    <Icon className="h-5 w-5" style={{color: isGold ? '#fbbf18' : '#16a34a'}} />
                   </div>
-                  <span className="text-2xl md:text-3xl font-heading font-bold text-gray-900">{s.value}</span>
+                  <span
+                    className="text-2xl md:text-3xl font-heading font-bold"
+                    style={isGold ? {color:'#fbbf18'} : {color:'#111827'}}
+                  >{s.value}</span>
                   <span className="text-xs text-gray-500 font-medium">{s.label}</span>
                 </div>
               );
@@ -130,14 +137,21 @@ export default function Index() {
             <p className="text-gray-500 max-w-md mx-auto mt-2 text-sm">Get fresh fruits &amp; vegetables in 4 simple steps</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 relative">
-            <div className="hidden lg:block absolute top-10 left-[12.5%] right-[12.5%] h-px bg-linear-to-r from-transparent via-green-200 to-transparent" />
+            <div className="hidden lg:block absolute top-10 left-[12.5%] right-[12.5%] h-px bg-green-200" />
             {steps.map((s) => {     
               const Icon = s.icon;
+              const isGold = s.step % 2 === 0;
               return (
                 <div key={s.step} className="relative flex flex-col items-center text-center gap-4 group">
-                  <div className="relative z-10 w-20 h-20 rounded-2xl bg-white border-2 border-green-100 flex items-center justify-center shadow-sm group-hover:border-green-500 group-hover:shadow-md transition-all duration-300">
-                    <Icon className="h-8 w-8 text-green-600" />
-                    <span className="absolute -top-2.5 -right-2.5 w-6 h-6 rounded-full bg-green-600 text-white text-xs font-bold flex items-center justify-center shadow">
+                  <div
+                    className="relative z-10 w-20 h-20 rounded-2xl bg-white flex items-center justify-center shadow-sm transition-all duration-300"
+                    style={{border: isGold ? '2px solid #fde68a' : '2px solid #bbf7d0'}}
+                  >
+                    <Icon className="h-8 w-8" style={{color: isGold ? '#fbbf18' : '#16a34a'}} />
+                    <span
+                      className="absolute -top-2.5 -right-2.5 w-6 h-6 rounded-full text-white text-xs font-bold flex items-center justify-center shadow"
+                      style={{background: isGold ? '#fbbf18' : '#16a34a'}}
+                    >
                       {s.step}
                     </span>            
                   </div>
@@ -164,7 +178,8 @@ export default function Index() {
                 <img
                   src={testimonials[testimonialIdx].avatar}
                   alt={testimonials[testimonialIdx].name}
-                  className="w-16 h-16 rounded-full ring-4 ring-green-100 object-cover"
+                  className="w-16 h-16 rounded-full object-cover"
+                  style={{outline:'4px solid transparent',boxShadow:'0 0 0 4px #fbbf18,0 0 0 7px #fff'}}
                 />
                 <div className="flex gap-0.5">
                   {Array.from({ length: 5 }).map((_, i) => (
@@ -206,9 +221,9 @@ export default function Index() {
       </section>
       <section className="py-20 bg-[#f8fdf9]">
         <div className="container">
-          <div className="max-w-xl mx-auto bg-white rounded-3xl border border-green-100 shadow-lg p-10 text-center space-y-5">
-            <div className="mx-auto w-14 h-14 rounded-2xl bg-green-50 border border-green-100 flex items-center justify-center">
-              <Send className="h-6 w-6 text-green-600" />
+            <div className="max-w-xl mx-auto bg-white rounded-3xl shadow-lg p-10 text-center space-y-5" style={{border:'1px solid #fde68a'}}>
+            <div className="mx-auto w-14 h-14 rounded-2xl flex items-center justify-center" style={{background:'#fbbf18'}}>
+              <Send className="h-6 w-6 text-white" />
             </div>
             <div>
               <h2 className="font-heading text-2xl font-bold text-gray-900">Stay Updated</h2>

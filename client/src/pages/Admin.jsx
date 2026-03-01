@@ -13,18 +13,18 @@ import {Package,AlertTriangle,Plus,Pencil,Trash2,Upload,BarChart3,Leaf,CheckCirc
 import {BarChart,Bar,XAxis,YAxis,CartesianGrid,Tooltip,ResponsiveContainer,AreaChart,Area,}from'recharts';
 import {categories}from'../data/vegetables';
 import CategoryIcon from'../components/CategoryIcon';
-import {formatPrice} from'../lib/utils';
-import {toast}from'sonner';
+import {formatPrice} from'../lib/utils';    
+import {toast}from'sonner';          
 import {TrendingDown,Layers}from'lucide-react';
 const productCategories=categories.filter(c =>c.type!=='all');
 const emptyProduct ={name:'',slug:'',category:'Root Vegetables',type:'vegetable',
-  price:0,originalPrice:0,stock:0,
+  price:0,originalPrice:0,stock:0,   
   image:'',gallery:[],description:'',
   nutrition:{calories:0,carbs:'0g',protein:'0g',fat:'0g',fiber:'0g'},
   organic:false,rating:4.0,reviews:0,discount:0,tags:[],dateAdded:new Date().toISOString().slice(0,10),
 };
-export default function Admin() {
-  const {user}=useAuth();
+export default function Admin(){  
+  const {user}=useAuth();    
   const {products,addProduct,updateProduct,deleteProduct}=useProducts();
   const [searchParams,setSearchParams]=useSearchParams();
   const activeTab=searchParams.get('tab')||'overview';
@@ -34,23 +34,23 @@ export default function Admin() {
   const [imagePreview,setImagePreview]=useState('');
   const [search,setSearch]=useState('');
   const categoryData = useMemo(()=>{
-    const map={};
+    const map={};      
     products.forEach(p=>{
       if (!map[p.category])map[p.category]={count:0,value:0};
       map[p.category].count++;
       map[p.category].value +=p.price*p.stock;
-    });
+    });        
     return Object.entries(map)
       .map(([name,d])=>({name:name.length > 14 ?name.slice(0,13) +'...':name,count:d.count,value:Math.round(d.value)}))
       .sort((a,b)=>b.value-a.value);
   },[products]);
-
+ 
   const stockTrend=useMemo(()=>
-    [...products]
+    [...products]        
       .sort((a,b) =>a.stock -b.stock)
       .slice(0,12)
       .map(p=>({name:p.name.length >10 ?p.name.slice(0,9) +'...':p.name,stock:p.stock})),
-  [products]);
+  [products]);        
 
   if (!user?.isAdmin) return <Navigate to="/" replace />;
   const totalValue=products.reduce((s,p) => s + p.price*p.stock,0);
@@ -58,17 +58,17 @@ export default function Admin() {
   const totalStock=products.reduce((s,p) => s + p.stock,0);
   const avgRating =products.length ? (products.reduce((s,p) => s + p.rating, 0)/products.length).toFixed(1) :'0';
   const organicCount=products.filter(p =>p.organic).length;
-
-  const kpis = [
-    { label:'Total SKUs',value:products.length,sub:`${organicCount} organic`,icon:Layers,color:'text-blue-500',bg:'bg-blue-50'    },
-    { label:'Inventory Value',value:formatPrice(totalValue),sub:`${totalStock} units total`,icon:BarChart3,color:'text-green-600',bg:'bg-green-50'},
-    { label:'Avg Rating',value:`${avgRating} ★`,sub:'across all products',icon:Star,color:'text-amber-500',bg:'bg-amber-50'},
-    { label:'Low/Out',value:lowStock.length,sub:'need restocking',icon:TrendingDown,color:'text-red-500',bg:'bg-red-50',alert:true},
+        
+  const kpis=[
+    {label:'Total SKUs',value:products.length,sub:`${organicCount} organic`,icon:Layers,color:'text-blue-500',bg:'bg-blue-50'    },
+    {label:'Inventory Value',value:formatPrice(totalValue),sub:`${totalStock} units total`,icon:BarChart3,color:'text-green-600',bg:'bg-green-50'},
+    {label:'Avg Rating',value:`${avgRating} ★`,sub:'across all products',icon:Star,color:'text-amber-500',bg:'bg-amber-50'},
+    {label:'Low/Out',value:lowStock.length,sub:'need restocking',icon:TrendingDown,color:'text-red-500',bg:'bg-red-50',alert:true},
   ];
 const openNew=()=>{setEditProduct({...emptyProduct,id:Date.now() });setIsNew(true);setImagePreview('');};
 const openEdit=(p)=>{setEditProduct({...p});setIsNew(false);setImagePreview(p.image);};
 const handleSave =()=>{
-if(!editProduct) return;
+if(!editProduct) return;   
   const p={...editProduct,slug:editProduct.name.toLowerCase().replace(/\s+/g, '-')};
     if(p.discount>0)p.originalPrice=+(p.price/(1-p.discount/100)).toFixed(2);
     else p.originalPrice=p.price;
@@ -77,10 +77,10 @@ if(!editProduct) return;
     setEditProduct(null);
   };
   const handleImageUpload =(e)=>{
-    const file=e.target.files?.[0];
+    const file=e.target.files?.[0];     
     if (!file||!editProduct) return;
     const reader=new FileReader();
-    reader.onload=()=>{
+    reader.onload=()=>{      
       setImagePreview(reader.result);
       setEditProduct({...editProduct,image:reader.result,gallery:[reader.result]});};
     reader.readAsDataURL(file)};
@@ -89,7 +89,7 @@ const handleDelete =()=>{if (deleteId!==null){deleteProduct(deleteId);
   };
 
   const filteredProducts=useMemo(()=>
-    products.filter(p=>
+    products.filter(p=>      
       p.name.toLowerCase().includes(search.toLowerCase())||
       p.category.toLowerCase().includes(search.toLowerCase())
     ),
@@ -97,7 +97,7 @@ const handleDelete =()=>{if (deleteId!==null){deleteProduct(deleteId);
   return (
     <>
     <div className="p-6 space-y-6">
-    {activeTab === 'overview' && (
+    {activeTab === 'overview' &&(
     <>
      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
       {kpis.map((k,i)=>(
@@ -109,7 +109,7 @@ const handleDelete =()=>{if (deleteId!==null){deleteProduct(deleteId);
       <p className="text-xs text-gray-400 font-medium uppercase tracking-wide">{k.label}</p>
       <p className={`text-2xl font-bold mt-0.5 ${k.alert && k.value > 0 ? 'text-red-600' : 'text-gray-900'}`}>{k.value}</p>
       <p className="text-xs text-gray-400 mt-0.5">{k.sub}</p>
-      </div>
+      </div>        
       </div>
       ))}
       </div>
@@ -123,14 +123,14 @@ const handleDelete =()=>{if (deleteId!==null){deleteProduct(deleteId);
      <YAxis tick={{ fontSize: 10, fill: '#9ca3af' }} tickFormatter={v => `Rs.${(v / 1000).toFixed(0)}k`} />
      <Tooltip contentStyle={{ border: 'none', boxShadow: '0 4px 20px rgba(0,0,0,0.08)', borderRadius: 8, fontSize: 12 }}
       formatter={v => [formatPrice(v), 'Value']} />
-      <Bar dataKey="value" fill="#16a34a" radius={[4, 4, 0, 0]} />
-      </BarChart>
-      </ResponsiveContainer>
+      <Bar dataKey="value" fill="#16a34a" radius={[4,4,0,0]} />
+      </BarChart>  
+      </ResponsiveContainer>      
   </div>
  <div className="bg-white rounded-xl border border-gray-100 p-5">
   <p className="text-sm font-semibold text-gray-800 mb-4">Lowest Stock Products</p>
   <ResponsiveContainer width="100%" height={220}>
-  <AreaChart data={stockTrend} margin={{ left: -10, bottom: 30 }}>
+  <AreaChart data={stockTrend} margin={{ left: -10,bottom:30}}>
   <defs>
   <linearGradient id="stockGrad" x1="0" y1="0" x2="0" y2="1">
   <stop offset="5%"  stopColor="#16a34a" stopOpacity={0.15} />

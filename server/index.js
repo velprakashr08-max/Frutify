@@ -10,11 +10,11 @@ app.use(cors(
      
 //   Node js Basics
 // Installing Node.js
-// Running Javascript with Node.js       
+// Running Javascript with Node.js                     
 // Node.js Modules system
-// Understanding module.exports and require
+// Understanding module.exports and require        
 // Explore the module wrapper functions
-
+                                                             
 // NPM and Package Management    
 // NPM (Node Package Manager) overview
 // package.json and managing

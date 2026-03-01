@@ -7,7 +7,7 @@ import {useProducts} from '@/contexts/ProductContext';
 const greetings =[
   "Hi there! I'm Frutify Assistant. How can I help you today?",
   "You can ask me about products, orders, categories, or anything else!",
-];
+];            
 function getBotReply(msg,isAdmin,products){
   const lower=msg.toLowerCase();
   if(lower.includes('hello')||lower.includes('hi')||lower.includes('hey'))
@@ -41,7 +41,7 @@ function getBotReply(msg,isAdmin,products){
 
   if (isAdmin && (lower.includes('revenue')||lower.includes('total')||lower.includes('analytics')))
     return `Quick stats: ${products.length} products, total inventory value $${products.reduce((s,p) => s + p.price * p.stock, 0).toFixed(2)}, ${products.filter(p => p.stock <= 5).length} low-stock alerts.`;
-
+        
   if (lower.includes('help'))
     return "I can help with:\n• Product info & prices\n• Stock availability\n• Categories\n• Order tracking\n• Discounts & offers" + (isAdmin ? "\n• Revenue & analytics" : "");
 
@@ -131,3 +131,6 @@ export default function Chatbot() {
     </>
   );
 }
+
+
+
