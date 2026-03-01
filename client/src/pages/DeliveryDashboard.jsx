@@ -203,9 +203,8 @@ export default function DeliveryDashboard() {
             <AlertCircle className="h-5 w-5 text-gray-400 shrink-0" />
             <p className="text-sm text-gray-500">
               Complete all deliveries before 8 PM for a{" "}
-              <span className="font-semibold text-gray-800">?50 punctuality bonus</span>.
+              <span className="font-semibold text-gray-800">₹50 punctuality bonus</span>.
             </p>      
           </div>
-     
-    </div>                     
-  );}
+    </div>                                           
+  );} 

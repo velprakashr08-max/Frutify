@@ -1,33 +1,29 @@
-import { useState, useMemo, useEffect } from "react";
-import { Navigate, useSearchParams } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
-import {
-  Sprout, PackagePlus, ClipboardList,
-  CheckCircle2, Clock, XCircle, Send, Loader2, Apple, Leaf,
-  Citrus, Banana, Cherry, Carrot, Flower2
+import {useState,useMemo,useEffect} from "react";
+import {Navigate,useSearchParams} from "react-router-dom";
+import {useAuth} from "../contexts/AuthContext";
+import {Sprout,PackagePlus,ClipboardList,CheckCircle2,Clock,XCircle,Send,Loader2,Apple,Leaf,Citrus,Banana,Cherry,Carrot,Flower2
 } from "lucide-react";
-import { toast } from "sonner";
+import {toast} from "sonner";
 
-const STORAGE_KEY = "frutify_farmer_requests";
-
-const CATEGORIES = [
-  { label: "Citrus Fruits",   icon: Citrus  },
-  { label: "Tropical Fruits", icon: Banana  },
-  { label: "Berries",         icon: Cherry  },
-  { label: "Stone Fruits",    icon: Apple   },
-  { label: "Leafy Greens",    icon: Leaf    },
-  { label: "Root Vegetables", icon: Carrot  },
-  { label: "Gourds",          icon: Sprout  },
-  { label: "Cruciferous",     icon: Flower2 },
+const STORAGE_KEY="frutify_farmer_requests";
+const CATEGORIES =[
+  {label:"Citrus Fruits",icon:Citrus},
+  {label:"Tropical Fruits",icon:Banana},
+  {label:"Berries",icon:Cherry},
+  {label:"Stone Fruits",icon:Apple},
+  {label:"Leafy Greens",icon:Leaf},
+  {label:"Root Vegetables",icon:Carrot},
+  {label:"Gourds",icon:Sprout},
+  {label:"Cruciferous",icon:Flower2},
 ];
 
 const STATUS_CONFIG = {
-  pending:  { label: "Pending",  icon: Clock,         badge: "bg-amber-50 text-amber-700 border-amber-200",  dot: "bg-amber-400"  },
-  approved: { label: "Approved", icon: CheckCircle2,  badge: "bg-emerald-50 text-emerald-700 border-emerald-200", dot: "bg-emerald-500" },
-  rejected: { label: "Rejected", icon: XCircle,       badge: "bg-red-50 text-red-600 border-red-200",        dot: "bg-red-400"    },
+  pending:{label:"Pending",icon:Clock,badge:"bg-amber-50 text-amber-700 border-amber-200",dot:"bg-amber-400"},
+  approved:{label:"Approved",icon:CheckCircle2,badge:"bg-emerald-50 text-emerald-700 border-emerald-200",dot:"bg-emerald-500"},
+  rejected:{label:"Rejected",icon:XCircle,badge:"bg-red-50 text-red-600 border-red-200",dot:"bg-red-400"},
 };
 
-function loadRequests() {
+function loadRequests(){
   try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"); }
   catch { return []; }
 }
@@ -41,15 +37,11 @@ const EMPTY_FORM = { productName: "", category: "", type: "fruit", quantity: "",
 export default function FarmerDashboard() {
   const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
-
-  // ── all hooks before early return ──────────────────────────────────────────
   const [requests, setRequests]   = useState(loadRequests);
   const [form, setForm]           = useState(EMPTY_FORM);
   const [submitting, setSubmitting] = useState(false);
 
   const activeTab = searchParams.get("tab") || "sell";
-
-  // Re-sync if another tab updates localStorage
   useEffect(() => {
     const onStorage = () => setRequests(loadRequests());
     window.addEventListener("storage", onStorage);
@@ -69,11 +61,7 @@ export default function FarmerDashboard() {
       .reduce((sum, r) => sum + r.quantity * r.pricePerUnit, 0);
     return { total: myRequests.length, pending, approved, earnings };
   }, [myRequests]);
-
-  // ── guard ──────────────────────────────────────────────────────────────────
   if (user?.role !== "farmer") return <Navigate to="/" replace />;
-
-  // ── handlers ──────────────────────────────────────────────────────────────
   const setTab = (tab) => setSearchParams({ tab }, { replace: true });
 
   const handleChange = (e) =>
@@ -124,8 +112,6 @@ export default function FarmerDashboard() {
 
   return (
     <div className="min-h-full bg-gray-50/60">
-
-      {/* ── Page header ── */}
       <div className="bg-white border-b border-gray-100 px-6 py-5">
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div className="flex items-center gap-4">
@@ -137,7 +123,6 @@ export default function FarmerDashboard() {
               <p className="text-sm text-gray-400 mt-0.5">Welcome back, <span className="font-semibold text-lime-600">{user?.username}</span></p>
             </div>
           </div>
-          {/* mini stats strip */}
           <div className="flex items-center gap-6">
             {[
               { label: "Total", value: stats.total,    color: "text-gray-900" },
@@ -156,8 +141,6 @@ export default function FarmerDashboard() {
             </div>
           </div>
         </div>
-
-        {/* Tabs */}
         <div className="flex gap-0 mt-5 border-b border-gray-100 -mb-px">
           {[
             { key: "sell",     label: "Sell Produce", icon: PackagePlus  },
@@ -178,13 +161,9 @@ export default function FarmerDashboard() {
           ))}
         </div>
       </div>
-
-      {/* ── SELL tab ── */}
       {activeTab === "sell" && (
         <div className="p-6">
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 max-w-5xl">
-
-            {/* Form — 3 cols */}
             <div className="lg:col-span-3 bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
               <div className="px-6 py-4 border-b border-gray-50 bg-gray-50/50">
                 <h2 className="text-sm font-bold text-gray-800">New Supply Request</h2>
@@ -192,8 +171,6 @@ export default function FarmerDashboard() {
               </div>
 
               <form onSubmit={handleSubmit} className="p-6 space-y-5">
-
-                {/* Product name */}
                 <div className="space-y-1.5">
                   <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">Product Name</label>
                   <input name="productName" value={form.productName} onChange={handleChange}
@@ -219,8 +196,6 @@ export default function FarmerDashboard() {
                     ))}
                   </div>
                 </div>
-
-                {/* Category chips */}
                 <div className="space-y-2">
                   <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">Category</label>
                   <div className="flex flex-wrap gap-2">
@@ -241,8 +216,6 @@ export default function FarmerDashboard() {
                     })}
                   </div>
                 </div>
-
-                {/* Qty + Price */}
                 <div className="grid grid-cols-2 gap-3">
                   <div className="space-y-1.5">
                     <label className="text-xs font-bold text-gray-500 uppercase tracking-widest">Qty (kg)</label>
@@ -267,10 +240,7 @@ export default function FarmerDashboard() {
               </form>
             </div>
 
-            {/* Summary panel — 2 cols */}
             <div className="lg:col-span-2 space-y-4">
-
-              {/* Live preview card */}
               <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
                 <div className="px-5 py-4 border-b border-gray-50 bg-gray-50/50">
                   <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">Request Preview</p>
@@ -315,8 +285,6 @@ export default function FarmerDashboard() {
           </div>
         </div>
       )}
-
-      {/* ── REQUESTS tab ── */}
       {activeTab === "requests" && (
         <div className="p-6">
           <div className="flex items-center justify-between mb-5">
@@ -389,3 +357,4 @@ export default function FarmerDashboard() {
     </div>
   );
 }
+  
