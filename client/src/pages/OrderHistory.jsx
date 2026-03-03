@@ -84,7 +84,7 @@ export default function OrderHistory() {
 
   return (
     <div className="min-h-screen bg-white py-10">
-      <div className="container max-w-2xl mx-auto space-y-4 px-4">
+      <div className="w-full max-w-xl mx-auto space-y-4 px-4">
         <div className="mb-6">
           <h1 className="text-2xl font-bold text-gray-900">Orders</h1>
           <p className="text-sm text-gray-500 mt-0.5">

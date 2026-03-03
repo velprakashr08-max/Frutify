@@ -26,7 +26,7 @@ const ROLE_ROUTES = {
 
 export default function LoginModal({ open, onOpenChange }) {
   const { login } = useAuth();
-  const navigate = useNavigate();
+  const navigate = useNavigate();     
   const [name, setName] = useState('');
   const [selectedRole, setSelectedRole] = useState('customer');
   const [focused, setFocused] = useState(false);
