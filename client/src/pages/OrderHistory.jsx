@@ -10,21 +10,21 @@ import { getOrders, saveOrder } from '../lib/storage';
 export { saveOrder };
 
 const STATUS_STEPS = [
-  { key: 'placed',   label: 'Placed',    Icon: ClipboardList },
-  { key: 'packed',   label: 'Packed',    Icon: Package       },
-  { key: 'shipping', label: 'Shipping',  Icon: Truck         },
-  { key: 'delivered',label: 'Delivered', Icon: CheckCircle2  },
-];
-
-const STATUS_INDEX = { placed: 0, packed: 1, shipping: 2, delivered: 3 };
-
+  { key: 'placed',   label: 'Placed', Icon: ClipboardList},
+  { key: 'packed',   label: 'Packed', Icon: Package },     
+  { key: 'shipping', label: 'Shipping', Icon: Truck},   
+  { key: 'delivered',label: 'Delivered',Icon: CheckCircle2}, 
+];    
+                                  
+const STATUS_INDEX = { placed: 0, packed: 1, shipping: 2, delivered: 3 };  
+           
 function OrderTracker({ status = 'delivered' }) {
-  const activeIdx = STATUS_INDEX[status.toLowerCase()] ?? 3;
-  return (
+  const activeIdx = STATUS_INDEX[status.toLowerCase()] ?? 3;    
+  return (       
     <div className="flex items-center w-full mt-4 px-1">
-      {STATUS_STEPS.map(({ key, label, Icon }, i) => {
-        const done = i <= activeIdx;
-        return (
+      {STATUS_STEPS.map(({ key, label, Icon }, i) => {      
+        const done = i <= activeIdx;    
+        return (              
           <div key={key} className="flex items-center flex-1 last:flex-none">
             <div className="flex flex-col items-center gap-1">
               <div
@@ -32,17 +32,17 @@ function OrderTracker({ status = 'delivered' }) {
                   done ? 'bg-amber-400 text-white' : 'bg-gray-200 text-gray-400'
                 }`}
               >
-                <Icon className="w-5 h-5" />
+                <Icon className="w-5 h-5" />      
               </div>
               <span
                 className={`text-[11px] font-semibold whitespace-nowrap ${
                   done ? 'text-amber-500' : 'text-gray-400'
-                }`}
-              >
-                {label}
-              </span>
+                }`}    
+              >  
+                {label}  
+              </span>     
             </div>
-            {i < STATUS_STEPS.length - 1 && (
+            {i < STATUS_STEPS.length - 1 && (    
               <div
                 className={`flex-1 h-[3px] mx-1 mb-5 rounded-full transition-colors ${
                   i < activeIdx ? 'bg-amber-400' : 'bg-gray-200'
