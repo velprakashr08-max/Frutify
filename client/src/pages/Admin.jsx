@@ -26,6 +26,9 @@ const emptyProduct ={name:'',slug:'',category:'Root Vegetables',type:'vegetable'
 export default function Admin(){  
   const {user}=useAuth();    
   const {products,addProduct,updateProduct,deleteProduct}=useProducts();
+  
+  if (!user?.isAdmin) return <Navigate to="/" replace />;
+  
   const [searchParams,setSearchParams]=useSearchParams();
   const activeTab=searchParams.get('tab')||'overview';
   const [editProduct,setEditProduct]=useState(null);
@@ -50,9 +53,15 @@ export default function Admin(){
       .sort((a,b) =>a.stock -b.stock)
       .slice(0,12)
       .map(p=>({name:p.name.length >10 ?p.name.slice(0,9) +'...':p.name,stock:p.stock})),
-  [products]);        
+  [products]);
 
-  if (!user?.isAdmin) return <Navigate to="/" replace />;
+  const filteredProducts=useMemo(()=>
+    products.filter(p=>      
+      p.name.toLowerCase().includes(search.toLowerCase())||
+      p.category.toLowerCase().includes(search.toLowerCase())
+    ),
+  [products,search]);
+        
   const totalValue=products.reduce((s,p) => s + p.price*p.stock,0);
   const lowStock=products.filter(p => p.stock <=5);
   const totalStock=products.reduce((s,p) => s + p.stock,0);
@@ -87,13 +96,7 @@ if(!editProduct) return;
 const handleDelete =()=>{if (deleteId!==null){deleteProduct(deleteId); 
   toast.success('Product deleted'); setDeleteId(null);}
   };
-
-  const filteredProducts=useMemo(()=>
-    products.filter(p=>      
-      p.name.toLowerCase().includes(search.toLowerCase())||
-      p.category.toLowerCase().includes(search.toLowerCase())
-    ),
-  [products,search]);
+  
   return (
     <>
     <div className="p-6 space-y-6">

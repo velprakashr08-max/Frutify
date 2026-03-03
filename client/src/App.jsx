@@ -17,6 +17,7 @@ const OrderHistory=lazy(()=>import("./pages/OrderHistory"));
 const ManagerDashboard =lazy(()=>import("./pages/ManagerDashboard"));
 const FarmerDashboard=lazy(()=>import("./pages/FarmerDashboard"));
 const WarehouseDashboard=lazy(()=>import("./pages/WareHouseDahboard"));
+const DeliveryDashboard=lazy(()=>import("./pages/DeliveryDashboard"));
 const NotFound =lazy(()=>import("./pages/NotFound"));
 function PageLoader() {     
   return (
@@ -46,6 +47,7 @@ const App =()=>(
     <Route path="/manager" element={<ManagerDashboard />} />
     <Route path="/warehouse" element={<WarehouseDashboard />} />
     <Route path="/farmer" element={<FarmerDashboard />} />
+    <Route path="/delivery" element={<DeliveryDashboard />} />
     <Route path="*" element={<NotFound />} />
   </Routes>
   </Suspense>

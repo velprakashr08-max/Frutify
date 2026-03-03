@@ -45,7 +45,7 @@ export default function ProductCard({product,onQuickView,onEdit,onDelete,compact
             className={`absolute top-2 right-2 w-6 h-6 rounded-full flex items-center justify-center shadow transition-all duration-200 ${
               wishlisted
                 ? 'bg-red-500 text-white scale-110'
-                : 'bg-white/80 text-gray-400 opacity-0 group-hover:opacity-100 hover:bg-red-50 hover:text-red-500'
+                : 'bg-white/80 text-gray-400 hover:bg-red-50 hover:text-red-500'
             }`}
           >
             <Heart className={`h-3 w-3 ${wishlisted ? 'fill-current' : ''}`} />
@@ -58,7 +58,7 @@ export default function ProductCard({product,onQuickView,onEdit,onDelete,compact
             </div>
           )}
           {product.stock > 0 && (
-            <div className="absolute bottom-0 inset-x-0 flex items-center justify-between px-2 pb-2 opacity-0 group-hover:opacity-100 translate-y-1 group-hover:translate-y-0 transition-all duration-300">
+            <div className="absolute bottom-0 inset-x-0 flex items-center justify-between px-2 pb-2">
               <button
                 onClick={() => onQuickView?.(product)}
                 className="bg-white/90 backdrop-blur-sm text-gray-700 text-[10px] font-semibold px-2 py-1 rounded-full shadow flex items-center gap-1 hover:bg-white transition-colors"

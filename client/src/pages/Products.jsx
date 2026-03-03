@@ -7,7 +7,7 @@ import {categories} from '../data/vegetables';
 import ProductCard from '../components/ProductCard';
 import ProductDetailModal from '../components/ProductDetailModal';
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 20;  
 
 function Pagination({ page, total, pageSize, onChange }) {
   const totalPages = Math.ceil(total / pageSize);
@@ -35,13 +35,13 @@ function Pagination({ page, total, pageSize, onChange }) {
         </button>
       ))}
       <button
-        onClick={() => onChange(page + 1)}
+        onClick={() => onChange(page + 1)}      
         disabled={page === totalPages}
         className="w-8 h-8 flex items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 disabled:opacity-30 hover:border-amber-400 hover:text-amber-500 transition-all"
       >
         <ChevronRight className="h-4 w-4" />
-      </button>
-    </div>
+      </button>   
+    </div>     
   );
 }
 
@@ -83,7 +83,7 @@ export default function Products() {
   const handleTypeChange = (t) => { setTypeFilter(t); setCategory('All'); setPage(1); };
 
   const applySort = (arr) => {
-    const result = [...arr];
+    const result = [...arr];    
     switch (sort) {
       case 'price-asc': result.sort((a,b) => a.price - b.price); break;
       case 'price-desc': result.sort((a,b) => b.price - a.price); break;
@@ -95,7 +95,7 @@ export default function Products() {
   };
 
   const filtered = useMemo(() => {
-    let result = [...products];
+    let result = [...products];          
     if (search) {
       const q = search.toLowerCase();
       result = result.filter(p => p.name.toLowerCase().includes(q) || p.description?.toLowerCase().includes(q));
@@ -106,33 +106,30 @@ export default function Products() {
     return applySort(result);
   }, [products, search, typeFilter, category, organicOnly, sort]);
 
-  const fruits = useMemo(() => applySort(
-    filtered.filter(p => p.type === 'fruit')
+  const fruits = useMemo(() => applySort(               
+    filtered.filter(p => p.type === 'fruit')    
   ), [filtered]);
-
-  const vegetables = useMemo(() => applySort(
-    filtered.filter(p => p.type === 'vegetable')
+                     
+  const vegetables = useMemo(() => applySort(             
+    filtered.filter(p => p.type === 'vegetable')            
   ), [filtered]);
 
   const clearAll = () => { setSearch(''); setTypeFilter('all'); setCategory('All'); setOrganicOnly(false); setPage(1); };
   const activeCount = [typeFilter !== 'all', category !== 'All', organicOnly].filter(Boolean).length;
 
-  const showSplit = typeFilter === 'all' && category === 'All' && !search;
+  const showSplit = typeFilter === 'all' && category === 'All' && !search;   
   const pagedFiltered = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Top bar — sticky just below the h-16 navbar */}
+    <div className="min-h-screen bg-gray-50">    
       <div className="bg-white sticky top-16 z-20">
         <div className="container">
-
-          {/* Row 1: title + search + sort — fixed height 52px */}
-          <div className="h-[52px] flex items-center gap-3">
+          <div className="h-13 flex items-center gap-3">
             <h1 className="font-heading text-lg font-bold text-gray-900 shrink-0">Shop Fresh</h1>
             <div className="relative flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400 pointer-events-none" />
               <input
-                type="text"
+                type="text"                                        
                 placeholder="Search products..."
                 value={search}
                 onChange={e => { setSearch(e.target.value); setPage(1); }}
@@ -142,22 +139,21 @@ export default function Products() {
                 <button onClick={() => setSearch('')} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
                   <X className="h-3.5 w-3.5" />
                 </button>
-              )}
+              )}           
             </div>
             <div className="ml-auto flex items-center gap-2 shrink-0">
               <Select value={sort} onValueChange={v => { setSort(v); setPage(1); }}>
                 <SelectTrigger className="h-8 w-40 text-xs bg-gray-50 border-gray-200 rounded-full">
                   <SelectValue placeholder="Sort by" />
-                </SelectTrigger>
-                <SelectContent>
+                </SelectTrigger>           
+                <SelectContent>         
                   <SelectItem value="popular">Most Popular</SelectItem>
                   <SelectItem value="price-asc">Price: Low to High</SelectItem>
                   <SelectItem value="price-desc">Price: High to Low</SelectItem>
                   <SelectItem value="rating">Highest Rated</SelectItem>
                   <SelectItem value="newest">Newest First</SelectItem>
-                </SelectContent>
+                </SelectContent>    
               </Select>
-              {/* Always rendered — invisible when no active filters to prevent layout jump */}
               <button
                 onClick={clearAll}
                 className={`h-8 px-3 text-xs bg-gray-50 border border-gray-200 rounded-full flex items-center gap-1 transition-all ${
@@ -170,8 +166,6 @@ export default function Products() {
               </button>
             </div>
           </div>
-
-          {/* Row 2: filters — fixed height 44px */}
           <div className="h-[44px] flex items-center gap-2">
             <Select value={typeFilter} onValueChange={handleTypeChange}>
               <SelectTrigger className="h-8 w-36 text-xs bg-gray-50 border-gray-200 rounded-full shrink-0">
@@ -211,8 +205,6 @@ export default function Products() {
 
         </div>
       </div>
-
-      {/* Product content */}
       <div className="container py-5 space-y-8">
         {filtered.length === 0 ? (
           <div className="text-center py-24 space-y-3 bg-white rounded-2xl">

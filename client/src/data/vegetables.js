@@ -1,4 +1,24 @@
-﻿export const categories=[
+﻿import orangeImg from '../assets/orange.png';
+import mangoImg from '../assets/mango.png';
+import strawberriesImg from '../assets/strawberries.png';
+import watermelonImg from '../assets/watermelon.png';
+import bananaImg from '../assets/banana.png';
+import pineappleImg from '../assets/pineapple.png';
+import grapesImg from '../assets/grapes.png';
+import peachesImg from '../assets/peaches.png';
+import blueberriesImg from '../assets/blueberries.png';
+import kiwiImg from '../assets/kiwi.png';
+import carrotsImg from '../assets/carrots.png';
+import broccoliImg from '../assets/broccoli.png';
+import tomatoImg from '../assets/tomato.png';
+import spinachImg from '../assets/spinach.png';
+import mushroomsImg from '../assets/mushrooms.png';
+import bellpeppersImg from '../assets/bellpeppers.png';
+import kaleImg from '../assets/kale.png';
+import potatoesImg from '../assets/potatoes.png';
+import cauliflowerImg from '../assets/cauliflower.png';
+
+export const categories=[
   {id:1,name:'All',icon:'leaf',type:'all'       },
   {id:2,name:'Root Vegetables',icon:'carrot',type:'vegetable' },
   {id:3,name:'Leafy Greens',icon:'leaf',type:'vegetable' },
@@ -9,24 +29,24 @@
   {id:8,name:'Tropical Fruits',icon:'tropical',type:'fruit'},
   {id:9,name:'Stone Fruits',icon:'cherry',type:'fruit'},
   {id:10,name:'Berries',icon:'grape',type:'fruit'},
-  {id:11,name:'Melons & Gourds',icon:'leaf',type:'fruit'},
+  {id:11,name:'Melons & Gourds',icon:'leaf',type:'fruit'},         
 ];                                    
 export const defaultVegetables =[             
-  {      
+  {         
     id: 1,name:'Organic Carrots',slug:'organic-carrots',category:'Root Vegetables',type:'vegetable',
     price:2.99,originalPrice:3.99,stock:15,         
-    image:'https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=500',
-    gallery:['https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?w=500', 'https://images.unsplash.com/photo-1447175008436-054170c2e979?w=500'],
+    image:carrotsImg,
+    gallery:[carrotsImg, carrotsImg],
     description:'Fresh organic carrots harvested from local farms. Sweet, crunchy, and packed with beta-carotene.',
     nutrition:{calories:41,carbs:'10g',protein:'0.9g',fat:'0.2g',fiber:'2.8g' },
     organic:true,rating:4.8, reviews:124, discount:25, tags:['organic','fresh','local'],
-    dateAdded:'2026-02-15',
+    dateAdded:'2026-02-15',    
   },
-  {  
+  {                     
     id:2,name:'Fresh Broccoli',slug:'fresh-broccoli',category:'Cruciferous',type:'vegetable',
     price:3.49,originalPrice:4.29,stock:22,
-    image:'https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?w=500',
-    gallery:['https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?w=500','https://images.unsplash.com/photo-1628773822503-930a7eaecf80?w=500'],
+    image:broccoliImg,
+    gallery:[broccoliImg, broccoliImg],
     description:'Vibrant green broccoli florets, perfect for stir-fries, steaming, or eating raw with dip.',
     nutrition:{calories:55,carbs:'11g',protein:'3.7g',fat:'0.6g',fiber:'5.1g' },
     organic:true,rating:4.6,reviews:98,discount:19,tags:['organic','superfood','vitamin-c'],
@@ -35,8 +55,8 @@ export const defaultVegetables =[
   {
     id: 3,name:'Roma Tomatoes',slug:'roma-tomatoes',category:'Fruiting Vegetables',type:'vegetable',
     price:4.29,originalPrice:4.99,stock:30,
-    image:'https://images.unsplash.com/photo-1546470427-0d4db154ceb8?w=500',
-    gallery:['https://images.unsplash.com/photo-1546470427-0d4db154ceb8?w=500', 'https://images.unsplash.com/photo-1592924357228-91a4daadce55?w=500'],
+    image:tomatoImg,
+    gallery:[tomatoImg, tomatoImg],
     description:'Plump Roma tomatoes ideal for sauces, salads, and sandwiches. Vine-ripened for maximum flavor.',
     nutrition:{calories:35,carbs:'7g',protein:'1.6g',fat:'0.4g',fiber:'2.0g'},
     organic:false,rating:4.5,reviews:87,discount:14,tags:['vine-ripened','versatile'],
@@ -45,8 +65,8 @@ export const defaultVegetables =[
   {
     id: 4,name:'Baby Spinach',slug:'baby-spinach',category:'Leafy Greens',type:'vegetable',
     price:3.99,originalPrice:4.99,stock:18,
-    image:'https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=500',
-    gallery:['https://images.unsplash.com/photo-1576045057995-568f588f82fb?w=500', 'https://images.unsplash.com/photo-1574316071802-0d684efa7bf5?w=500'],
+    image:spinachImg,
+    gallery:[spinachImg, spinachImg],
     description:'Tender baby spinach leaves, pre-washed and ready to eat. Rich in iron and vitamins.',
     nutrition:{calories:23, carbs:'3.6g', protein: '2.9g', fat: '0.4g', fiber: '2.2g' },
     organic:true,rating:4.7,reviews:156,discount:20,tags:['organic','iron-rich','ready-to-eat'],
@@ -55,8 +75,8 @@ export const defaultVegetables =[
   {
     id:5,name:'Shiitake Mushrooms',slug:'shiitake-mushrooms',category:'Mushrooms',type:'vegetable',
     price:5.99,originalPrice:7.49,stock:8,
-    image:'https://images.unsplash.com/photo-1504545102780-26774c1bb073?w=500',
-    gallery:['https://images.unsplash.com/photo-1504545102780-26774c1bb073?w=500','https://images.unsplash.com/photo-1540420773420-3366772f4999?w=500'],
+    image:mushroomsImg,
+    gallery:[mushroomsImg, mushroomsImg],
     description:'Premium shiitake mushrooms with rich umami flavor. Perfect for Asian cuisine and soups.',
     nutrition:{calories:34,carbs:'6.8g',protein:'2.2g',fat:'0.5g',fiber:'2.5g'},
     organic:true,rating:4.9,reviews:67,discount:20,tags:['organic','umami','premium'],
@@ -65,8 +85,8 @@ export const defaultVegetables =[
   {            
     id: 6,name:'Red Bell Peppers',slug:'red-bell-peppers',category:'Fruiting Vegetables',type:'vegetable',
     price:3.79,originalPrice:4.49,stock:25,
-    image:'https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?w=500',
-    gallery:['https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?w=500','https://images.unsplash.com/photo-1592838064575-70ed626d3a0e?w=500'],
+    image:bellpeppersImg,
+    gallery:[bellpeppersImg, bellpeppersImg],
     description: 'Sweet and crunchy red bell peppers, bursting with vitamin C. Great raw, roasted, or stuffed.',
     nutrition:{calories:31,carbs:'6g',protein:'1g',fat:'0.3g',fiber:'2.1g' },
     organic:false,rating:4.4,reviews:112,discount:16,tags:['sweet','vitamin-c','versatile'],
@@ -75,8 +95,8 @@ export const defaultVegetables =[
   {                 
     id:7,name:'Organic Kale',slug:'organic-kale',category:'Leafy Greens',type:'vegetable',
     price:3.29,originalPrice:3.99,stock:20,
-    image:'https://images.unsplash.com/photo-1524179091875-bf99a9a6af57?w=500',
-    gallery:['https://images.unsplash.com/photo-1524179091875-bf99a9a6af57?w=500'],
+    image:kaleImg,
+    gallery:[kaleImg],
     description:'Curly organic kale, the ultimate superfood. Perfect for smoothies, salads, and chips.',
     nutrition:{calories:49,carbs:'8.8g',protein:'4.3g',fat:'0.9g',fiber:'3.6g'},
     organic:true,rating:4.8,reviews:89,discount:18,tags:['organic','superfood','smoothie'],
@@ -85,8 +105,8 @@ export const defaultVegetables =[
   {
     id:8,name:'Sweet Potatoes',slug:'sweet-potatoes',category:'Root Vegetables',type:'vegetable',
     price:2.49,originalPrice:2.99,stock:35,
-    image:'https://images.unsplash.com/photo-1590165482129-1b8b27698780?w=500',
-    gallery:['https://images.unsplash.com/photo-1590165482129-1b8b27698780?w=500'],
+    image:potatoesImg,
+    gallery:[potatoesImg],
     description:'Naturally sweet and creamy sweet potatoes. Bake, mash, or turn into fries.',
     nutrition:{calories:86,carbs:'20g',protein:'1.6g',fat:'0.1g',fiber:'3.0g' },
     organic:false,rating:4.6,reviews:143,discount:17,tags:['sweet','filling','versatile'],
@@ -95,8 +115,8 @@ export const defaultVegetables =[
   {                 
     id: 9, name:'Cauliflower Head',slug:'cauliflower-head',category:'Cruciferous',type:'vegetable',
     price:3.99,originalPrice:4.79,stock:12,
-    image:'https://images.unsplash.com/photo-1613743983303-b3e89f8a2b80?w=500',
-    gallery:['https://images.unsplash.com/photo-1613743983303-b3e89f8a2b80?w=500'],
+    image:cauliflowerImg,
+    gallery:[cauliflowerImg],
     description:'Dense, white cauliflower head. The low-carb darling â€” rice it, mash it, or roast it.',
     nutrition:{calories:25,carbs:'5g',protein:'1.9g',fat:'0.3g',fiber:'2.0g'},
     organic:true,rating:4.5,reviews:76,discount:17,tags:['organic','low-carb','keto'],
@@ -105,20 +125,20 @@ export const defaultVegetables =[
   {    
     id: 10, name:'Portobello Mushrooms',slug:'portobello-mushrooms',category:'Mushrooms',type:'vegetable',
     price:4.99,originalPrice:5.99,stock:10,
-    image:'https://images.unsplash.com/photo-1552825897-bb05e1366c84?w=500',
-    gallery:['https://images.unsplash.com/photo-1552825897-bb05e1366c84?w=500'],
+    image:mushroomsImg,
+    gallery:[mushroomsImg],
     description:'Large, meaty portobello mushroom caps. Grill them as a burger substitute or stuff and bake.',
     nutrition:{calories:22,carbs:'3.9g',protein:'2.1g',fat:'0.4g',fiber:'1.3g'},
     organic:false,rating:4.7,reviews:54,discount:17,tags:['meaty','grillable','low-cal'],
-    dateAdded:'2026-02-11',
+    dateAdded:'2026-02-11',           
   },  
-];
+];     
 export const defaultFruits = [
   {
     id:101,name:'Navel Oranges',slug:'navel-oranges',category:'Citrus Fruits',type:'fruit',
     price:3.49,originalPrice:4.29,stock:40,
-    image:'https://images.unsplash.com/photo-1611080626919-7cf5a9dbab12?w=500',
-    gallery:['https://images.unsplash.com/photo-1611080626919-7cf5a9dbab12?w=500'],
+    image:orangeImg,
+    gallery:[orangeImg],
     description:'Juicy and sweet navel oranges packed with vitamin C. Perfect for juicing or eating fresh.',
     nutrition:{calories:62,carbs:'15g',protein:'1.2g',fat:'0.2g',fiber:'3.1g'},
     organic:true,rating:4.8,reviews:210,discount:19,tags:['vitamin-c','organic','juicy'],
@@ -127,8 +147,8 @@ export const defaultFruits = [
   {
     id:102,name:'Alphonso Mangoes',slug:'alphonso-mangoes',category:'Tropical Fruits',type:'fruit',
     price:6.99,originalPrice:8.49,stock:20,
-    image:'https://images.unsplash.com/photo-1553279768-865429fa0078?w=500',
-    gallery:['https://images.unsplash.com/photo-1553279768-865429fa0078?w=500'],
+    image:mangoImg,
+    gallery:[mangoImg],
     description:'The king of mangoes â€” creamy, saffron-hued Alphonso mangoes with a rich tropical aroma.',
     nutrition:{calories:70,carbs:'17g',protein:'0.8g',fat:'0.4g',fiber:'1.8g'},
     organic:false,rating:4.9,reviews:178,discount:18,tags:['premium','tropical','seasonal'],
@@ -137,8 +157,8 @@ export const defaultFruits = [
   {
     id:103,name:'Fresh Strawberries',slug:'fresh-strawberries',category:'Berries',type:'fruit',
     price:4.49,originalPrice:5.49,stock:25,
-    image:'https://images.unsplash.com/photo-1464965911861-746a04b4bca6?w=500',
-    gallery:['https://images.unsplash.com/photo-1464965911861-746a04b4bca6?w=500'],
+    image:strawberriesImg,
+    gallery:[strawberriesImg],
     description:'Plump, ripe strawberries bursting with natural sweetness. Great for smoothies, desserts or snacking.',
     nutrition:{calories:33,carbs:'8g',protein:'0.7g',fat:'0.3g',fiber:'2.0g' },
     organic:true,rating:4.7,reviews:145,discount:18,tags:['organic','berries','antioxidant'],
@@ -147,8 +167,8 @@ export const defaultFruits = [
   {
     id:104, name:'Seedless Watermelon',slug:'seedless-watermelon',category:'Melons & Gourds',type:'fruit',
     price:5.99,originalPrice:6.99,stock:15,
-    image:'https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=500',
-    gallery:['https://images.unsplash.com/photo-1587049352846-4a222e784d38?w=500'],
+    image:watermelonImg,
+    gallery:[watermelonImg],
     description:'Refreshing seedless watermelon â€” hydrating, sweet and perfect for summer snacking.',
     nutrition:{calories:30,carbs:'7.6g',protein:'0.6g',fat:'0.2g',fiber:'0.4g'},
     organic:false,rating:4.6,reviews:88,discount:14,tags:['hydrating','summer', 'seedless'],
@@ -157,8 +177,8 @@ export const defaultFruits = [
   {
     id:105,name:'Cavendish Bananas',slug:'cavendish-bananas',category:'Tropical Fruits',type:'fruit',
     price:1.99,originalPrice:2.49,stock:60,
-    image:'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=500',
-    gallery:['https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?w=500'],
+    image:bananaImg,
+    gallery:[bananaImg],
     description:'Classic Cavendish bananas â€” naturally sweet, energy-boosting, and great in smoothies or as-is.',
     nutrition:{calories:89,carbs:'23g',protein:'1.1g',fat:'0.3g',fiber:'2.6g'},
     organic:false,rating:4.5,reviews:320,discount:20,tags:['energy','potassium','everyday'],
@@ -167,8 +187,8 @@ export const defaultFruits = [
   {
     id:106,name:'Golden Pineapple',slug:'golden-pineapple',category:'Tropical Fruits',type:'fruit',
     price:4.99,originalPrice:5.99,stock:18,
-    image:'https://images.unsplash.com/photo-1540460116624-6e85c571f6e0?w=500',
-    gallery:['https://images.unsplash.com/photo-1540460116624-6e85c571f6e0?w=500'],
+    image:pineappleImg,
+    gallery:[pineappleImg],
     description:'Sweet golden pineapple with low acidity and a honey-like flavour. Great fresh or in dishes.',
     nutrition:{calories:50,carbs:'13g',protein:'0.5g',fat:'0.1g',fiber:'1.4g'},
     organic:true,rating:4.7,reviews:102,discount:17,tags:['organic','tropical','enzyme-rich'],
@@ -177,8 +197,8 @@ export const defaultFruits = [
   {
     id:107,name:'Red Seedless Grapes',slug:'red-seedless-grapes',category:'Berries',type:'fruit',
     price:5.49,originalPrice:6.49,stock:22,
-    image:'https://images.unsplash.com/photo-1537640538966-79f369143f8f?w=500',
-    gallery:['https://images.unsplash.com/photo-1537640538966-79f369143f8f?w=500'],
+    image:grapesImg,
+    gallery:[grapesImg],
     description:'Crisp, sweet red seedless grapes. A great snack for all ages â€” full of antioxidants.',
     nutrition:{calories:69,carbs:'18g',protein:'0.7g',fat:'0.2g',fiber:'0.9g' },
     organic:false, rating:4.6,reviews:134,discount:15,tags:['seedless','snack','antioxidant'],
@@ -187,8 +207,8 @@ export const defaultFruits = [
   {
     id: 108, name: 'Yellow Peaches', slug: 'yellow-peaches', category: 'Stone Fruits', type: 'fruit',
     price: 3.99, originalPrice: 4.79, stock: 12,
-    image: 'https://images.unsplash.com/photo-1595743825637-513f02522b7a?w=500',
-    gallery: ['https://images.unsplash.com/photo-1595743825637-513f02522b7a?w=500'],
+    image: peachesImg,
+    gallery: [peachesImg],
     description: 'Sun-kissed yellow peaches with a juicy, aromatic flesh. Perfect for desserts and preserves.',
     nutrition: { calories: 39, carbs: '10g', protein: '0.9g', fat: '0.3g', fiber: '1.5g' },
     organic: true, rating: 4.8, reviews: 76, discount:17, tags:['organic', 'stone-fruit', 'aromatic'],
@@ -197,8 +217,8 @@ export const defaultFruits = [
   {
     id:109,name:'Wild Blueberries',slug:'wild-blueberries',category:'Berries',type:'fruit',
     price:5.99,originalPrice:7.29,stock:16,
-    image:'https://images.unsplash.com/photo-1498557850523-fd3d118b962e?w=500',
-    gallery:['https://images.unsplash.com/photo-1498557850523-fd3d118b962e?w=500'],
+    image:blueberriesImg,
+    gallery:[blueberriesImg],
     description: 'Tiny but mighty wild blueberries â€” intense flavour and packed with brain-boosting antioxidants.',
     nutrition:{calories:57,carbs:'14g',protein:'0.7g',fat:'0.3g',fiber:'2.4g' },
     organic:true,rating:4.9,reviews:193,discount:18,tags:['organic','superfood','brain-health'],
@@ -207,8 +227,8 @@ export const defaultFruits = [
   {
     id:110,name:'Green Kiwi',slug:'green-kiwi',category:'Tropical Fruits',type:'fruit',
     price:3.29,originalPrice:3.99,stock:30,
-    image:'https://images.unsplash.com/photo-1618897996318-5a901fa6ca71?w=500',
-    gallery:['https://images.unsplash.com/photo-1618897996318-5a901fa6ca71?w=500'],
+    image:kiwiImg,
+    gallery:[kiwiImg],
     description:'Tangy-sweet green kiwis loaded with vitamin C and folate. Eat the skin too for extra fibre!',
     nutrition:{calories:61,carbs:'15g',protein:'1.1g',fat:'0.5g',fiber:'3.0g'},
     organic:false, rating:4.5,reviews:87,discount:18,tags:['vitamin-c','tangy','folate'],
@@ -217,14 +237,14 @@ export const defaultFruits = [
 ];
 
 export const defaultReviews =[
-  {id:1,productId:1,userName:'',userAvatar:'https://i.pravatar.cc/150?img=1',rating:5,date:'2026-01-30',title:'Best carrots ever!', comment: 'These organic carrots are incredibly fresh and sweet. My kids love them!', helpful: 24 },
-  {id:2,productId:1,userName:'Mike Chen',userAvatar:'https://i.pravatar.cc/150?img=3', rating:4,date:'2026-02-14',title: 'Great quality', comment: 'Very fresh and crunchy. Slightly smaller than expected but taste is amazing.', helpful: 12 },
-  {id:3,productId:2,userName:'Emily Davis',userAvatar:'https://i.pravatar.cc/150?img=5', rating:5,date:'2026-02-05',title: 'Perfect broccoli', comment: "The freshest broccoli I've found. Green and firm, no yellowing at all.", helpful: 18 },
-  {id:4,productId:3,userName:'James Wilson',userAvatar:'https://i.pravatar.cc/150?img=7', rating:4,date:'2026-02-18',title: 'Great for sauce', comment: 'Made an amazing marinara with these Roma tomatoes. Very flavorful.', helpful: 9 },
-  {id:5,productId:4,userName:'Lisa Park',userAvatar:'https://i.pravatar.cc/150?img=9', rating:5,date:'2026-02-11',title: 'So convenient', comment: 'Pre-washed and ready to eat. I use it in my morning smoothies every day.', helpful: 31 },
+  {id:1,productId:1,userName:'Abhishek',userAvatar:'https://i.pravatar.cc/150?img=1',rating:5,date:'2026-01-30',title:'Best carrots ever!', comment: 'These organic carrots are incredibly fresh and sweet. My kids love them!', helpful: 24 },
+  {id:2,productId:1,userName:'Bulbulia',userAvatar:'https://i.pravatar.cc/150?img=3', rating:4,date:'2026-02-14',title: 'Great quality', comment: 'Very fresh and crunchy. Slightly smaller than expected but taste is amazing.', helpful: 12 },
+  {id:3,productId:2,userName:'Charlie',userAvatar:'https://i.pravatar.cc/150?img=5', rating:5,date:'2026-02-05',title: 'Perfect broccoli', comment: "The freshest broccoli I've found. Green and firm, no yellowing at all.", helpful: 18 },
+  {id:4,productId:3,userName:'David Warner',userAvatar:'https://i.pravatar.cc/150?img=7', rating:4,date:'2026-02-18',title: 'Great for sauce', comment: 'Made an amazing marinara with these Roma tomatoes. Very flavorful.', helpful: 9 },
+  {id:5,productId:4,userName:'Einstein',userAvatar:'https://i.pravatar.cc/150?img=9', rating:5,date:'2026-02-11',title: 'So convenient', comment: 'Pre-washed and ready to eat. I use it in my morning smoothies every day.', helpful: 31 },
   {id:6,productId:102,userName:'Priya Sharma',userAvatar:'https://i.pravatar.cc/150?img=11', rating:5,date:'2026-02-22',title: 'King of mangoes!', comment: 'Absolutely divine Alphonso mangoes. Sweet, creamy and so aromatic. Worth every rupee!', helpful: 45 },
   {id:7,productId:103,userName:'Anna Lee',userAvatar:'https://i.pravatar.cc/150?img=13', rating:4,date:'2024-01-30',title: 'Super fresh berries', comment: 'Perfect strawberries â€” plump, sweet and not a single mushy one in the pack.', helpful: 27 },
-  {id:8,productId:109,userName:'David Kim',userAvatar:'https://i.pravatar.cc/150?img=15', rating:5,date:'2026-02-20',title: 'Best blueberries', comment: 'Wild blueberries with incredible depth of flavour. My morning oats have never tasted better!', helpful: 38 },
+  {id:8,productId:109,userName:'Elon Musk',userAvatar:'https://i.pravatar.cc/150?img=15', rating:5,date:'2026-02-20',title: 'Best blueberries', comment: 'Wild blueberries with incredible depth of flavour. My morning oats have never tasted better!', helpful: 38 },
 ];
 export const testimonials = [
   { name:'Pat Cummins',avatar:'https://i.pravatar.cc/150?img=20',text:'Frutify has completely changed how I shop. Fresh fruits and veggies delivered right to my door!', role: 'Home Chef' },

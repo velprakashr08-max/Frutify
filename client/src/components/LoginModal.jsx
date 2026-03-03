@@ -17,6 +17,7 @@ const ROLES = [
 ];
 
 const ROLE_ROUTES = {
+  customer: '/products',
   admin: '/admin',
   manager: '/manager',
   warehouse: '/warehouse',
@@ -32,11 +33,10 @@ export default function LoginModal({ open, onOpenChange }) {
   const [focused, setFocused] = useState(false);
 
   const doLoginAndNavigate = (userName, role) => {
-    login(userName || role);
+    login(userName || role, role);
     setName('');
     onOpenChange(false);
-    const route = ROLE_ROUTES[role];
-    if (route) navigate(route);
+    navigate(ROLE_ROUTES[role] ?? '/products');
   };
 
   const handleSubmit = (e) => {
@@ -76,14 +76,6 @@ export default function LoginModal({ open, onOpenChange }) {
             );
           })}
         </div>
-
-        {/* Role description */}
-        {activeRole && (
-          <div className="flex items-center gap-2 bg-gray-100 rounded-lg px-3 py-2 mb-4 text-sm text-gray-700">
-            <activeRole.icon className="w-4 h-4 text-gray-500 shrink-0" />
-            <span><span className="font-semibold">{activeRole.label}:</span> {activeRole.desc}</span>
-          </div>
-        )}
 
         {/* Name input */}
         <form onSubmit={handleSubmit} className="space-y-3">

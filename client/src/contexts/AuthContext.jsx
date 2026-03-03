@@ -6,13 +6,11 @@ export const useAuth =()=>useContext(AuthContext);
 export function AuthProvider({ children }) {
   const [user,setUser]=useState(getUser);   
   const [showLogin,setShowLogin]=useState(false);
-  const login=useCallback((name) => {
+  const login=useCallback((name, role='customer') => {
     const trimmed=name.trim();    
     if (!trimmed) return;  
-    const lower=trimmed.toLowerCase();   
-    const isAdmin=lower==='admin';
-    const role =['admin','manager','farmer','warehouse'].includes(lower)?lower:'customer';
-    const bgColor=isAdmin?'27ae60':lower==='manager'?'8b5cf6':lower==='farmer'?'84cc16':lower==='warehouse'?'f97316':'27ae60';
+    const isAdmin = role === 'admin';
+    const bgColor=isAdmin?'27ae60':role==='manager'?'8b5cf6':role==='farmer'?'84cc16':role==='warehouse'?'f97316':role==='delivery'?'3b82f6':'27ae60';
     const u = { 
       name:trimmed,
       isAdmin, 

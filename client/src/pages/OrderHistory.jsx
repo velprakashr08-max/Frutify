@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Navigate } from 'react-router-dom';
 import {
   ShoppingBag, ArrowRight, Calendar,
   ClipboardList, Package, Truck, CheckCircle2
@@ -7,6 +8,7 @@ import { Button } from '../components/ui/Button';
 import { Link } from 'react-router-dom';
 import { formatPrice } from '../lib/utils';
 import { getOrders, saveOrder } from '../lib/storage';
+import { useAuth } from '../contexts/AuthContext';
 export { saveOrder };
 
 const STATUS_STEPS = [
@@ -57,11 +59,17 @@ function OrderTracker({ status = 'delivered' }) {
 }
 
 export default function OrderHistory() {
+  const { user } = useAuth();
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    setOrders(getOrders());
-  }, []);
+    const allOrders = getOrders();
+    // Filter orders by current user
+    const userOrders = user ? allOrders.filter(order => order.userId === user.name) : [];
+    setOrders(userOrders);
+  }, [user]);
+
+  if (!user) return <Navigate to="/" replace />;
 
   if (orders.length === 0) {
     return (

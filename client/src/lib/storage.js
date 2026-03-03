@@ -1,11 +1,21 @@
 import { defaultProducts, defaultReviews } from '@/data/vegetables';
+
+const DATA_VERSION = '3';  // bump this whenever defaultProducts changes
+
 const KEYS = {
   PRODUCTS: 'freshveg_products',
   CART:'freshveg_cart',
   USER:'freshveg_user',
   ORDERS:'freshveg_orders',
   LOYALTY:'freshveg_loyalty',
+  VERSION:'freshveg_data_version',
 };
+
+// Clear stale product cache when data version changes
+if (localStorage.getItem(KEYS.VERSION) !== DATA_VERSION) {
+  localStorage.removeItem(KEYS.PRODUCTS);
+  localStorage.setItem(KEYS.VERSION, DATA_VERSION);
+}
 export function getLoyalty() {
   const stored= localStorage.getItem(KEYS.LOYALTY);
   return stored ? JSON.parse(stored):{ points: 0, totalEarned: 0, tier: 'Bronze' };
@@ -31,8 +41,12 @@ export function getProducts() {
   if (stored){
     const parsed =JSON.parse(stored);
     const hasFruits =parsed.some(p =>p.id>=101);
-    if (!hasFruits){
-      const merged =[...parsed,...defaultProducts.filter(p=>p.id>=101),];
+    const hasVegetables =parsed.some(p =>p.id<101);
+    if (!hasFruits || !hasVegetables){
+      const merged =[
+        ...parsed,
+        ...defaultProducts.filter(p=> !hasFruits ? p.id>=101 : p.id<101),
+      ];
       localStorage.setItem(KEYS.PRODUCTS, JSON.stringify(merged));
       return merged;
     }

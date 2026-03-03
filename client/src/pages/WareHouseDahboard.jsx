@@ -84,7 +84,7 @@ export default function WarehouseDashboard(){
     <div className="p-6 space-y-6">           
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {kpis.map((k,i) => (
-              <div key={i} className={`bg-white rounded-xl border p-5 flex items-start gap-4 ${k.alert && k.value > 0 ? "border-red-200" : "border-gray-100"}`}>
+              <div key={i} className="bg-white rounded-lg p-5 flex items-start gap-4">
                 <div className={`p-2.5 rounded-lg ${k.bg} shrink-0`}>
                   <k.icon className={`h-4 w-4 ${k.color}`} />            
                 </div>       
@@ -96,7 +96,7 @@ export default function WarehouseDashboard(){
               </div>                                  
             ))}                                                   
           </div>        
-          <div className="bg-white rounded-xl border border-gray-100 p-5">
+          <div className="bg-white rounded-lg p-5">
             <div className="flex items-center justify-between mb-3">              
               <p className="text-sm font-semibold text-gray-800">Stock Distribution</p>
               <p className="text-sm font-bold text-gray-900">{total} <span className="font-normal text-gray-400 text-xs">total units</span></p>
@@ -122,7 +122,7 @@ export default function WarehouseDashboard(){
           </div>                    
 
           {/* Farmer supply requests */}
-          <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
+          <div className="bg-white rounded-lg overflow-hidden">
             <div className="flex items-center justify-between gap-4 px-5 py-4 border-b border-gray-100 flex-wrap">
               <div className="flex items-center gap-2">
                 <Sprout className="h-4 w-4 text-lime-600" />
@@ -161,11 +161,11 @@ export default function WarehouseDashboard(){
                         </div>
                         <div className="flex gap-2 shrink-0">
                           <button onClick={()=>handleFarmerReq(req.id,"approved")}
-                            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-600 hover:text-white hover:border-emerald-600 transition-colors">
+                            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-emerald-50 text-emerald-700 hover:bg-emerald-600 hover:text-white transition-colors">
                             <CheckCircle2 className="h-3.5 w-3.5" /> Approve
                           </button>
                           <button onClick={()=>handleFarmerReq(req.id,"rejected")}
-                            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-red-50 text-red-600 border border-red-200 hover:bg-red-500 hover:text-white hover:border-red-500 transition-colors">
+                            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold rounded-lg bg-red-50 text-red-600 hover:bg-red-500 hover:text-white transition-colors">
                             <XCircle className="h-3.5 w-3.5" /> Reject
                           </button>
                         </div>
@@ -190,7 +190,7 @@ export default function WarehouseDashboard(){
                           <div className="hidden sm:block text-right shrink-0">
                             <p className="text-sm font-semibold text-gray-800">{req.quantity} kg @ ₹{req.pricePerUnit}</p>
                           </div>
-                          <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border shrink-0 ${sc.badge}`}>
+                          <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold shrink-0 ${sc.badge}`}>
                             <sc.Icon className="h-3 w-3" />
                             {req.status.charAt(0).toUpperCase()+req.status.slice(1)}
                           </span>                                                
@@ -202,7 +202,7 @@ export default function WarehouseDashboard(){
           </div>                                                       
                                                                                          
           {/* Inventory table */}
-          <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
+          <div className="bg-white rounded-lg overflow-hidden">
             {/* Table header / filters */}                                                                                            
             <div className="flex items-center justify-between gap-4 px-5 py-4 border-b border-gray-100 flex-wrap">
               <p className="text-sm font-semibold text-gray-800">
@@ -260,7 +260,7 @@ export default function WarehouseDashboard(){
                           className="w-16 h-8 border border-gray-200 rounded-lg text-xs text-center focus:outline-none focus:ring-2 focus:ring-gray-900/10"
                         />
                         <button onClick={() => handleRestock(p)}
-                          className="h-8 px-3 flex items-center gap-1.5 text-xs font-semibold rounded-lg border border-gray-200 text-gray-600 hover:bg-green-600 hover:text-white hover:border-green-600 transition-colors">
+                          className="h-8 px-3 flex items-center gap-1.5 text-xs font-semibold rounded-lg text-gray-600 bg-gray-50 hover:bg-green-600 hover:text-white transition-colors">
                           <RefreshCw className="h-3 w-3 shrink-0" />
                           <span className="hidden sm:inline">Restock</span>
                         </button>

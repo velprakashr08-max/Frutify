@@ -66,35 +66,32 @@ export default function ManagerDashboard() {
       {activeTab === "overview" && (
         <>
           <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
-            {kpis.map((k,i) => {
+            {kpis.map((k,i) => {   
               const Icon =k.icon;
               return (
-                <div key={i} className={`bg-white rounded-2xl border ${k.border} p-4 flex flex-col gap-3 hover:shadow-md transition-shadow`}>
-                  <div className="flex items-center justify-between">
-                    <div className={`p-2 rounded-xl ${k.bg}`}>
-                      <Icon className={`h-4 w-4 ${k.color}`} />
-                    </div>
-                    <ArrowUpRight className={`h-4 w-4 ${k.alert && k.value > 0 ? "text-red-400" : "text-gray-200"}`} />
+                <div key={i} className="bg-white rounded-lg p-5 flex items-start gap-4">
+                  <div className={`p-2.5 rounded-lg ${k.bg} shrink-0`}>
+                    <Icon className={`h-4 w-4 ${k.color}`} />
                   </div>
-                  <div>
-                    <p className={`text-2xl font-bold ${k.alert && k.value > 0 ?"text-red-600":"text-gray-900"}`}>
-                      {k.value}{k.suffix && <span className="text-sm text-amber-400 ml-1">*</span>}
+                  <div className="min-w-0">
+                    <p className="text-xs text-gray-400 font-medium uppercase tracking-wide">{k.label}</p>
+                    <p className={`text-2xl font-bold mt-0.5 ${k.alert && k.value > 0 ?"text-red-600":"text-gray-900"}`}>
+                      {k.value}{k.suffix && <span className="text-sm text-amber-400 ml-1">★</span>}
                     </p>
-                    <p className="text-xs text-gray-400 font-medium mt-0.5">{k.label}</p>
-                    <p className="text-[11px] text-gray-300 mt-0.5 truncate">{k.sub}</p>
+                    <p className="text-xs text-gray-400 mt-0.5">{k.sub}</p>
                   </div>
                 </div>
               );
             })}
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 bg-white rounded-2xl border border-gray-100 p-5">
+            <div className="lg:col-span-2 bg-white rounded-lg p-5">
               <div className="flex items-center justify-between mb-5">
                 <div>
                   <p className="text-sm font-semibold text-gray-800">Inventory Value by Category</p>
                   <p className="text-xs text-gray-400 mt-0.5">Stock value across all categories</p>
                 </div>
-                <span className="text-xs font-medium bg-green-50 text-green-600 px-3 py-1 rounded-full border border-green-100">
+                <span className="text-xs font-medium bg-green-50 text-green-600 px-3 py-1 rounded-full">
                   {categoryData.length} categories
                 </span>
               </div>
@@ -112,7 +109,7 @@ export default function ManagerDashboard() {
                 </BarChart>
               </ResponsiveContainer>
             </div>
-            <div className="bg-white rounded-2xl border border-gray-100 p-5">
+            <div className="bg-white rounded-lg p-5">
               <p className="text-sm font-semibold text-gray-800 mb-4">Quick Breakdown</p>
               <div className="space-y-3">
                 {[
@@ -156,13 +153,13 @@ export default function ManagerDashboard() {
               </div>
             </div>
           </div>
-          <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+          <div className="bg-white rounded-lg overflow-hidden">
             <div className="flex items-center justify-between px-6 py-4 border-b border-gray-50">
               <div>
                 <p className="text-sm font-semibold text-gray-800">Category Breakdown</p>
                 <p className="text-xs text-gray-400 mt-0.5">Full breakdown with inventory values</p>
               </div>
-              <span className="text-xs text-gray-400 bg-gray-50 px-2.5 py-1 rounded-full border border-gray-100">
+              <span className="text-xs text-gray-400 bg-gray-50 px-2.5 py-1 rounded-full">
                 {categoryData.length} categories
               </span>
             </div>
@@ -189,7 +186,7 @@ export default function ManagerDashboard() {
         </>
       )}
       {activeTab === "catalog" && (
-        <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden">
+        <div className="bg-white rounded-lg overflow-hidden">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 px-6 py-4 border-b border-gray-100">
             <div>
               <p className="text-sm font-semibold text-gray-800">Product Catalog</p>
@@ -201,7 +198,7 @@ export default function ManagerDashboard() {
                 placeholder="Search products or category..."
                 value={search}
                 onChange={e => setSearch(e.target.value)}
-                className="pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-400 w-56 transition"
+                className="pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500/20 focus:border-green-400 w-56 transition"
               />
             </div>
           </div>
@@ -229,7 +226,7 @@ export default function ManagerDashboard() {
                   <tr key={p.id} className="hover:bg-green-50/30 transition-colors group">
                     <td className="px-6 py-3">
                       <div className="flex items-center gap-3">
-                        <img src={p.image} alt={p.name} className="w-10 h-10 rounded-xl object-cover border border-gray-100 shrink-0 group-hover:scale-105 transition-transform" />
+                        <img src={p.image} alt={p.name} className="w-10 h-10 rounded-lg object-cover shrink-0" />
                         <div className="min-w-0">
                           <p className="font-semibold text-sm text-gray-800 truncate">{p.name}</p>
                           {p.organic && (
@@ -244,8 +241,8 @@ export default function ManagerDashboard() {
                     <td className="px-4 py-3">
                       <span className={`inline-flex items-center gap-1 text-[11px] font-semibold px-2.5 py-1 rounded-full ${
                         p.type === "fruit"
-                          ? "bg-orange-50 text-orange-600 border border-orange-100"
-                          : "bg-emerald-50 text-emerald-700 border border-emerald-100"
+                          ? "bg-orange-50 text-orange-600"
+                          : "bg-emerald-50 text-emerald-700"
                       }`}>
                         {p.type === "fruit" ? <Apple className="h-2.5 w-2.5 shrink-0" /> : <Leaf className="h-2.5 w-2.5 shrink-0" />}
                         {p.type === "fruit" ? "Fruit" : "Veg"}
@@ -260,15 +257,15 @@ export default function ManagerDashboard() {
                     </td>
                     <td className="px-4 py-3 text-center">
                       <span className={`text-xs font-bold px-2.5 py-1 rounded-full ${
-                        p.stock === 0        ? "bg-red-50 text-red-600 border border-red-100"
-                        : p.stock <= 5       ? "bg-orange-50 text-orange-600 border border-orange-100"
-                        :                      "bg-gray-50 text-gray-600 border border-gray-100"
+                        p.stock === 0        ? "bg-red-50 text-red-600"
+                        : p.stock <= 5       ? "bg-orange-50 text-orange-600"
+                        :                      "bg-gray-50 text-gray-600"
                       }`}>
                         {p.stock === 0 ? "Out" : p.stock}
                       </span>
                     </td>
                     <td className="px-4 py-3 text-center">
-                      <span className="inline-flex items-center gap-1 text-xs font-semibold text-amber-600 bg-amber-50 px-2.5 py-1 rounded-full border border-amber-100">
+                      <span className="inline-flex items-center gap-1 text-xs font-semibold text-amber-600 bg-amber-50 px-2.5 py-1 rounded-full">
                         <Star className="h-3 w-3 fill-amber-400 text-amber-400 shrink-0" />
                         {p.rating}
                       </span>

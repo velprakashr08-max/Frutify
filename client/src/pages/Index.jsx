@@ -7,7 +7,7 @@ import {testimonials} from '../data/vegetables';
 import Footer from '../components/Footer';
 import heroVideo from '../assets/hero-farm.mp4';
 
-export default function Index() {
+export default function Index(){
   const [testimonialIdx,setTestimonialIdx] =useState(0);
   const [scrollY,setScrollY] =useState(0);
   const heroRef=useRef(null);

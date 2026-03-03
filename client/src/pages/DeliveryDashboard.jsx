@@ -101,14 +101,14 @@ export default function DeliveryDashboard() {
     <div className="p-6 space-y-6">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {stats.map((k,i)=>(
-              <div key={i} className={`bg-white rounded-xl border p-5 ${k.alert && k.value > 0 ? "border-amber-200" : "border-gray-100"}`}>
+              <div key={i} className="bg-white rounded-lg p-5">
                 <p className="text-xs text-gray-400 font-medium uppercase tracking-wide">{k.label}</p>
                 <p className={`text-2xl font-bold mt-1.5 ${k.alert && k.value > 0 ? "text-amber-600" : "text-gray-900"}`}>{k.value}</p>
                 <p className="text-xs text-gray-400 mt-1">{k.sub}</p>
               </div>
             ))}
           </div>
-          <div className="bg-white rounded-xl border border-gray-100 p-5">
+          <div className="bg-white rounded-lg p-5">
             <p className="text-sm font-semibold text-gray-800 mb-4">Today's Performance</p>
             <div className="grid grid-cols-3 gap-4">
               {[
@@ -148,7 +148,7 @@ export default function DeliveryDashboard() {
                   const phone=FAKE_PHONES[idx % FAKE_PHONES.length];
                   const total=order.total ?? order.items?.reduce((s, i) => s + i.price * i.quantity,0) ??0;
                   return (
-                    <div key={order.id} className={`bg-white rounded-xl border border-gray-100 border-l-2 overflow-hidden ${isPick ? "border-l-amber-400" : "border-l-emerald-500"}`}>
+                    <div key={order.id} className={`bg-white rounded-lg border-l-4 overflow-hidden ${isPick ? "border-l-amber-400" : "border-l-emerald-500"}`}>
                       <div className="p-5 space-y-4">
                         <div className="flex items-start justify-between gap-3">
                           <div>
@@ -156,10 +156,10 @@ export default function DeliveryDashboard() {
                             <p className="text-xs text-gray-400 mt-0.5">{order.items?.length ?? 0} items � {formatPrice(total)}</p>
                           </div>
                           <span className={`text-xs font-semibold px-2.5 py-1 rounded-full ${
-                            isPick ? "bg-amber-50 text-amber-700 border border-amber-200" : "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                            isPick ? "bg-amber-50 text-amber-700" : "bg-emerald-50 text-emerald-700"
                           }`}>{STATUS_LABELS[order.status || "placed"]}</span>
                         </div>
-                        <div className="bg-gray-50 rounded-lg border border-gray-100 p-3 space-y-1">
+                        <div className="bg-gray-50 rounded-lg p-3 space-y-1">
                           {order.items?.map((item,i)=>(                     
                             <div key={i} className="flex justify-between text-xs text-gray-500">
                               <span className="truncate">{item.name} �{item.quantity}</span>
@@ -199,7 +199,7 @@ export default function DeliveryDashboard() {
               </div>
             )}
           </div>
-          <div className="bg-white rounded-xl border border-gray-100 p-4 flex items-center gap-3">
+          <div className="bg-white rounded-lg p-4 flex items-center gap-3">
             <AlertCircle className="h-5 w-5 text-gray-400 shrink-0" />
             <p className="text-sm text-gray-500">
               Complete all deliveries before 8 PM for a{" "}

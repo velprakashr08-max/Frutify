@@ -1,15 +1,15 @@
 This is a short, clear story about why Frutify exists and how it helps farmers and families.
 
-The Beginning
+The Beginning    
 There was a boy(me) who grew up watching his family plant, tend, and harvest food. He noticed how hard his neighbors worked, yet sometimes they returned home with little money because middlemen took most of the profit. He wanted something fair — a way for farmers to sell directly to people who wanted fresh, honest food.
 
 The Idea
 He built Frutify: a simple online marketplace that connects farmers with local customers. The goal was not to be fancy, but to be useful and fair. Farmers share a photo, a short note about when the produce was picked, and a price. Customers can read this and decide what to buy.
     
-How It Works (Very Simple)
-- Farmers: Take a photo, write a short note (where it was grown, when it was picked), and set a price.
+How It Works
+- Farmers: Take a photo, write a short note (where it was grown, when it was picked), and set a price.    
 - Customers: Browse pictures and stories, add items to a cart, and place an order.
-- Delivery: Local drivers pick up orders from farmers and deliver them to customers.
+- Delivery: Local drivers pick up orders from farmers and deliver them to customers.      
 The whole process is designed to be easy for people who may use basic phones or slow internet.
 
 Why Farmers Like It

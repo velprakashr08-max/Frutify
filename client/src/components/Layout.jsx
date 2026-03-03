@@ -63,7 +63,8 @@ export default function Layout({children}){
   const pageTitle=TAB_LABELS[activeTab]||sidebarNav[0]?.label||roleTitle;
   const lowStockCount=products?.filter(p=>p.stock<= 5).length ?? 0;
   const roleLabel=user?.isAdmin?'Admin':user?.role==='manager'?'Manager':user?.role==='warehouse'?'Warehouse':user?.role==='farmer'?'Farmer':'Customer';
-  const links = [{to:'/',label:'Home'},{to:'/products',label:'Products'},{to:'/wishlist',label:'Wishlist'},{to:'/orders',label:'Orders'},
+  const links = [{to:'/',label:'Home'},{to:'/products',label:'Products'},{to:'/wishlist',label:'Wishlist'},
+    ...(user?[{to:'/orders',label:'Orders'}]:[]),
     ...(user?.isAdmin?[{to:'/admin',label:'Admin'}]:[]),
     ...(user?.role==='manager'?[{to:'/manager',label:'Manager Dashboard'}]:[]),
     ...(user?.role==='warehouse'?[{to:'/warehouse',label:'Warehouse Dashboard'}]:[]),

@@ -6,6 +6,7 @@ import{Label} from '@/components/ui/label';
 import{Check,Loader2,Printer,Download,MapPin,Tag,Mail,ChevronRight,ChevronLeft,Truck,Gift,ShieldCheck,Banknote,CreditCard,Smartphone,Clock,Copy,CheckCheck,RefreshCw,Leaf,Shield} from 'lucide-react';
 import{QRCodeCanvas} from 'qrcode.react';
 import{useCart} from '@/contexts/CartContext';
+import{useAuth} from '@/contexts/AuthContext';
 import{saveOrder} from '@/lib/storage';
 import{formatPrice} from '@/lib/utils';
 const UPI_ID ='frutify@upi';
@@ -74,6 +75,7 @@ function OrderSummary({cartProducts,subtotal,discount,label}){
 
 export default function CheckoutModal({open,onOpenChange,cartProducts,subtotal}){
   const {clearCart}=useCart();
+  const {user}=useAuth();
   const [stage,setStage]=useState('address');
   const [name,setName]=useState('');
   const [phone,setPhone]=useState('');
@@ -143,15 +145,16 @@ export default function CheckoutModal({open,onOpenChange,cartProducts,subtotal})
     setStage('processing');
     saveOrder({
       id:txnId,date:new Date().toISOString(),
+      userId:user?.name || 'guest',
       items:cartProducts.map(ci=>({name:ci.product.name,quantity:ci.quantity,price:ci.product.price})),
   total:finalAmount,discount,coupon: appliedCoupon ||null,
       method:method ==='upi' ? 'UPI / QR' :method ==='card' ? 'Card' :'Cash on Delivery',
       address:{name,phone,email,address,city,pincode},
     });
     clearCart();
-    setTimeout(()=>setStage('success'),2200);
+    setTimeout(()=>setStage('success'),2200);    
   };
-  const handleContinue =()=>{
+  const handleContinue =()=>{    
     setStage('address');
     setName('');setPhone('');setEmail('');setAddress('');setCity('');setPincode('');
     setCouponCode('');setAppliedCoupon(null);setCouponError('');
