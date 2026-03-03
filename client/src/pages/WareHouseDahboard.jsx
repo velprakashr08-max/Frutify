@@ -75,51 +75,51 @@ export default function WarehouseDashboard(){
     if(action==="approved" && req){
       const match = products.find(p=>p.name.toLowerCase()===req.productName.toLowerCase());
       if(match) updateProduct({...match,stock:match.stock+req.quantity});
-    }
+    }                        
     toast.success(action==="approved"?"Request approved!":"Request rejected",{
       description: req ? `${req.productName} · ${req.farmerName}` : undefined
     });
   };
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6">           
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {kpis.map((k,i) => (
               <div key={i} className={`bg-white rounded-xl border p-5 flex items-start gap-4 ${k.alert && k.value > 0 ? "border-red-200" : "border-gray-100"}`}>
                 <div className={`p-2.5 rounded-lg ${k.bg} shrink-0`}>
-                  <k.icon className={`h-4 w-4 ${k.color}`} />
-                </div>
-                <div className="min-w-0">
+                  <k.icon className={`h-4 w-4 ${k.color}`} />            
+                </div>       
+                <div className="min-w-0">                
                   <p className="text-xs text-gray-400 font-medium uppercase tracking-wide">{k.label}</p>
                   <p className={`text-2xl font-bold mt-0.5 ${k.alert && k.value > 0 ? "text-red-600" : "text-gray-900"}`}>{k.value}</p>
                   <p className="text-xs text-gray-400 mt-0.5">{k.sub}</p>
                 </div>
-              </div>
-            ))}
-          </div>
+              </div>                                  
+            ))}                                                   
+          </div>        
           <div className="bg-white rounded-xl border border-gray-100 p-5">
-            <div className="flex items-center justify-between mb-3">
+            <div className="flex items-center justify-between mb-3">              
               <p className="text-sm font-semibold text-gray-800">Stock Distribution</p>
               <p className="text-sm font-bold text-gray-900">{total} <span className="font-normal text-gray-400 text-xs">total units</span></p>
-            </div>
+            </div>         
             <div className="flex h-2.5 rounded-full overflow-hidden gap-px bg-gray-100">
               {healthy.length >0 && <div className="bg-emerald-500 transition-all" style={{ width: `${(healthy.length  / products.length) * 100}%` }} />}
               {lowish.length >0 && <div className="bg-amber-400 transition-all"   style={{ width: `${(lowish.length   / products.length) * 100}%` }} />}
               {low.length>0 && <div className="bg-orange-500 transition-all"  style={{ width: `${(low.length      / products.length) * 100}%` }} />}
               {critical.length>0 && <div className="bg-red-500 transition-all"     style={{ width: `${(critical.length / products.length) * 100}%` }} />}
-            </div>
+            </div>          
             <div className="flex flex-wrap gap-x-5 gap-y-1 mt-3 text-xs text-gray-400">
-              {[
+              {[         
                 { dot:"bg-emerald-500",label:`Healthy (${healthy.length})`   },
-                { dot:"bg-amber-400",label:`Low (${lowish.length})`        },
+                { dot:"bg-amber-400",label:`Low (${lowish.length})`        },         
                 { dot:"bg-orange-500",label:`Critical (${low.length})`      },
-                { dot:"bg-red-500",label:`Out of Stock (${critical.length})` },
+                { dot:"bg-red-500",label:`Out of Stock (${critical.length})` },         
               ].map((l, i) => (
                 <span key={i} className="flex items-center gap-1.5">
                   <span className={`w-2 h-2 rounded-full ${l.dot}`} /> {l.label}
                 </span>
               ))}
             </div>
-          </div>
+          </div>                    
 
           {/* Farmer supply requests */}
           <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
@@ -171,14 +171,14 @@ export default function WarehouseDashboard(){
                         </div>
                       </div>
                     ))}
-                  </div>
+                  </div>        
             )}
-
+           
             {reqTab==="resolved" && (
               resolvedReqs.length===0
                 ? <p className="text-center py-10 text-sm text-gray-400">No resolved requests yet.</p>
                 : <div className="divide-y divide-gray-50">
-                    {resolvedReqs.map(req=>{
+                    {resolvedReqs.map(req=>{                                                        
                       const sc=STATUS_CFG[req.status]||STATUS_CFG.pending;
                       return (
                         <div key={req.id} className="flex items-center gap-4 px-5 py-3.5">
@@ -193,17 +193,17 @@ export default function WarehouseDashboard(){
                           <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border shrink-0 ${sc.badge}`}>
                             <sc.Icon className="h-3 w-3" />
                             {req.status.charAt(0).toUpperCase()+req.status.slice(1)}
-                          </span>
-                        </div>
-                      );
-                    })}
-                  </div>
-            )}
-          </div>
-
+                          </span>                                                
+                        </div>      
+                      );                                                                                                   
+                    })}                                               
+                  </div>     
+            )}                                                     
+          </div>                                                       
+                                                                                         
           {/* Inventory table */}
           <div className="bg-white rounded-xl border border-gray-100 overflow-hidden">
-            {/* Table header / filters */}
+            {/* Table header / filters */}                                                                                            
             <div className="flex items-center justify-between gap-4 px-5 py-4 border-b border-gray-100 flex-wrap">
               <p className="text-sm font-semibold text-gray-800">
                 Inventory <span className="font-normal text-gray-400 ml-1">({filtered.length})</span>
@@ -212,7 +212,7 @@ export default function WarehouseDashboard(){
                 {["all", "fruit", "vegetable"].map(t => (
                   <button key={t} onClick={() => setTypeFilter(t)}
                     className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
-                      typeFilter === t
+                      typeFilter === t       
                         ? "bg-green-600 text-white border-green-600"
                         : "bg-white border-gray-200 text-gray-500 hover:border-green-500 hover:text-green-700"
                     }`}>
@@ -273,4 +273,4 @@ export default function WarehouseDashboard(){
           </div>
     </div>
   );
-}
+}                           

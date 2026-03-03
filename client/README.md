@@ -5,7 +5,7 @@ There was a boy(me) who grew up watching his family plant, tend, and harvest foo
 
 The Idea
 He built Frutify: a simple online marketplace that connects farmers with local customers. The goal was not to be fancy, but to be useful and fair. Farmers share a photo, a short note about when the produce was picked, and a price. Customers can read this and decide what to buy.
-
+    
 How It Works (Very Simple)
 - Farmers: Take a photo, write a short note (where it was grown, when it was picked), and set a price.
 - Customers: Browse pictures and stories, add items to a cart, and place an order.
@@ -14,7 +14,7 @@ The whole process is designed to be easy for people who may use basic phones or 
 
 Why Farmers Like It
 - Fair pay: Farmers keep a larger share of each sale.
-- Control: They choose what to sell and when.
+- Control: They choose what to sell and when.                 
 - Help and training: Frutify offers simple tips for taking photos, packing, and setting prices.
 
 Why Customers Like It
@@ -29,7 +29,7 @@ Extras That Help
 
 Impact
 Small changes add up. Reliable orders let a farmer plan better, reduce waste, and earn steady income. Customers enjoy fresher food and feel connected to the people who grow it.
-
+   
 How You Can Help
 - Try a box or a single order.
 - Share a farmer's story with friends.
@@ -37,4 +37,4 @@ How You Can Help
 
 Thank you for caring about fair food and real stories. Frutify is a small effort to make markets kinder — one farmer, one family, one basket at a time.
 
-— The Frutify Team
+— The Frutify Team            
